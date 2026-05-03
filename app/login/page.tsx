@@ -3,6 +3,9 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+const ACCOUNTS_URL =
+  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
+
 export default function LoginPage() {
   const router = useRouter();
 
@@ -22,10 +25,9 @@ export default function LoginPage() {
     checkAuth();
   }, [router]);
 
-  // TODO: Replace with <LoginButton redirectTo="/app" /> from @samkiel/authsdk
-  // For now, redirect to SAMKIEL ID login
   function handleLogin() {
-    window.location.href = `${process.env.NEXT_PUBLIC_SAMKIEL_ID_URL || "https://id.samkiel.tech"}/login?redirect=${encodeURIComponent(window.location.origin + "/app")}`;
+    const redirectUrl = `${window.location.origin}/app`;
+    window.location.href = `${ACCOUNTS_URL}/login?redirect=${encodeURIComponent(redirectUrl)}`;
   }
 
   return (
@@ -42,21 +44,21 @@ export default function LoginPage() {
 
         <div className="flex flex-col gap-4 w-full p-6 bg-surface border border-border rounded-[var(--radius-lg)]">
           <p className="text-sm text-text-secondary text-center">
-            Sign in with your SAMKIEL ID to continue
+            Sign in with your SAMKIEL account to continue
           </p>
 
           <button
             onClick={handleLogin}
             className="w-full py-3 px-4 bg-accent text-background font-semibold rounded-[var(--radius-md)] hover:bg-accent-dim transition-all duration-200 cursor-pointer active:scale-[0.98] text-sm"
           >
-            Sign in with SAMKIEL ID
+            Sign in with SAMKIEL
           </button>
         </div>
 
         <p className="text-xs text-text-muted text-center">
           Don&apos;t have an account?{" "}
           <a
-            href="https://id.samkiel.tech/register"
+            href={`${ACCOUNTS_URL}/register`}
             className="text-accent hover:underline"
           >
             Create one

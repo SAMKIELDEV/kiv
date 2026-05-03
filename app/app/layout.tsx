@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -11,6 +10,11 @@ interface AuthUser {
   email: string;
 }
 
+const ACCOUNTS_URL =
+  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+
 export default function AppLayout({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,13 +23,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     try {
       const res = await fetch("/api/me");
       if (!res.ok) {
-        redirect("/login");
+        window.location.href = `${ACCOUNTS_URL}/login?redirect=${encodeURIComponent(`${APP_URL}/app`)}`;
         return;
       }
       const data = await res.json();
       setUser(data);
     } catch {
-      redirect("/login");
+      window.location.href = `${ACCOUNTS_URL}/login?redirect=${encodeURIComponent(`${APP_URL}/app`)}`;
     } finally {
       setLoading(false);
     }

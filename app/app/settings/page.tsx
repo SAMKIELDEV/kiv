@@ -99,7 +99,7 @@ export default function SettingsPage() {
         </div>
 
         <a
-          href="https://id.samkiel.tech"
+          href={process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech"}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-sm text-accent hover:underline mt-2 w-fit"

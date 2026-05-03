@@ -10,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
  */
 export function verifyToken(request: NextRequest): TokenPayload | null {
   const token =
-    request.cookies.get("accessToken")?.value ||
+    request.cookies.get("sk_access_token")?.value ||
     request.headers.get("Authorization")?.replace("Bearer ", "");
 
   if (!token || !JWT_SECRET) return null;

@@ -11,12 +11,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get("accessToken")?.value;
+  const token = request.cookies.get("sk_access_token")?.value;
 
   if (!token || !JWT_SECRET) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
+    const accountsUrl = process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
+    const redirectUrl = `${accountsUrl}/login?redirect=${encodeURIComponent(`${appUrl}/app`)}`;
+    return NextResponse.redirect(redirectUrl);
   }
 
   try {
@@ -32,9 +33,10 @@ export async function middleware(request: NextRequest) {
     return response;
   } catch {
     // Token invalid or expired — redirect to login
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
+    const accountsUrl = process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
+    const redirectUrl = `${accountsUrl}/login?redirect=${encodeURIComponent(`${appUrl}/app`)}`;
+    return NextResponse.redirect(redirectUrl);
   }
 }
 
