@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, use } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { MOOD_EMOJIS, MOOD_LABELS, type Entry, type MoodValue } from "@/types";
+import { MOOD_EMOJIS, type Entry, type MoodValue } from "@/types";
 import { formatDate } from "@/lib/utils";
 
 export default function EntryDetailPage({
@@ -41,7 +41,7 @@ export default function EntryDetailPage({
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-2 h-2 bg-text-muted rounded-full animate-pulse" />
+        <div className="w-2 h-2 bg-text-secondary rounded-full animate-pulse" />
       </div>
     );
   }
@@ -52,7 +52,7 @@ export default function EntryDetailPage({
         <p className="text-lg text-text-secondary">No entry for this date</p>
         <a
           href="/app/history"
-          className="inline-flex items-center gap-1.5 text-sm text-accent hover:underline"
+          className="inline-flex items-center gap-1.5 text-sm text-accent hover:brightness-110"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to history
         </a>
@@ -64,63 +64,57 @@ export default function EntryDetailPage({
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-6 animate-fade-in"
+      className="flex flex-col gap-10 animate-fade-in max-w-[480px] mx-auto w-full pt-4"
     >
       <a
         href="/app/history"
         className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors w-fit"
       >
-        <ArrowLeft className="w-3.5 h-3.5" /> Back to history
+        <ArrowLeft className="w-3.5 h-3.5" /> History
       </a>
 
-      <div className="flex flex-col gap-6 p-6 bg-surface border border-border rounded-[var(--radius-lg)]">
+      <div className="flex flex-col gap-12 text-center">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-text-primary">
+        <div className="flex flex-col items-center gap-6">
+          <span className="text-7xl">
+            {MOOD_EMOJIS[entry.mood as MoodValue]}
+          </span>
+          <h1 className="text-3xl sm:text-[40px] font-extrabold text-text-primary tracking-tight font-heading">
             {formatDate(entry.date)}
           </h1>
-          <div className="flex items-center gap-2">
-            <span className="text-3xl">
-              {MOOD_EMOJIS[entry.mood as MoodValue]}
-            </span>
-            <span className="text-sm text-text-secondary">
-              {MOOD_LABELS[entry.mood as MoodValue]}
-            </span>
-          </div>
         </div>
 
-        {/* Prompt response */}
-        {entry.promptResponse && (
-          <div className="flex flex-col gap-2 pt-4 border-t border-border">
-            <p className="text-xs text-text-muted font-medium uppercase tracking-wider">
-              {entry.prompt}
-            </p>
-            <p className="text-sm text-text-primary leading-relaxed">
-              {entry.promptResponse}
-            </p>
-          </div>
-        )}
+        <div className="flex flex-col gap-10 text-left">
+          {/* Prompt response */}
+          {entry.promptResponse && (
+            <div className="flex flex-col gap-3">
+              <p className="text-sm text-text-secondary italic font-body">
+                {entry.prompt}
+              </p>
+              <p className="text-lg text-text-primary leading-relaxed font-body">
+                {entry.promptResponse}
+              </p>
+            </div>
+          )}
 
-        {/* Note */}
-        {entry.note && (
-          <div className="flex flex-col gap-2 pt-4 border-t border-border">
-            <p className="text-xs text-text-muted font-medium uppercase tracking-wider">
-              Note
-            </p>
-            <p className="text-sm text-text-primary leading-relaxed whitespace-pre-wrap">
-              {entry.note}
-            </p>
-          </div>
-        )}
+          {/* Note */}
+          {entry.note && (
+            <div className="flex flex-col gap-3">
+              <p className="text-lg text-text-primary leading-relaxed whitespace-pre-wrap font-body">
+                {entry.note}
+              </p>
+            </div>
+          )}
 
-        {/* Empty state if no prompt response or note */}
-        {!entry.promptResponse && !entry.note && (
-          <div className="pt-4 border-t border-border">
-            <p className="text-sm text-text-muted italic">
-              Just a mood check-in — sometimes that&apos;s enough.
-            </p>
-          </div>
-        )}
+          {/* Empty state if no prompt response or note */}
+          {!entry.promptResponse && !entry.note && (
+            <div className="text-center pt-8">
+              <p className="text-base text-text-secondary italic font-body">
+                Just a mood check-in.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </motion.div>
   );

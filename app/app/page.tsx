@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { CheckInForm } from "@/components/checkin/check-in-form";
-import { TodayEntry } from "@/components/checkin/today-entry";
+import TodayEntry from "@/components/checkin/today-entry";
 import { StreakDisplay } from "@/components/streak/streak-display";
 import { getGreeting, getTodayDateString } from "@/lib/utils";
 import { getTodaysPrompt } from "@/lib/prompts";
@@ -63,47 +63,50 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-2 h-2 bg-text-muted rounded-full animate-pulse" />
+        <div className="w-2 h-2 bg-text-secondary rounded-full animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-8 animate-fade-in">
+    <div className="flex flex-col gap-10 animate-fade-in w-full max-w-[480px] mx-auto">
       {/* Greeting + Streak */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-2">
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-2xl sm:text-3xl font-bold text-text-primary tracking-tight"
+          className="text-4xl sm:text-[40px] font-extrabold text-text-primary tracking-tight font-heading leading-tight"
         >
           {getGreeting(userName || "there")}
         </motion.h1>
         <StreakDisplay streak={streak} />
       </div>
 
+      <hr className="border-t border-border" />
+
       {/* Check-in or Today's Entry */}
       {todayEntry ? (
-        <div className="flex flex-col gap-4">
-          <p className="text-sm text-text-secondary">
+        <div className="flex flex-col gap-8">
+          <p className="text-sm font-semibold text-accent tracking-wide uppercase">
             You&apos;ve checked in today ✓
           </p>
           <TodayEntry entry={todayEntry} />
           <a
             href="/app/history"
-            className="inline-flex items-center gap-1.5 text-sm text-accent hover:underline mt-2 w-fit"
+            className="inline-flex items-center gap-1.5 text-sm text-accent hover:brightness-110 mt-2 w-fit font-medium transition-colors"
           >
             View history <ArrowRight className="w-3.5 h-3.5" />
           </a>
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
-          <div className="p-6 bg-surface border border-border rounded-[var(--radius-lg)]">
-            <CheckInForm
-              prompt={getTodaysPrompt()}
-              onComplete={handleCheckInComplete}
-            />
-          </div>
+        <div className="flex flex-col gap-6">
+          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+            Today
+          </h2>
+          <CheckInForm
+            prompt={getTodaysPrompt()}
+            onComplete={handleCheckInComplete}
+          />
         </div>
       )}
     </div>

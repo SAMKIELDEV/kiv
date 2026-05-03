@@ -11,8 +11,9 @@
   --color-accent: var(--accent);
   --color-accent-text: var(--accent-text);
   
-  --font-heading: "Syne", system-ui, sans-serif;
-  --font-body: "Syne", system-ui, sans-serif;
+  --font-heading: var(--font-syne);
+  --font-body: var(--font-syne);
+  --font-sans: var(--font-syne);
 
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -47,6 +48,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  font-family: var(--font-syne);
 }
 
 html {
