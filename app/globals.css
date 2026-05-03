@@ -4,10 +4,12 @@
   --color-background: var(--background);
   --color-foreground: var(--text-primary);
   --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-border: var(--border);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
   
   --font-heading: "Syne", system-ui, sans-serif;
   --font-body: "Syne", system-ui, sans-serif;
@@ -20,21 +22,25 @@
 }
 
 :root {
-  --background: #F5F5F0;
+  --background: #F4F4EF;
   --surface: #FFFFFF;
+  --surface-raised: #FAFAFA;
   --border: #E5E5E0;
   --text-primary: #0A0A0A;
-  --text-secondary: #666666;
-  --accent: #7AB800;
+  --text-secondary: #888888;
+  --accent: #8AAD00;
+  --accent-text: #FFFFFF;
 }
 
 .dark {
   --background: #0A0A0A;
   --surface: #111111;
-  --border: #1E1E1E;
+  --surface-raised: #171717;
+  --border: #222222;
   --text-primary: #FFFFFF;
-  --text-secondary: #888888;
+  --text-secondary: #666666;
   --accent: #E8FF47;
+  --accent-text: #0A0A0A;
 }
 
 * {
@@ -58,7 +64,7 @@ body {
 /* Selection */
 ::selection {
   background: var(--accent);
-  color: var(--background);
+  color: var(--accent-text);
 }
 
 /* Scrollbar */

@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 interface AuthUser {
   userId: string;
@@ -42,40 +44,45 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen">
-        <Loader2 className="w-6 h-6 text-text-muted animate-spin" />
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-background">
+        <Loader2 className="w-6 h-6 text-text-secondary animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen">
+    <div className="flex-1 flex flex-col min-h-screen bg-background relative">
       {/* Nav */}
-      <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <a href="/app" className="text-lg font-bold text-text-primary tracking-tight">
+      <motion.nav 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-4 w-full backdrop-blur-md bg-background/80"
+      >
+        <div className="max-w-[680px] mx-auto flex items-center justify-between">
+          <Link href="/app" className="text-xl font-extrabold text-text-primary tracking-tight font-heading">
             kiv
-          </a>
-          <div className="flex items-center gap-4">
-            <a
+          </Link>
+          <div className="flex items-center gap-6">
+            <Link
               href="/app/history"
-              className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
             >
               History
-            </a>
-            <a
+            </Link>
+            <Link
               href="/app/settings"
-              className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
             >
               Settings
-            </a>
+            </Link>
             <ThemeToggle />
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Content */}
-      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
+      <main className="flex-1 w-full max-w-[680px] mx-auto px-6 md:px-12 pt-28 pb-12">
         {user && (
           <script
             id="user-data"
@@ -83,7 +90,13 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             dangerouslySetInnerHTML={{ __html: JSON.stringify(user) }}
           />
         )}
-        {children}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+        >
+          {children}
+        </motion.div>
       </main>
     </div>
   );
