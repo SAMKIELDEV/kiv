@@ -13,7 +13,7 @@ export function MoodSelector({ value, onChange }: MoodSelectorProps) {
   const moods: MoodValue[] = [1, 2, 3, 4, 5];
 
   return (
-    <div className="flex gap-3 sm:gap-4 w-full">
+    <div className="grid grid-cols-5 gap-[8px] w-full">
       {moods.map((mood) => (
         <motion.button
           key={mood}
@@ -22,7 +22,7 @@ export function MoodSelector({ value, onChange }: MoodSelectorProps) {
           whileTap={{ scale: 0.95 }}
           onClick={() => onChange(mood)}
           className={cn(
-            "flex items-center justify-center aspect-square rounded-[var(--radius-sm)] border transition-all duration-200 cursor-pointer flex-1",
+            "flex items-center justify-center aspect-square rounded-[var(--radius-sm)] border transition-all duration-200 cursor-pointer w-full",
             value === mood
               ? "bg-accent/10 border-accent"
               : "bg-surface-raised border-border hover:border-border/80 hover:-translate-y-1"

@@ -114,7 +114,7 @@ export function CheckInForm({ prompt, onComplete }: CheckInFormProps) {
               value={promptResponse}
               onChange={(e) => setPromptResponse(e.target.value)}
               placeholder="Optional — answer if it speaks to you"
-              className="min-h-[80px]"
+              className="min-h-[100px]"
             />
           </div>
 
@@ -124,7 +124,7 @@ export function CheckInForm({ prompt, onComplete }: CheckInFormProps) {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Free write — no rules here"
-            className="min-h-[80px]"
+            className="min-h-[120px]"
           />
 
           <Button

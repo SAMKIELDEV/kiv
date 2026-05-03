@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
       .lean();
 
     const streak = computeStreak(entries.map((e) => e.date));
+    console.log("Streak computed:", streak);
     return NextResponse.json(streak);
   } catch (error) {
     console.error("GET /api/entries/streak error:", error);

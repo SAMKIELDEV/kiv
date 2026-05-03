@@ -82,7 +82,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       </motion.nav>
 
       {/* Content */}
-      <main className="flex-1 w-full max-w-[680px] mx-auto px-6 md:px-12 pt-28 pb-12">
+      <main className="flex-1 w-full max-w-[680px] mx-auto px-[24px] md:px-[48px] pt-28 pb-12">
         {user && (
           <script
             id="user-data"

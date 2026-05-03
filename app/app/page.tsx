@@ -12,7 +12,7 @@ import type { Entry, StreakData } from "@/types";
 
 export default function DashboardPage() {
   const [todayEntry, setTodayEntry] = useState<Entry | null>(null);
-  const [streak, setStreak] = useState<StreakData>({ current: 0, longest: 0 });
+  const [streak, setStreak] = useState<StreakData | null>(null);
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -75,7 +75,7 @@ export default function DashboardPage() {
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-4xl sm:text-[40px] font-extrabold text-text-primary tracking-tight font-heading leading-tight"
+          className="font-[800] text-text-primary tracking-tight font-heading leading-tight text-[clamp(28px,5vw,48px)]"
         >
           {getGreeting(userName || "there")}
         </motion.h1>
@@ -100,7 +100,7 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="flex flex-col gap-6">
-          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
+          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mt-[32px] mb-[16px]">
             Today
           </h2>
           <CheckInForm
