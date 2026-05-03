@@ -25,12 +25,16 @@ export async function middleware(request: NextRequest) {
     const { payload } = await jwtVerify(token, secret);
 
     // Attach user info to headers for downstream use
-    const response = NextResponse.next();
-    response.headers.set("x-user-id", payload.userId as string);
-    response.headers.set("x-user-email", payload.email as string);
-    response.headers.set("x-user-name", payload.name as string);
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-user-id", payload.userId as string);
+    requestHeaders.set("x-user-email", payload.email as string);
+    requestHeaders.set("x-user-name", payload.name as string);
 
-    return response;
+    return NextResponse.next({
+      request: {
+        headers: requestHeaders,
+      },
+    });
   } catch {
     // Token invalid or expired — redirect to login
     const accountsUrl = process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
