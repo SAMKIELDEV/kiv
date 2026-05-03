@@ -3,10 +3,10 @@
 import { ArrowRight } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 
 export default function LandingPage() {
-  const container = {
+  const container: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -16,7 +16,7 @@ export default function LandingPage() {
     },
   };
 
-  const item = {
+  const item: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
   };
