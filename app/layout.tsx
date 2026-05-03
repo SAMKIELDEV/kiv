@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Kiv — Check in with yourself",
   description:
     "A simple, private space to log how you're doing each day. Mood tracking and micro-journaling in under 2 minutes.",
+  metadataBase: new URL("https://kiv.samkiel.tech"),
   keywords: ["journaling", "mood tracker", "daily check-in", "mental health", "self-awareness"],
   authors: [{ name: "SAMKIEL Studio", url: "https://samkiel.tech" }],
 };
