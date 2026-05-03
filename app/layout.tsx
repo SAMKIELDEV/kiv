@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne } from "next/font/google";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 const syne = Syne({
@@ -24,20 +25,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${syne.variable} h-full`}>
+    <html lang="en" className={`${syne.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col font-body antialiased">
-        {children}
-        <Toaster
-          position="bottom-center"
-          toastOptions={{
-            style: {
-              background: "#111111",
-              border: "1px solid #222222",
-              color: "#FFFFFF",
-              fontFamily: "var(--font-syne)",
-            },
-          }}
-        />
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          {children}
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                color: "var(--text-primary)",
+                fontFamily: "var(--font-syne)",
+              },
+            }}
+          />
+        </ThemeProvider>
       </body>
     </html>
   );
