@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
-import { AuthProvider } from "@samkiel/authsdk/react";
+import { AuthProvider } from "@/components/AuthProvider";
 
 const syne = Syne({
   subsets: ["latin"],
