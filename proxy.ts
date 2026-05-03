@@ -3,7 +3,7 @@ import { jwtVerify } from "jose";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Only protect /app routes
@@ -47,3 +47,5 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/app/:path*"],
 };
+
+export default proxy;
