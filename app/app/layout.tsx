@@ -1,0 +1,84 @@
+"use client";
+
+import { useEffect, useState, useCallback } from "react";
+import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
+import { Loader2 } from "lucide-react";
+
+interface AuthUser {
+  userId: string;
+  name: string;
+  email: string;
+}
+
+export default function AppLayout({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const res = await fetch("/api/me");
+      if (!res.ok) {
+        redirect("/login");
+        return;
+      }
+      const data = await res.json();
+      setUser(data);
+    } catch {
+      redirect("/login");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-screen">
+        <Loader2 className="w-6 h-6 text-text-muted animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex-1 flex flex-col min-h-screen">
+      {/* Nav */}
+      <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+          <a href="/app" className="text-lg font-bold text-text-primary tracking-tight">
+            kiv
+          </a>
+          <div className="flex items-center gap-4">
+            <a
+              href="/app/history"
+              className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              History
+            </a>
+            <a
+              href="/app/settings"
+              className="text-sm text-text-secondary hover:text-text-primary transition-colors"
+            >
+              Settings
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Content */}
+      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8">
+        {user && (
+          <script
+            id="user-data"
+            type="application/json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(user) }}
+          />
+        )}
+        {children}
+      </main>
+    </div>
+  );
+}
