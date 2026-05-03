@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -9,7 +9,7 @@ import { useAuth } from "@samkiel/authsdk/react";
 const ACCOUNTS_URL =
   process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const { signInWithProvider } = useAuth();
 
@@ -30,8 +30,14 @@ export default function LoginPage() {
   }, [router]);
 
   function handleLogin() {
-    const redirectUrl = `${window.location.origin}/app`;
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    const redirectUrl = `${origin}/app`;
     window.location.href = `${ACCOUNTS_URL}/login?redirect=${encodeURIComponent(redirectUrl)}`;
+  }
+
+  function handleGoogleLogin() {
+    const origin = typeof window !== "undefined" ? window.location.origin : "";
+    signInWithProvider('google', `${origin}/app`);
   }
 
   return (
@@ -66,7 +72,7 @@ export default function LoginPage() {
             </button>
 
             <button
-              onClick={() => signInWithProvider('google', `${window.location.origin}/app`)}
+              onClick={handleGoogleLogin}
               className="w-full py-4 px-6 bg-white text-[#0A0A0A] border border-[#E5E5E5] dark:bg-transparent dark:text-white dark:border-[#262626] font-bold rounded-[var(--radius-sm)] transition-all duration-200 cursor-pointer active:scale-[0.98] text-base flex items-center justify-center gap-2 group"
             >
               <svg className="w-5 h-5" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
@@ -89,5 +95,17 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }
