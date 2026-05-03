@@ -5,16 +5,17 @@ import { TextareaHTMLAttributes, forwardRef } from "react";
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
+  labelClassName?: string;
 }
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, label, id, ...props }, ref) => {
+  ({ className, label, labelClassName, id, ...props }, ref) => {
     return (
       <div className="flex flex-col gap-2">
         {label && (
           <label
             htmlFor={id}
-            className="text-sm text-text-secondary font-medium"
+            className={cn("text-sm text-text-secondary font-body italic", labelClassName)}
           >
             {label}
           </label>
@@ -23,7 +24,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           ref={ref}
           id={id}
           className={cn(
-            "w-full bg-surface border border-border rounded-[var(--radius-md)] px-4 py-3 text-sm text-text-primary placeholder:text-text-muted resize-none transition-colors duration-200 focus:border-accent/50 focus:outline-none min-h-[100px]",
+            "w-full bg-surface border border-transparent rounded-[var(--radius-sm)] px-4 py-3 text-sm text-text-primary placeholder:text-text-secondary/50 resize-none transition-colors duration-200 focus:border-accent focus:outline-none min-h-[100px]",
             className
           )}
           {...props}

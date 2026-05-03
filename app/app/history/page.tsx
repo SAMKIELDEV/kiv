@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { MOOD_EMOJIS, type Entry, type MoodValue } from "@/types";
+import type { Entry } from "@/types";
 import { cn } from "@/lib/utils";
 
 export default function HistoryPage() {
@@ -42,7 +42,12 @@ export default function HistoryPage() {
     const { year, month } = currentMonth;
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    const startPad = firstDay.getDay(); // 0=Sun
+    
+    // JS getDay(): 0=Sun, 1=Mon, ..., 6=Sat
+    // We want Mon=0, Tue=1, ..., Sun=6
+    let startPad = firstDay.getDay() - 1;
+    if (startPad < 0) startPad = 6;
+    
     const totalDays = lastDay.getDate();
 
     const days: (number | null)[] = [];
@@ -54,8 +59,8 @@ export default function HistoryPage() {
     return days;
   }, [currentMonth]);
 
-  function formatMonthYear() {
-    const date = new Date(currentMonth.year, currentMonth.month);
+  function formatMonthYear(offset = 0) {
+    const date = new Date(currentMonth.year, currentMonth.month + offset);
     return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
   }
 
@@ -82,46 +87,48 @@ export default function HistoryPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-2 h-2 bg-text-muted rounded-full animate-pulse" />
+        <div className="w-2 h-2 bg-text-secondary rounded-full animate-pulse" />
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in">
-      <h1 className="text-2xl font-bold text-text-primary tracking-tight">
+    <div className="flex flex-col gap-10 w-full animate-fade-in">
+      <h1 className="text-[40px] font-extrabold text-text-primary tracking-tight font-heading">
         History
       </h1>
 
       {/* Month navigation */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-center gap-4 text-text-secondary">
         <button
           onClick={prevMonth}
-          className="p-2 rounded-[var(--radius-sm)] hover:bg-surface transition-colors cursor-pointer"
+          className="p-2 rounded-full hover:bg-surface-raised transition-colors cursor-pointer"
           aria-label="Previous month"
         >
-          <ChevronLeft className="w-5 h-5 text-text-secondary" />
+          <ChevronLeft className="w-5 h-5" />
         </button>
-        <span className="text-base font-semibold text-text-primary">
-          {formatMonthYear()}
-        </span>
+        <div className="flex items-center gap-4 sm:gap-8 font-medium">
+          <span className="hidden sm:inline opacity-50">{formatMonthYear(-1)}</span>
+          <span className="text-lg font-semibold text-text-primary min-w-[120px] text-center">{formatMonthYear()}</span>
+          <span className="hidden sm:inline opacity-50">{formatMonthYear(1)}</span>
+        </div>
         <button
           onClick={nextMonth}
-          className="p-2 rounded-[var(--radius-sm)] hover:bg-surface transition-colors cursor-pointer"
+          className="p-2 rounded-full hover:bg-surface-raised transition-colors cursor-pointer"
           aria-label="Next month"
         >
-          <ChevronRight className="w-5 h-5 text-text-secondary" />
+          <ChevronRight className="w-5 h-5" />
         </button>
       </div>
 
       {/* Calendar grid */}
-      <div className="bg-surface border border-border rounded-[var(--radius-lg)] p-4">
+      <div className="w-full max-w-[400px] mx-auto">
         {/* Day labels */}
-        <div className="grid grid-cols-7 gap-1 mb-2">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
+        <div className="grid grid-cols-7 gap-2 mb-4">
+          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
             <div
               key={d}
-              className="text-center text-xs text-text-muted font-medium py-1"
+              className="text-center text-xs text-text-secondary font-medium py-1"
             >
               {d}
             </div>
@@ -129,7 +136,7 @@ export default function HistoryPage() {
         </div>
 
         {/* Days */}
-        <div className="grid grid-cols-7 gap-1">
+        <div className="grid grid-cols-7 gap-y-4 gap-x-2">
           {calendarDays.map((day, i) => {
             if (day === null) {
               return <div key={`pad-${i}`} className="aspect-square" />;
@@ -142,31 +149,23 @@ export default function HistoryPage() {
             return (
               <motion.div
                 key={dateStr}
-                whileHover={entry ? { scale: 1.05 } : undefined}
+                whileHover={entry ? { scale: 1.1 } : undefined}
+                whileTap={entry ? { scale: 0.95 } : undefined}
                 className={cn(
-                  "aspect-square flex flex-col items-center justify-center rounded-[var(--radius-sm)] text-sm transition-colors relative",
+                  "aspect-square flex items-center justify-center rounded-full text-base transition-colors relative",
                   entry
-                    ? "cursor-pointer hover:bg-surface-hover"
-                    : "cursor-default",
-                  isToday && "ring-1 ring-accent/30"
+                    ? "cursor-pointer bg-accent text-accent-text font-bold"
+                    : "cursor-default text-text-primary",
+                  isToday && !entry && "border border-border",
+                  isToday && entry && "ring-2 ring-accent ring-offset-2 ring-offset-background"
                 )}
                 onClick={() => {
                   if (entry) window.location.href = `/app/entry/${dateStr}`;
                 }}
               >
-                <span
-                  className={cn(
-                    "text-xs",
-                    entry ? "text-text-primary font-medium" : "text-text-muted"
-                  )}
-                >
+                <span className="relative z-10">
                   {day}
                 </span>
-                {entry && (
-                  <span className="text-xs mt-0.5">
-                    {MOOD_EMOJIS[entry.mood as MoodValue]}
-                  </span>
-                )}
               </motion.div>
             );
           })}
@@ -174,7 +173,7 @@ export default function HistoryPage() {
       </div>
 
       {entries.length === 0 && (
-        <p className="text-sm text-text-muted text-center py-4">
+        <p className="text-sm text-text-secondary text-center py-4">
           No entries yet. Start your first check-in!
         </p>
       )}
