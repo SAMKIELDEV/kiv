@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface AuthUser {
   userId: string;
@@ -68,6 +69,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             >
               Settings
             </a>
+            <ThemeToggle />
           </div>
         </div>
       </nav>
