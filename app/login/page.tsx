@@ -4,12 +4,14 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@samkiel/authsdk/react";
 
 const ACCOUNTS_URL =
   process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { signInWithProvider } = useAuth();
 
   useEffect(() => {
     // Check if already authenticated
@@ -61,6 +63,16 @@ export default function LoginPage() {
             >
               Sign in with SAMKIEL
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+            </button>
+
+            <button
+              onClick={() => signInWithProvider('google', `${window.location.origin}/app`)}
+              className="w-full py-4 px-6 bg-white text-[#0A0A0A] border border-[#E5E5E5] dark:bg-transparent dark:text-white dark:border-[#262626] font-bold rounded-[var(--radius-sm)] transition-all duration-200 cursor-pointer active:scale-[0.98] text-base flex items-center justify-center gap-2 group"
+            >
+              <svg className="w-5 h-5" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512">
+                <path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
+              </svg>
+              Continue with Google
             </button>
 
             <p className="text-sm text-text-secondary">

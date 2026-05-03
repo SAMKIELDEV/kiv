@@ -4,11 +4,15 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
+import { AuthProvider } from "@samkiel/authsdk/react";
+
 const syne = Syne({
   subsets: ["latin"],
   variable: "--font-syne",
   display: "swap",
 });
+
+const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL || "https://id.samkiel.tech";
 
 export const metadata: Metadata = {
   title: "Kiv — Check in with yourself",
@@ -28,18 +32,20 @@ export default function RootLayout({
     <html lang="en" className={`${syne.variable} h-full`} suppressHydrationWarning>
       <body className="min-h-full flex flex-col font-body antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          {children}
-          <Toaster
-            position="bottom-center"
-            toastOptions={{
-              style: {
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                color: "var(--text-primary)",
-                fontFamily: "var(--font-syne)",
-              },
-            }}
-          />
+          <AuthProvider baseUrl={AUTH_URL}>
+            {children}
+            <Toaster
+              position="bottom-center"
+              toastOptions={{
+                style: {
+                  background: "var(--surface)",
+                  border: "1px solid var(--border)",
+                  color: "var(--text-primary)",
+                  fontFamily: "var(--font-syne)",
+                },
+              }}
+            />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
