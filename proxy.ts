@@ -6,6 +6,15 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // --- TEMPORARY DEVELOPMENT REDIRECT ---
+  if (pathname === "/" || pathname === "/development") {
+    return NextResponse.next();
+  }
+
+  // Redirect all other pages to /development
+  return NextResponse.redirect(new URL("/development", request.url));
+
+  /* ORIGINAL LOGIC BYPASSED:
   const isAuthRoute = pathname === "/" || pathname === "/login";
   const isProtectedRoute = pathname.startsWith("/app");
 
@@ -61,11 +70,20 @@ export async function proxy(request: NextRequest) {
   }
 
   return NextResponse.next();
+  */
 }
 
 export const config = {
-  matcher: ["/", "/login", "/app/:path*"],
+  // Match all request paths except for the ones starting with:
+  // - api (API routes)
+  // - _next/static (static files)
+  // - _next/image (image optimization files)
+  // - favicon.ico, sitemap.xml, robots.txt (metadata files)
+  // - assets (public assets folder)
+  // - docs (public docs folder)
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|assets|docs).*)',
+  ],
 };
 
 export default proxy;
-

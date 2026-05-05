@@ -11,6 +11,11 @@ export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const images = [
     "/assets/hero.png",
@@ -74,23 +79,23 @@ export default function Home() {
           z-index: 100;
           display: flex;
           flex-direction: column;
-          padding: 100px 48px;
-          gap: 32px;
+          padding: 100px 24px;
+          gap: 24px;
         }
         .kiv-mobile-link {
           font-family: 'Syne', sans-serif;
-          font-size: 40px;
-          font-weight: 800;
+          font-size: 24px;
+          font-weight: 700;
           color: var(--text-primary);
           text-decoration: none;
-          letter-spacing: -1.5px;
+          letter-spacing: -0.5px;
         }
         .kiv-mobile-link-sub {
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 16px;
+          font-size: 15px;
           color: var(--text-secondary);
           text-decoration: none;
-          margin-top: -16px;
+          margin-top: -8px;
         }
         .kiv-signin { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-secondary); text-decoration: none; }
         .kiv-signin:hover { color: var(--text-primary); }
@@ -247,7 +252,10 @@ export default function Home() {
       <div className="kiv-landing">
         {/* NAVBAR */}
         <nav className="kiv-nav">
-          <Link href="/" className="kiv-nav-logo">
+          <Link href="/" className="kiv-nav-logo gap-2">
+            <div className="w-8 h-8 flex items-center justify-center">
+              <img src="/favicon.ico" alt="Kiv Logo" className="w-full h-full object-contain dark:invert" />
+            </div>
             kiv
           </Link>
           <div className="kiv-nav-right">
@@ -255,7 +263,7 @@ export default function Home() {
               className="kiv-theme-btn"
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+              {mounted ? (theme === "dark" ? <Sun size={16} /> : <Moon size={16} />) : <div style={{ width: 16, height: 16 }} />}
             </button>
             <Link href="/login" className="kiv-signin">Sign in</Link>
             
@@ -291,8 +299,8 @@ export default function Home() {
                   setIsMenuOpen(false);
                 }}
               >
-                {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                {mounted ? (theme === "dark" ? <Sun size={20} /> : <Moon size={20} />) : <div style={{ width: 20, height: 20 }} />}
+                {mounted ? (theme === "dark" ? "Light Mode" : "Dark Mode") : "Loading..."}
               </button>
             </motion.div>
           )}
