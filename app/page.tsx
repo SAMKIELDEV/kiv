@@ -1,257 +1,101 @@
-// app/page.tsx (Home component)
 "use client";
-
 import Link from "next/link";
-import { Navbar } from "@/components/Navbar";
-import { motion } from "framer-motion";
-import { BookOpen, Sparkles, Shield, Calendar, ArrowRight, Play, CheckCircle2 } from "lucide-react";
-
-const features = [
-  {
-    icon: BookOpen,
-    title: "Daily Check-ins",
-    description: "Log your mood and thoughts in under 2 minutes with our intuitive interface.",
-  },
-  {
-    icon: Sparkles,
-    title: "Beautiful Insights",
-    description: "Visualize your emotional journey over time with elegant, data-driven charts.",
-  },
-  {
-    icon: Shield,
-    title: "Completely Private",
-    description: "Your data is yours. End-to-end encryption ensures your thoughts stay private.",
-  },
-  {
-    icon: Calendar,
-    title: "Consistent Growth",
-    description: "Build a sustainable journaling habit that helps you understand yourself better.",
-  },
-];
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
+import { useTheme } from "next-themes";
+import { Sun, Moon } from "lucide-react";
 
 export default function Home() {
+  const { theme, setTheme } = useTheme();
+
   return (
-    <div className="min-h-screen bg-bg relative overflow-hidden">
-      <div className="grain" />
-      <div className="premium-gradient absolute inset-0" />
-      
-      <Navbar />
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .kiv-landing { min-height: 100vh; background: #FAFAF8; display: flex; flex-direction: column; }
+        .kiv-nav { 
+          position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+          height: 60px; display: flex; justify-content: space-between; align-items: center;
+          padding: 0 48px; background: rgba(250,250,248,0.92);
+          backdrop-filter: blur(12px); border-bottom: 1px solid #E0DDD8;
+        }
+        .kiv-nav-logo { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: #1A1410; text-decoration: none; }
+        .kiv-nav-right { display: flex; align-items: center; gap: 20px; }
+        .kiv-theme-btn { background: none; border: none; cursor: pointer; color: #8A8580; display: flex; align-items: center; padding: 0; }
+        .kiv-signin { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: #8A8580; text-decoration: none; }
+        .kiv-signin:hover { color: #1A1410; }
+        .kiv-hero {
+          flex: 1; display: flex; align-items: center;
+          padding: 60px 48px 80px 48px;
+          max-width: 700px;
+        }
+        .kiv-hero-inner { display: flex; flex-direction: column; align-items: flex-start; }
+        .kiv-headline {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-weight: 800; font-size: 64px;
+          line-height: 1.05; letter-spacing: -2px;
+          margin-bottom: 24px;
+        }
+        .kiv-headline-white { color: #1A1410; display: block; }
+        .kiv-headline-accent { color: #C4956A; display: block; }
+        .kiv-subheading {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-weight: 400; font-size: 17px;
+          color: #8A8580; line-height: 1.65;
+          max-width: 360px; margin-bottom: 36px;
+        }
+        .kiv-cta {
+          display: inline-flex; align-items: center; gap: 8px;
+          background: #C4956A; color: #FFFFFF;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-weight: 700; font-size: 15px;
+          padding: 13px 28px; border-radius: 999px;
+          text-decoration: none; border: none;
+          transition: opacity 0.15s ease;
+        }
+        .kiv-cta:hover { opacity: 0.88; }
+        .kiv-fine-print {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 13px; color: #A09890; margin-top: 10px;
+        }
+        @media (max-width: 640px) {
+          .kiv-nav { padding: 0 24px; }
+          .kiv-hero { padding: 80px 24px 60px 24px; }
+          .kiv-headline { font-size: 40px; letter-spacing: -1px; }
+          .kiv-subheading { font-size: 16px; }
+        }
+      `}</style>
 
-      <main className="relative z-10">
-        {/* Hero Section */}
-        <section className="pt-40 pb-20 px-6 overflow-hidden">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={containerVariants}
-              className="flex flex-col items-center text-center"
+      <div className="kiv-landing">
+        <nav className="kiv-nav">
+          <Link href="/" className="kiv-nav-logo">kiv</Link>
+          <div className="kiv-nav-right">
+            <button
+              className="kiv-theme-btn"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             >
-              <motion.div 
-                variants={itemVariants}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-accent/5 border border-accent/10 mb-10"
-              >
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-                </span>
-                <span className="text-[10px] uppercase tracking-[0.2em] font-bold text-accent">Introducing Kiv 1.0</span>
-              </motion.div>
-
-              <motion.h1 
-                variants={itemVariants}
-                className="font-heading text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tight leading-[0.9] mb-8"
-              >
-                Check in with <br />
-                <span className="text-accent italic font-normal">yourself</span>
-              </motion.h1>
-
-              <motion.p 
-                variants={itemVariants}
-                className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto mb-12 leading-relaxed font-medium"
-              >
-                A simple, private space to log how you&apos;re doing each day. 
-                Mood tracking and micro-journaling redefined for the modern mind.
-              </motion.p>
-
-              <motion.div 
-                variants={itemVariants}
-                className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16"
-              >
-                <Link
-                  href="/signup"
-                  className="group relative bg-text-primary text-bg px-10 py-4 rounded-full font-bold text-lg transition-all hover:scale-105 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] overflow-hidden"
-                >
-                  <span className="relative z-10 flex items-center gap-2">
-                    Start your journey <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                  <div className="absolute inset-0 bg-accent translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                </Link>
-                <Link
-                  href="/demo"
-                  className="flex items-center gap-3 text-text-primary px-10 py-4 rounded-full font-bold text-lg hover:bg-surface transition-all border border-transparent hover:border-border"
-                >
-                  <Play className="w-5 h-5 fill-current" /> Watch demo
-                </Link>
-              </motion.div>
-
-              <motion.div 
-                variants={itemVariants}
-                className="flex flex-wrap justify-center gap-8 text-xs font-bold uppercase tracking-widest text-text-secondary/60"
-              >
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-accent" /> Free forever
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-accent" /> No credit card
-                </div>
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-accent" /> End-to-end encrypted
-                </div>
-              </motion.div>
-            </motion.div>
+              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <Link href="/login" className="kiv-signin">Sign in</Link>
           </div>
-        </section>
+        </nav>
 
-        {/* Features Section */}
-        <section className="py-32 px-6">
-          <div className="max-w-6xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="text-center mb-24"
-            >
-              <h2 className="font-heading text-4xl md:text-6xl font-bold mb-6 tracking-tight">
-                Designed for reflection
-              </h2>
-              <p className="text-text-secondary text-xl max-w-2xl mx-auto font-medium">
-                Everything you need to stay mindful, without the noise.
-              </p>
-            </motion.div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {features.map((feature, index) => (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="group p-8 rounded-[32px] bg-surface/30 border border-border/50 hover:border-accent/30 transition-all hover:bg-surface/50"
-                >
-                  <div className="w-14 h-14 rounded-2xl bg-accent/5 flex items-center justify-center mb-8 group-hover:scale-110 group-hover:bg-accent/10 transition-all duration-500">
-                    <feature.icon className="w-7 h-7 text-accent" />
-                  </div>
-                  <h3 className="font-heading text-2xl font-bold mb-4 text-text-primary">
-                    {feature.title}
-                  </h3>
-                  <p className="text-text-secondary leading-relaxed font-medium">
-                    {feature.description}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
+        <main className="kiv-hero">
+          <div className="kiv-hero-inner">
+            <h1 className="kiv-headline">
+              <span className="kiv-headline-white">Check in with</span>
+              <span className="kiv-headline-accent">yourself</span>
+            </h1>
+            <p className="kiv-subheading">
+              A simple, private space to log how you're doing each day.
+            </p>
+            <Link href="/login" className="kiv-cta">
+              Get started →
+            </Link>
+            <p className="kiv-fine-print">Free forever · No credit card</p>
           </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="py-32 px-6">
-          <div className="max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              viewport={{ once: true }}
-              className="relative overflow-hidden bg-text-primary rounded-[48px] p-12 md:p-24 text-center text-bg"
-            >
-              <div className="absolute inset-0 premium-gradient opacity-10" />
-              <div className="relative z-10">
-                <h2 className="font-heading text-4xl md:text-7xl font-bold mb-8 tracking-tight">
-                  Start your journey <br /> to self-awareness.
-                </h2>
-                <p className="text-bg/60 text-xl mb-12 max-w-2xl mx-auto font-medium">
-                  Join thousands of others who are building a healthier relationship with themselves, one day at a time.
-                </p>
-                <Link
-                  href="/signup"
-                  className="inline-block bg-accent text-accent-dark px-12 py-5 rounded-full font-bold text-xl hover:opacity-90 transition-all hover:scale-105 shadow-2xl"
-                >
-                  Create your free account
-                </Link>
-                <p className="text-sm text-bg/40 mt-8 font-medium">
-                  No credit card required · Cancel anytime
-                </p>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-      </main>
-
-      {/* Footer */}
-      <footer className="py-20 px-6 border-t border-border/50">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-20">
-            <div className="flex flex-col gap-6">
-              <Link href="/" className="font-heading text-3xl font-bold tracking-tighter">
-                Kiv<span className="text-accent">.</span>
-              </Link>
-              <p className="text-text-secondary max-w-xs font-medium">
-                Modern journaling for the mindful individual. Designed and built by SAMKIEL Studio.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-12">
-              <div className="flex flex-col gap-4">
-                <span className="text-xs font-bold uppercase tracking-widest text-text-primary">Product</span>
-                <Link href="/features" className="text-text-secondary hover:text-accent transition-colors font-medium">Features</Link>
-                <Link href="/pricing" className="text-text-secondary hover:text-accent transition-colors font-medium">Pricing</Link>
-                <Link href="/demo" className="text-text-secondary hover:text-accent transition-colors font-medium">Demo</Link>
-              </div>
-              <div className="flex flex-col gap-4">
-                <span className="text-xs font-bold uppercase tracking-widest text-text-primary">Legal</span>
-                <Link href="/privacy" className="text-text-secondary hover:text-accent transition-colors font-medium">Privacy</Link>
-                <Link href="/terms" className="text-text-secondary hover:text-accent transition-colors font-medium">Terms</Link>
-              </div>
-              <div className="flex flex-col gap-4">
-                <span className="text-xs font-bold uppercase tracking-widest text-text-primary">Connect</span>
-                <Link href="https://twitter.com" className="text-text-secondary hover:text-accent transition-colors font-medium">Twitter</Link>
-                <Link href="https://instagram.com" className="text-text-secondary hover:text-accent transition-colors font-medium">Instagram</Link>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-border/20">
-            <span className="text-sm text-text-secondary font-medium">
-              © 2024 Kiv. All rights reserved.
-            </span>
-            <div className="flex items-center gap-2 text-sm text-text-secondary font-medium">
-              Made with <span className="text-accent">♥</span> by SAMKIEL
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }
