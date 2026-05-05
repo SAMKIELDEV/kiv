@@ -2,14 +2,15 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import { Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Sun, Moon, Menu, X } from "lucide-react";
 
 export default function Home() {
   const { theme, setTheme } = useTheme();
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const images = [
     "/assets/hero.png",
@@ -48,26 +49,49 @@ export default function Home() {
         .kiv-nav-logo { 
           display: flex;
           align-items: center;
-          gap: 10px;
           font-family: 'Plus Jakarta Sans', sans-serif; 
           font-weight: 800; 
-          font-size: 18px; 
+          font-size: 20px; 
           color: var(--text-primary); 
           text-decoration: none; 
-        }
-        .kiv-logo-icon {
-          width: 28px;
-          height: 28px;
-          border-radius: 6px;
-          overflow: hidden;
-        }
-        .kiv-logo-icon img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
+          letter-spacing: -0.8px;
         }
         .kiv-nav-right { display: flex; align-items: center; gap: 20px; }
-        .kiv-theme-btn { background: none; border: none; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; padding: 0; }
+        .kiv-menu-trigger {
+          display: none;
+          background: none;
+          border: none;
+          cursor: pointer;
+          color: var(--text-primary);
+          padding: 8px;
+          margin-right: -8px;
+          z-index: 101;
+        }
+        .kiv-mobile-menu {
+          position: fixed;
+          inset: 0;
+          background: var(--bg);
+          z-index: 100;
+          display: flex;
+          flex-direction: column;
+          padding: 100px 48px;
+          gap: 32px;
+        }
+        .kiv-mobile-link {
+          font-family: 'Syne', sans-serif;
+          font-size: 40px;
+          font-weight: 800;
+          color: var(--text-primary);
+          text-decoration: none;
+          letter-spacing: -1.5px;
+        }
+        .kiv-mobile-link-sub {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 16px;
+          color: var(--text-secondary);
+          text-decoration: none;
+          margin-top: -16px;
+        }
         .kiv-signin { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-secondary); text-decoration: none; }
         .kiv-signin:hover { color: var(--text-primary); }
         .kiv-hero {
@@ -128,46 +152,50 @@ export default function Home() {
           filter: invert(1) brightness(1.2);
         }
         .kiv-footer {
-          border-top: 1px solid var(--border);
-          padding: 40px 48px;
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          padding: 80px 48px;
           display: flex;
           justify-content: space-between;
           align-items: flex-start;
-          gap: 40px;
+          gap: 64px;
           background: var(--bg);
         }
-        .kiv-footer-left { display: flex; flex-direction: column; gap: 6px; }
+        .dark .kiv-footer { border-top-color: rgba(255, 255, 255, 0.05); }
+        .light .kiv-footer { border-top-color: rgba(0, 0, 0, 0.05); }
+
+        .kiv-footer-left { display: flex; flex-direction: column; gap: 8px; }
         .kiv-footer-brand {
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-weight: 800; font-size: 16px; color: var(--text-primary);
+          font-weight: 800; font-size: 24px; color: var(--text-primary);
+          letter-spacing: -1px;
+          line-height: 1;
         }
-        .kiv-footer-byline {
-          font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+        .kiv-footer-tagline {
+          font-size: 12px;
+          color: var(--text-secondary);
+          opacity: 0.5;
+          font-weight: 400;
         }
-        .kiv-footer-byline a {
-          color: var(--accent); text-decoration: none; font-weight: 600;
-        }
-        .kiv-footer-byline a:hover { text-decoration: underline; }
         .kiv-footer-right {
           display: flex; gap: 48px;
         }
-        .kiv-footer-col { display: flex; flex-direction: column; gap: 10px; }
+        .kiv-footer-col { display: flex; flex-direction: column; gap: 12px; }
         .kiv-footer-col-label {
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 11px; font-weight: 700; color: var(--text-secondary);
-          text-transform: uppercase; letter-spacing: 1.5px;
-          opacity: 0.7;
+          font-size: 10px; font-weight: 600; color: var(--text-secondary);
+          text-transform: uppercase; letter-spacing: 0.15em;
+          opacity: 0.4;
+          margin-bottom: 8px;
         }
         .kiv-footer-link {
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 14px; color: var(--text-secondary); text-decoration: none;
-          transition: color 0.15s ease;
+          transition: all 0.2s ease;
         }
-        .kiv-footer-link:hover { color: var(--text-primary); }
+        .kiv-footer-link:hover { color: var(--text-primary); opacity: 0.8; }
         .kiv-footer-bottom {
-          border-top: 1px solid var(--border);
-          padding: 16px 48px;
+          border-top: 1px solid rgba(255, 255, 255, 0.04);
+          padding: 24px 48px;
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -175,14 +203,32 @@ export default function Home() {
         }
         .kiv-footer-copy {
           font-family: 'Plus Jakarta Sans', sans-serif;
-          font-size: 12px; color: var(--text-secondary);
+          font-size: 11px; color: var(--text-secondary);
+          opacity: 0.4;
         }
         .kiv-footer-copy a {
-          color: var(--text-secondary); text-decoration: none;
+          color: inherit; text-decoration: none;
         }
-        .kiv-footer-copy a:hover { color: var(--accent); }
+        .kiv-footer-copy a:hover { color: var(--text-primary); }
+        .kiv-footer-bottom-links {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 11px; color: var(--text-secondary);
+          opacity: 0.4;
+        }
+        .kiv-footer-bottom-links a {
+          color: inherit; text-decoration: none;
+          transition: color 0.2s ease;
+        }
+        .kiv-footer-bottom-links a:hover {
+          color: var(--text-primary);
+        }
         @media (max-width: 768px) {
           .kiv-nav { padding: 0 24px; }
+          .kiv-menu-trigger { display: block; }
+          .kiv-nav-right .kiv-signin, .kiv-nav-right .kiv-theme-btn { display: none; }
           .kiv-hero { padding: 90px 24px 60px 24px; }
           .kiv-hero-grid { grid-template-columns: 1fr; }
           .kiv-hero-image { 
@@ -202,9 +248,6 @@ export default function Home() {
         {/* NAVBAR */}
         <nav className="kiv-nav">
           <Link href="/" className="kiv-nav-logo">
-            <div className="kiv-logo-icon">
-              <img src="/favicon.ico" alt="Kiv Logo" />
-            </div>
             kiv
           </Link>
           <div className="kiv-nav-right">
@@ -215,8 +258,45 @@ export default function Home() {
               {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
             </button>
             <Link href="/login" className="kiv-signin">Sign in</Link>
+            
+            <button 
+              className="kiv-menu-trigger"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </nav>
+
+        {/* MOBILE MENU */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div 
+              className="kiv-mobile-menu"
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            >
+              <Link href="/login" className="kiv-mobile-link" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
+              <Link href="/login" className="kiv-mobile-link" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
+              <div className="mt-8 flex flex-col gap-6">
+                <Link href="/terms" className="kiv-mobile-link-sub" onClick={() => setIsMenuOpen(false)}>Terms of Service</Link>
+                <Link href="/privacy" className="kiv-mobile-link-sub" onClick={() => setIsMenuOpen(false)}>Privacy Policy</Link>
+              </div>
+              <button
+                className="mt-auto flex items-center gap-2 text-text-primary font-bold"
+                onClick={() => {
+                  setTheme(theme === "dark" ? "light" : "dark");
+                  setIsMenuOpen(false);
+                }}
+              >
+                {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* HERO */}
         <main className="kiv-hero">
@@ -258,11 +338,7 @@ export default function Home() {
         <footer className="kiv-footer">
           <div className="kiv-footer-left">
             <span className="kiv-footer-brand">kiv</span>
-            <p className="kiv-footer-byline">
-              A product by <a href="https://samkiel.tech" target="_blank" rel="noopener noreferrer">SAMKIEL</a>
-              <br />
-              Software with Intention.
-            </p>
+            <span className="kiv-footer-tagline">Software with Intention.</span>
           </div>
           <div className="kiv-footer-right">
             <div className="kiv-footer-col">
@@ -272,12 +348,12 @@ export default function Home() {
             </div>
             <div className="kiv-footer-col">
               <span className="kiv-footer-col-label">Legal</span>
-              <a href="https://samkiel.tech/terms" target="_blank" rel="noopener noreferrer" className="kiv-footer-link">Terms of Service</a>
-              <a href="https://samkiel.tech/privacy" target="_blank" rel="noopener noreferrer" className="kiv-footer-link">Privacy Policy</a>
+              <Link href="/terms" className="kiv-footer-link">Terms of Service</Link>
+              <Link href="/privacy" className="kiv-footer-link">Privacy Policy</Link>
             </div>
             <div className="kiv-footer-col">
               <span className="kiv-footer-col-label">Company</span>
-              <a href="https://samkiel.tech" target="_blank" rel="noopener noreferrer" className="kiv-footer-link">SAMKIEL</a>
+              <a href="https://samkiel.tech" target="_blank" rel="noopener noreferrer" className="kiv-footer-link">About</a>
               <a href="mailto:hello@samkiel.tech" className="kiv-footer-link">Contact</a>
             </div>
           </div>
@@ -286,13 +362,13 @@ export default function Home() {
         {/* FOOTER BOTTOM */}
         <div className="kiv-footer-bottom">
           <span className="kiv-footer-copy">
-            © {new Date().getFullYear()} Kiv by <a href="https://samkiel.tech" target="_blank" rel="noopener noreferrer">SAMKIEL</a>. All rights reserved.
+            © {new Date().getFullYear()} Kiv. All rights reserved.
           </span>
-          <span className="kiv-footer-copy">
-            <a href="https://samkiel.tech/terms" target="_blank" rel="noopener noreferrer">Terms</a>
-            {" · "}
-            <a href="https://samkiel.tech/privacy" target="_blank" rel="noopener noreferrer">Privacy</a>
-          </span>
+          <div className="kiv-footer-bottom-links">
+            <Link href="/terms">Terms</Link>
+            <span>·</span>
+            <Link href="/privacy">Privacy</Link>
+          </div>
         </div>
       </div>
     </>
