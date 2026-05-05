@@ -33,36 +33,36 @@ function LoginContent() {
     window.location.href = `${ACCOUNTS_URL}/login?redirect=${encodeURIComponent(redirectUrl)}`;
   }
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-background items-center justify-center p-6">
+    <div className="flex-1 flex flex-col min-h-screen bg-bg items-center justify-center px-6">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="max-w-[360px] w-full flex flex-col items-center text-center gap-8"
+        className="max-w-[660px] w-full flex flex-col items-center text-center"
       >
-        <div className="flex flex-col items-center gap-2">
-          <Link href="/" className="text-5xl font-extrabold text-accent tracking-tight font-heading">
+        <div className="flex flex-col items-center">
+          <Link href="/" className="text-[32px] font-[800] text-text-primary tracking-tight">
             kiv
           </Link>
-          <p className="text-base text-text-secondary font-body">
+          <p className="text-[15px] text-text-secondary mt-2">
             Check in with yourself
           </p>
         </div>
 
-        <div className="flex flex-col gap-6 w-full mt-4">
+        <div className="flex flex-col gap-6 w-full max-w-[320px] mt-[48px]">
           <button
             onClick={handleLogin}
-            className="w-full py-4 px-6 bg-accent text-accent-text font-semibold rounded-full hover:brightness-105 transition-all duration-300 cursor-pointer text-base flex items-center justify-center gap-2 group"
+            className="w-full py-[14px] px-[24px] bg-accent text-accent-dark font-[700] text-[15px] rounded-[12px] hover:opacity-90 transition-opacity cursor-pointer flex items-center justify-center gap-2 group"
           >
             Continue with SAMKIEL ID
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
           
-          <p className="text-sm text-text-secondary">
+          <p className="text-[14px] text-text-secondary mt-[20px]">
             Don&apos;t have an account?{" "}
             <a
               href={`${ACCOUNTS_URL}/register`}
-              className="text-accent hover:brightness-110 transition-colors font-medium"
+              className="text-accent hover:opacity-80 transition-opacity font-semibold"
             >
               Create one
             </a>
@@ -76,11 +76,12 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen flex items-center justify-center bg-bg">
+        <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>
       <LoginContent />
     </Suspense>
   );
 }
+

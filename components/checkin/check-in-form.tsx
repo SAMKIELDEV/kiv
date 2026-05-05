@@ -2,13 +2,11 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { MoodSelector } from "./mood-selector";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { MoodValue, Entry } from "@/types";
-import { MOOD_EMOJIS } from "@/types";
 
 interface CheckInFormProps {
   prompt: string;
@@ -50,7 +48,6 @@ export function CheckInForm({ prompt, onComplete }: CheckInFormProps) {
 
       const entry = await res.json();
       setIsComplete(true);
-      toast.success("Checked in!");
       
       setTimeout(() => onComplete(entry), 1500);
     } catch (err) {
@@ -65,34 +62,13 @@ export function CheckInForm({ prompt, onComplete }: CheckInFormProps) {
       {isComplete ? (
         <motion.div
           key="complete"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-col items-center justify-center gap-4 py-12"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col items-center justify-center gap-2 py-12"
         >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 200, delay: 0.1 }}
-            className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center"
-          >
-            <Check className="w-8 h-8 text-accent" />
-          </motion.div>
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-lg font-semibold text-text-primary"
-          >
-            You&apos;re checked in {mood && MOOD_EMOJIS[mood]}
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-sm text-text-secondary"
-          >
-            See you tomorrow
-          </motion.p>
+          <p className="text-[15px] font-[600] text-accent">
+            Checked in today ✓
+          </p>
         </motion.div>
       ) : (
         <motion.form
@@ -101,48 +77,46 @@ export function CheckInForm({ prompt, onComplete }: CheckInFormProps) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           onSubmit={handleSubmit}
-          className="flex flex-col gap-6"
+          className="flex flex-col"
         >
           <MoodSelector value={mood} onChange={setMood} />
 
-          <div className="flex flex-col gap-2">
-            <label className="text-sm text-text-secondary font-medium">
+          <div className="mt-[24px] flex flex-col">
+            <label className="text-[14px] text-text-secondary italic font-[400] mb-[8px]">
               {prompt}
             </label>
-            <Textarea
-              id="prompt-response"
+            <textarea
               value={promptResponse}
               onChange={(e) => setPromptResponse(e.target.value)}
-              placeholder="Optional — answer if it speaks to you"
-              className="min-h-[100px]"
+              className="w-full bg-surface border border-border rounded-[10px] px-[16px] py-[12px] text-text-primary text-[15px] font-[400] min-h-[80px] resize-vertical outline-none focus:border-accent transition-colors"
             />
           </div>
 
-          <Textarea
-            id="note"
-            label="Anything else?"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Free write — no rules here"
-            className="min-h-[120px]"
-          />
+          <div className="mt-[24px] flex flex-col">
+            <label className="text-[13px] text-text-secondary font-[400] mb-[8px]">
+              Anything else?
+            </label>
+            <textarea
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className="w-full bg-surface border border-border rounded-[10px] px-[16px] py-[12px] text-text-primary text-[15px] font-[400] min-h-[100px] resize-vertical outline-none focus:border-accent transition-colors"
+            />
+          </div>
 
-          <Button
+          <button
             type="submit"
-            variant="primary"
-            size="lg"
             disabled={!mood || isSubmitting}
-            className="w-full"
+            className="w-full mt-[24px] bg-accent text-accent-dark font-[700] text-[15px] py-[14px] rounded-[12px] border-none cursor-pointer hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
           >
             {isSubmitting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 size={16} className="animate-spin" />
             ) : (
-              <Send className="w-4 h-4" />
+              "Check in"
             )}
-            {isSubmitting ? "Saving..." : "Check in"}
-          </Button>
+          </button>
         </motion.form>
       )}
     </AnimatePresence>
   );
 }
+

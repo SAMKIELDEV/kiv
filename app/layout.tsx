@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
-import { Syne } from "next/font/google";
+import { Inconsolata } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 import { AuthProvider } from "@/components/AuthProvider";
 
-const syne = Syne({
+const inconsolata = Inconsolata({
   subsets: ["latin"],
-  variable: "--font-syne",
+  variable: "--font-inconsolata",
   display: "swap",
+  weight: "variable",
 });
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL || "https://id.samkiel.tech";
@@ -29,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${syne.variable} h-full`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col font-body antialiased">
+    <html lang="en" className={`${inconsolata.variable} h-full`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col antialiased bg-bg text-text-primary font-body">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <AuthProvider baseUrl={AUTH_URL}>
             {children}
@@ -41,13 +44,17 @@ export default function RootLayout({
                   background: "var(--surface)",
                   border: "1px solid var(--border)",
                   color: "var(--text-primary)",
-                  fontFamily: "var(--font-syne)",
+                  fontFamily: "var(--font-inconsolata), monospace",
                 },
               }}
             />
+            <Analytics />
+            <SpeedInsights />
           </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
+

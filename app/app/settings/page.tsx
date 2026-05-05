@@ -24,8 +24,8 @@ export default function SettingsPage() {
         const data = await res.json();
         setUser(data);
       }
-    } catch (error) {
-      console.error("Failed to fetch user:", error);
+    } catch {
+      // No console.log
     } finally {
       setLoading(false);
     }
@@ -63,77 +63,69 @@ export default function SettingsPage() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-10 animate-fade-in max-w-[480px] w-full"
-    >
-      <h1 className="text-[40px] font-extrabold text-text-primary tracking-tight font-heading">
+    <div className="flex flex-col w-full">
+      <h1 className="text-[28px] font-[800] text-text-primary tracking-tight mb-[32px]">
         Settings
       </h1>
 
       {/* User info */}
-      <div className="flex flex-col">
-        <div className="flex items-center justify-between py-4 border-b border-border bg-surface px-4 first:rounded-t-[var(--radius-sm)]">
-          <span className="text-sm font-medium text-text-primary">Name</span>
-          <span className="text-sm text-text-primary font-medium">{user?.name || "—"}</span>
+      <div className="flex flex-col bg-surface border border-border rounded-[12px] overflow-hidden">
+        <div className="flex items-center justify-between py-4 border-b border-border px-6">
+          <span className="text-[14px] font-[600] text-text-secondary">Name</span>
+          <span className="text-[14px] text-text-primary font-[600]">{user?.name || "—"}</span>
         </div>
-        <div className="flex items-center justify-between py-4 border-b border-border bg-surface px-4 last:rounded-b-[var(--radius-sm)]">
-          <span className="text-sm font-medium text-text-primary">Email</span>
-          <span className="text-sm text-text-secondary">{user?.email || "—"}</span>
+        <div className="flex items-center justify-between py-4 px-6">
+          <span className="text-[14px] font-[600] text-text-secondary">Email</span>
+          <span className="text-[14px] text-text-primary">{user?.email || "—"}</span>
         </div>
-
-        <a
-          href={process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary transition-colors mt-4 w-fit px-4"
-        >
-          Manage account <ArrowRight className="w-3 h-3" />
-        </a>
       </div>
 
-      <hr className="border-t border-border" />
+      <a
+        href={process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech"}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 text-[13px] text-text-secondary hover:text-text-primary transition-colors mt-4 w-fit px-2"
+      >
+        Manage account <ArrowRight size={12} />
+      </a>
+
+      <div className="h-[1px] bg-border my-[32px]" />
 
       {/* Danger zone */}
-      <div className="flex flex-col gap-4 px-4">
+      <div className="flex flex-col gap-4">
         {!confirmDelete ? (
           <button
             onClick={() => setConfirmDelete(true)}
-            className="text-sm text-red-500 hover:text-red-600 transition-colors w-fit font-medium text-left"
+            className="text-[14px] text-red-500 hover:opacity-80 transition-opacity w-fit font-[600] cursor-pointer"
           >
             Delete Kiv data
           </button>
         ) : (
-          <div className="flex flex-col gap-4">
-            <p className="text-sm text-text-primary font-medium">
+          <div className="flex flex-col gap-4 p-6 bg-red-500/5 border border-red-500/20 rounded-[12px]">
+            <p className="text-[14px] text-text-primary font-[600]">
               Are you sure? This cannot be undone.
             </p>
             <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={() => setConfirmDelete(false)}
                 disabled={deleting}
+                className="text-[13px] font-[600] text-text-secondary hover:text-text-primary cursor-pointer disabled:opacity-50"
               >
                 Cancel
-              </Button>
-              <Button
-                variant="danger"
-                size="sm"
+              </button>
+              <button
                 onClick={handleDeleteData}
                 disabled={deleting}
-                className="bg-red-500 text-white hover:bg-red-600"
+                className="bg-red-500 text-white text-[13px] font-[600] px-4 py-2 rounded-[8px] hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center gap-2 cursor-pointer"
               >
-                {deleting ? (
-                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                ) : null}
+                {deleting && <Loader2 size={14} className="animate-spin" />}
                 Delete everything
-              </Button>
+              </button>
             </div>
           </div>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }
+

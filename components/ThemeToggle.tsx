@@ -13,21 +13,21 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-9 h-9" />; // Placeholder to avoid layout shift
+    return <div className="w-4 h-4" />; 
   }
 
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:bg-surface focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border disabled:pointer-events-none disabled:opacity-50 h-9 w-9 text-text-secondary hover:text-text-primary"
+      className="text-text-secondary hover:text-text-primary transition-colors cursor-pointer flex items-center justify-center"
       aria-label="Toggle theme"
     >
       {theme === "dark" ? (
-        <Sun className="h-[1.2rem] w-[1.2rem] transition-all" />
+        <Sun size={16} />
       ) : (
-        <Moon className="h-[1.2rem] w-[1.2rem] transition-all" />
+        <Moon size={16} />
       )}
-      <span className="sr-only">Toggle theme</span>
     </button>
   );
 }
+

@@ -27,8 +27,8 @@ export default function EntryDetailPage({
         const data = await res.json();
         setEntry(data);
       }
-    } catch (error) {
-      console.error("Failed to fetch entry:", error);
+    } catch {
+      // No console.log
     } finally {
       setLoading(false);
     }
@@ -49,73 +49,66 @@ export default function EntryDetailPage({
   if (notFound || !entry) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
-        <p className="text-lg text-text-secondary">No entry for this date</p>
+        <p className="text-[18px] text-text-secondary">No entry for this date</p>
         <a
           href="/app/history"
-          className="inline-flex items-center gap-1.5 text-sm text-accent hover:brightness-110"
+          className="inline-flex items-center gap-1.5 text-[14px] text-accent font-[600]"
         >
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to history
+          ← Back to history
         </a>
       </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col gap-10 animate-fade-in max-w-[480px] mx-auto w-full pt-4"
-    >
+    <div className="flex flex-col w-full">
       <a
         href="/app/history"
-        className="inline-flex items-center gap-1.5 text-sm text-text-secondary hover:text-text-primary transition-colors w-fit"
+        className="inline-flex items-center gap-1.5 text-[14px] text-text-secondary hover:text-text-primary transition-colors w-fit mb-[32px]"
       >
-        <ArrowLeft className="w-3.5 h-3.5" /> History
+        ← History
       </a>
 
-      <div className="flex flex-col gap-12 text-center">
-        {/* Header */}
-        <div className="flex flex-col items-center gap-6">
-          <span className="text-7xl">
-            {MOOD_EMOJIS[entry.mood as MoodValue]}
-          </span>
-          <h1 className="text-3xl sm:text-[40px] font-extrabold text-text-primary tracking-tight font-heading">
+      <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-2">
+          <span className="text-[12px] text-text-secondary">
             {formatDate(entry.date)}
+          </span>
+          <h1 className="text-[28px] font-[800] text-text-primary tracking-tight">
+            {MOOD_EMOJIS[entry.mood as MoodValue]} Checked in
           </h1>
         </div>
 
-        <div className="flex flex-col gap-10 text-left">
-          {/* Prompt response */}
+        <div className="flex flex-col gap-10">
           {entry.promptResponse && (
-            <div className="flex flex-col gap-3">
-              <p className="text-sm text-text-secondary italic font-body">
+            <div className="flex flex-col gap-2">
+              <p className="text-[14px] text-text-secondary italic font-[400]">
                 {entry.prompt}
               </p>
-              <p className="text-lg text-text-primary leading-relaxed font-body">
+              <p className="text-[18px] text-text-primary leading-relaxed font-[400]">
                 {entry.promptResponse}
               </p>
             </div>
           )}
 
-          {/* Note */}
           {entry.note && (
-            <div className="flex flex-col gap-3">
-              <p className="text-lg text-text-primary leading-relaxed whitespace-pre-wrap font-body">
+            <div className="flex flex-col gap-2">
+              <p className="text-[18px] text-text-primary leading-relaxed whitespace-pre-wrap font-[400]">
                 {entry.note}
               </p>
             </div>
           )}
 
-          {/* Empty state if no prompt response or note */}
           {!entry.promptResponse && !entry.note && (
-            <div className="text-center pt-8">
-              <p className="text-base text-text-secondary italic font-body">
+            <div className="pt-8">
+              <p className="text-[15px] text-text-secondary italic font-[400]">
                 Just a mood check-in.
               </p>
             </div>
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
+

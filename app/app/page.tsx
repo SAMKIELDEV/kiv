@@ -40,8 +40,8 @@ export default function DashboardPage() {
         const user = JSON.parse(userScript.textContent || "{}");
         setUserName(user.name || "");
       }
-    } catch (error) {
-      console.error("Dashboard fetch error:", error);
+    } catch {
+      // Error handling without console.log
     } finally {
       setLoading(false);
     }
@@ -57,7 +57,7 @@ export default function DashboardPage() {
     fetch("/api/entries/streak")
       .then((res) => res.json())
       .then(setStreak)
-      .catch(console.error);
+      .catch(() => {});
   }
 
   if (loading) {
@@ -69,38 +69,40 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex flex-col gap-10 animate-fade-in w-full max-w-[480px] mx-auto">
+    <div className="flex flex-col w-full">
       {/* Greeting + Streak */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col">
         <motion.h1
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="font-[800] text-text-primary tracking-tight font-heading leading-tight text-[clamp(28px,5vw,48px)]"
+          className="text-[28px] md:text-[36px] font-[800] text-text-primary tracking-[-0.5px] leading-tight"
         >
           {getGreeting(userName || "there")}
         </motion.h1>
-        <StreakDisplay streak={streak} />
+        <div className="mt-[16px]">
+          <StreakDisplay streak={streak} />
+        </div>
       </div>
 
-      <hr className="border-t border-border" />
+      <div className="h-[1px] bg-border my-[28px]" />
 
       {/* Check-in or Today's Entry */}
       {todayEntry ? (
-        <div className="flex flex-col gap-8">
-          <p className="text-sm font-semibold text-accent tracking-wide uppercase">
-            You&apos;ve checked in today ✓
+        <div className="flex flex-col">
+          <p className="text-[15px] font-[600] text-accent mb-[20px]">
+            Checked in today ✓
           </p>
           <TodayEntry entry={todayEntry} />
-          <a
+          <Link
             href="/app/history"
-            className="inline-flex items-center gap-1.5 text-sm text-accent hover:brightness-110 mt-2 w-fit font-medium transition-colors"
+            className="inline-flex items-center gap-1.5 text-[14px] text-accent hover:opacity-80 mt-[20px] w-fit font-[600] transition-opacity"
           >
-            View history <ArrowRight className="w-3.5 h-3.5" />
-          </a>
+            View history →
+          </Link>
         </div>
       ) : (
-        <div className="flex flex-col gap-6">
-          <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider mt-[32px] mb-[16px]">
+        <div className="flex flex-col">
+          <h2 className="text-[11px] font-[600] text-text-secondary uppercase tracking-[2px] mb-[20px]">
             Today
           </h2>
           <CheckInForm
@@ -112,3 +114,7 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+// Add missing Link import
+import Link from "next/link";
+

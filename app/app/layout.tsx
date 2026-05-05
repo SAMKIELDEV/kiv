@@ -3,8 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import Link from "next/link";
+import { Navbar } from "@/components/Navbar";
 import { motion } from "framer-motion";
 
 interface AuthUser {
@@ -44,45 +43,18 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen bg-background">
+      <div className="flex-1 flex items-center justify-center min-h-screen bg-bg">
         <Loader2 className="w-6 h-6 text-text-secondary animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-background relative">
-      {/* Nav */}
-      <motion.nav 
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-4 w-full backdrop-blur-md bg-background/80"
-      >
-        <div className="max-w-[680px] mx-auto flex items-center justify-between">
-          <Link href="/app" className="text-xl font-extrabold text-text-primary tracking-tight font-heading">
-            kiv
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/app/history"
-              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-            >
-              History
-            </Link>
-            <Link
-              href="/app/settings"
-              className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors"
-            >
-              Settings
-            </Link>
-            <ThemeToggle />
-          </div>
-        </div>
-      </motion.nav>
+    <div className="flex-1 flex flex-col min-h-screen bg-bg relative">
+      <Navbar />
 
       {/* Content */}
-      <main className="flex-1 w-full max-w-[680px] mx-auto px-[24px] md:px-[48px] pt-28 pb-12">
+      <main className="flex-1 w-full max-w-[660px] mx-auto px-6 md:px-[48px] pt-[60px] pb-12">
         {user && (
           <script
             id="user-data"
@@ -101,3 +73,4 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     </div>
   );
 }
+

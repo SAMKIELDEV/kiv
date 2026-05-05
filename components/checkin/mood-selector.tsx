@@ -13,22 +13,22 @@ export function MoodSelector({ value, onChange }: MoodSelectorProps) {
   const moods: MoodValue[] = [1, 2, 3, 4, 5];
 
   return (
-    <div className="grid grid-cols-5 gap-[8px] w-full">
+    <div className="grid grid-cols-5 gap-[12px] w-full">
       {moods.map((mood) => (
         <motion.button
           key={mood}
           type="button"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => onChange(mood)}
           className={cn(
-            "flex items-center justify-center aspect-square rounded-[var(--radius-sm)] border transition-all duration-200 cursor-pointer w-full",
+            "flex items-center justify-center aspect-square rounded-[12px] border transition-all duration-150 cursor-pointer w-full text-[28px]",
             value === mood
-              ? "bg-accent/10 border-accent"
-              : "bg-surface-raised border-border hover:border-border/80 hover:-translate-y-1"
+              ? "bg-accent/15 border-accent"
+              : "bg-surface border-border hover:border-text-secondary"
           )}
         >
-          <span className="text-3xl sm:text-4xl" role="img" aria-label={MOOD_LABELS[mood]}>
+          <span role="img" aria-label={MOOD_LABELS[mood]}>
             {MOOD_EMOJIS[mood]}
           </span>
         </motion.button>
@@ -36,3 +36,4 @@ export function MoodSelector({ value, onChange }: MoodSelectorProps) {
     </div>
   );
 }
+
