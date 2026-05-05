@@ -1,18 +1,25 @@
+// app/layout.tsx (updated metadata)
 import type { Metadata } from "next";
-import { Inconsolata } from "next/font/google";
+import { Plus_Jakarta_Sans, Syne } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
-
 import { AuthProvider } from "@/components/AuthProvider";
 
-const inconsolata = Inconsolata({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-inconsolata",
+  variable: "--font-jakarta",
   display: "swap",
-  weight: "variable",
+  weight: ["400", "500", "600", "700", "800"],
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  variable: "--font-syne",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL || "https://id.samkiel.tech";
@@ -24,6 +31,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://kiv.samkiel.tech"),
   keywords: ["journaling", "mood tracker", "daily check-in", "mental health", "self-awareness"],
   authors: [{ name: "SAMKIEL Studio", url: "https://samkiel.tech" }],
+  openGraph: {
+    title: "Kiv — Check in with yourself",
+    description: "Your private space for daily reflection and mood tracking",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({
@@ -32,19 +44,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inconsolata.variable} h-full`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col antialiased bg-bg text-text-primary font-body">
+    <html lang="en" className={`${jakarta.variable} ${syne.variable} h-full`} suppressHydrationWarning>
+      <body className="min-h-full bg-bg text-text-primary font-body antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <AuthProvider baseUrl={AUTH_URL}>
             {children}
             <Toaster
-              position="bottom-center"
+              position="bottom-right"
+              richColors
+              closeButton
               toastOptions={{
                 style: {
                   background: "var(--surface)",
                   border: "1px solid var(--border)",
                   color: "var(--text-primary)",
-                  fontFamily: "var(--font-inconsolata), monospace",
+                  fontFamily: "var(--font-jakarta), sans-serif",
                 },
               }}
             />
@@ -56,5 +70,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
