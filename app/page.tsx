@@ -168,17 +168,27 @@ export default function Home() {
         .dark .kiv-footer { border-top-color: rgba(255, 255, 255, 0.05); }
         .light .kiv-footer { border-top-color: rgba(0, 0, 0, 0.05); }
 
-        .kiv-footer-left { display: flex; flex-direction: column; gap: 8px; }
+        .kiv-footer-left { display: flex; flex-direction: column; gap: 4px; }
         .kiv-footer-brand {
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-weight: 800; font-size: 24px; color: var(--text-primary);
           letter-spacing: -1px;
           line-height: 1;
+          text-decoration: none;
+        }
+        .kiv-footer-description {
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-size: 13px;
+          color: var(--text-secondary);
+          opacity: 0.6;
+          line-height: 1.6;
+          max-width: 240px;
+          margin: 8px 0;
         }
         .kiv-footer-tagline {
           font-size: 12px;
           color: var(--text-secondary);
-          opacity: 0.5;
+          opacity: 0.3;
           font-weight: 400;
         }
         .kiv-footer-right {
@@ -345,7 +355,15 @@ export default function Home() {
         {/* FOOTER */}
         <footer className="kiv-footer">
           <div className="kiv-footer-left">
-            <span className="kiv-footer-brand">kiv</span>
+            <Link href="/" className="kiv-footer-brand flex items-center gap-2">
+              <div className="w-8 h-8 flex items-center justify-center">
+                <img src="/favicon.ico" alt="Kiv Logo" className="w-full h-full object-contain" />
+              </div>
+              kiv
+            </Link>
+            <p className="kiv-footer-description">
+              A private, minimalist space for daily reflection. Log your journey and cultivate mindfulness in under two minutes.
+            </p>
             <span className="kiv-footer-tagline">Software with Intention.</span>
           </div>
           <div className="kiv-footer-right">
@@ -373,9 +391,7 @@ export default function Home() {
             © {new Date().getFullYear()} Kiv. All rights reserved.
           </span>
           <div className="kiv-footer-bottom-links">
-            <Link href="/terms">Terms</Link>
-            <span>·</span>
-            <Link href="/privacy">Privacy</Link>
+            <a href="https://samkiel.tech" target="_blank" rel="noopener noreferrer">SAMKIEL</a>
           </div>
         </div>
       </div>
