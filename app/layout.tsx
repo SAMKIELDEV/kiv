@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Kiv — Check in with yourself",
     description: "Your private space for daily reflection and mood tracking",
-    images: ["/og-image.png"],
+    images: ["/favicon.ico"],
   },
 };
 

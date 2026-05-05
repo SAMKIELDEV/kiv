@@ -6,15 +6,6 @@ const JWT_SECRET = process.env.JWT_SECRET;
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // --- TEMPORARY DEVELOPMENT REDIRECT ---
-  if (pathname === "/" || pathname === "/development") {
-    return NextResponse.next();
-  }
-
-  // Redirect all other pages to /development
-  return NextResponse.redirect(new URL("/development", request.url));
-
-  /* ORIGINAL LOGIC BYPASSED:
   const isAuthRoute = pathname === "/" || pathname === "/login";
   const isProtectedRoute = pathname.startsWith("/app");
 
@@ -70,7 +61,6 @@ export async function proxy(request: NextRequest) {
   }
 
   return NextResponse.next();
-  */
 }
 
 export const config = {
