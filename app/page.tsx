@@ -254,7 +254,7 @@ export default function Home() {
         <nav className="kiv-nav">
           <Link href="/" className="kiv-nav-logo gap-2">
             <div className="w-8 h-8 flex items-center justify-center">
-              <img src="/favicon.ico" alt="Kiv Logo" className="w-full h-full object-contain dark:invert" />
+              <img src="/favicon.ico" alt="Kiv Logo" className="w-full h-full object-contain" />
             </div>
             kiv
           </Link>
