@@ -54,7 +54,7 @@ function LoginContent() {
             onClick={handleLogin}
             className="w-full py-4 px-6 bg-accent text-accent-text font-semibold rounded-full hover:brightness-105 transition-all duration-300 cursor-pointer text-base flex items-center justify-center gap-2 group"
           >
-            Continue with SAMKIEL
+            Continue with SAMKIEL ID
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
           </button>
           

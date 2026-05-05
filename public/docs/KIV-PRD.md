@@ -47,7 +47,7 @@ Anyone who wants a low-friction way to be more self-aware. Students, young profe
 - **Private by default** — no social, no sharing, no ads
 - **Fast** — check-in takes under 2 minutes
 - **Calm** — UI feels minimal, never anxious or cluttered
-- **Consistent with SAMKIEL** — dark-first, electric lime accent, bold typography
+- **Consistent with SAMKIEL** — dark-first, warm cream accent, bold typography
 
 ---
 
@@ -284,7 +284,7 @@ All API routes require a valid JWT verified via `@samkielauthsdk` middleware.
 
 ```css
 --background: #0A0A0A;
---accent: #E8FF47;         /* electric lime — use sparingly */
+--accent: #F5E6D3;         /* warm cream — use sparingly */
 --text-primary: #FFFFFF;
 --text-secondary: #888888;
 --surface: #111111;
@@ -427,7 +427,7 @@ Two collections:
 
 ## Design
 - Background: #0A0A0A
-- Accent: #E8FF47 (electric lime) — sparingly, CTAs and highlights only
+- Accent: #F5E6D3 (warm cream) — sparingly, CTAs and highlights only
 - Font: Syne or Cabinet Grotesk — NO Inter, Roboto, Space Grotesk
 - Dark by default, no theme toggle
 - Mobile responsive from day one

@@ -14,7 +14,7 @@ export function StreakDisplay({ streak }: StreakDisplayProps) {
       <motion.div
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex items-center gap-2 px-[20px] py-[12px] bg-[#111111] border border-[#222222] rounded-[12px]"
+        className="flex items-center gap-2 px-[20px] py-[12px] bg-surface border border-border rounded-[12px]"
       >
         <Flame className="w-4 h-4 text-accent" />
         <div className="flex flex-col">
@@ -29,7 +29,7 @@ export function StreakDisplay({ streak }: StreakDisplayProps) {
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.1 }}
-        className="flex items-center gap-2 px-[20px] py-[12px] bg-[#111111] border border-[#222222] rounded-[12px]"
+        className="flex items-center gap-2 px-[20px] py-[12px] bg-surface border border-border rounded-[12px]"
       >
         <Trophy className="w-4 h-4 text-text-muted" />
         <div className="flex flex-col">

@@ -1,4 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&display=swap');
 @import "tailwindcss";
+
 
 @theme inline {
   --color-background: var(--background);
@@ -23,32 +25,32 @@
 }
 
 :root {
-  --background: #F4F4EF;
-  --surface: #FFFFFF;
-  --surface-raised: #FAFAFA;
-  --border: #E5E5E0;
-  --text-primary: #0A0A0A;
-  --text-secondary: #888888;
-  --accent: #8AAD00;
+  --background: #F5E6D3;
+  --surface: #FCF8F2;
+  --surface-raised: #FFFFFF;
+  --border: #E5D3BC;
+  --text-primary: #1A1008;
+  --text-secondary: #6B5E54;
+  --accent: #C4956A;
   --accent-text: #FFFFFF;
 }
 
 .dark {
-  --background: #0A0A0A;
-  --surface: #111111;
-  --surface-raised: #171717;
-  --border: #222222;
-  --text-primary: #FFFFFF;
-  --text-secondary: #666666;
-  --accent: #E8FF47;
-  --accent-text: #0A0A0A;
+  --background: #161614;
+  --surface: #1E1E1C;
+  --surface-raised: #262624;
+  --border: #2A2A28;
+  --text-primary: #F5E6D3;
+  --text-secondary: #9E9386;
+  --accent: #F5E6D3;
+  --accent-text: #1A1008;
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: var(--font-syne);
+  font-family: 'Syne', sans-serif;
 }
 
 html {
