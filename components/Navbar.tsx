@@ -24,8 +24,8 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto">
         <nav className="flex items-center justify-between glass px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] border-border/40">
           <Link href="/" className="group flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-full bg-text-primary flex items-center justify-center group-hover:bg-accent transition-colors duration-500">
-              <span className="text-bg text-sm font-bold">K</span>
+            <div className="w-9 h-9 rounded-full overflow-hidden flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+              <img src="/favicon.ico" alt="Kiv Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-heading font-bold text-xl tracking-tighter text-text-primary group-hover:text-accent transition-colors duration-500">
               Kiv<span className="text-accent group-hover:text-text-primary">.</span>

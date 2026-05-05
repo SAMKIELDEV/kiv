@@ -45,7 +45,27 @@ export default function Home() {
           opacity: 0.95;
           backdrop-filter: blur(12px); border-bottom: 1px solid var(--border);
         }
-        .kiv-nav-logo { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 18px; color: var(--text-primary); text-decoration: none; }
+        .kiv-nav-logo { 
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-family: 'Plus Jakarta Sans', sans-serif; 
+          font-weight: 800; 
+          font-size: 18px; 
+          color: var(--text-primary); 
+          text-decoration: none; 
+        }
+        .kiv-logo-icon {
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          overflow: hidden;
+        }
+        .kiv-logo-icon img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
         .kiv-nav-right { display: flex; align-items: center; gap: 20px; }
         .kiv-theme-btn { background: none; border: none; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; padding: 0; }
         .kiv-signin { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-secondary); text-decoration: none; }
@@ -98,6 +118,7 @@ export default function Home() {
           position: relative;
           height: 500px;
           width: 100%;
+          z-index: 1;
         }
         .kiv-hero-image img {
           max-width: 100%; height: auto; opacity: 0.9;
@@ -164,7 +185,11 @@ export default function Home() {
           .kiv-nav { padding: 0 24px; }
           .kiv-hero { padding: 90px 24px 60px 24px; }
           .kiv-hero-grid { grid-template-columns: 1fr; }
-          .kiv-hero-image { display: none; }
+          .kiv-hero-image { 
+            display: flex; 
+            margin-top: 40px;
+            height: 300px;
+          }
           .kiv-headline { font-size: 40px; letter-spacing: -1px; }
           .kiv-subheading { font-size: 16px; }
           .kiv-footer { padding: 32px 24px; flex-direction: column; gap: 32px; }
@@ -176,7 +201,12 @@ export default function Home() {
       <div className="kiv-landing">
         {/* NAVBAR */}
         <nav className="kiv-nav">
-          <Link href="/" className="kiv-nav-logo">kiv</Link>
+          <Link href="/" className="kiv-nav-logo">
+            <div className="kiv-logo-icon">
+              <img src="/favicon.ico" alt="Kiv Logo" />
+            </div>
+            kiv
+          </Link>
           <div className="kiv-nav-right">
             <button
               className="kiv-theme-btn"
