@@ -17,11 +17,28 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-bg text-text-primary font-sans">
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "var(--bg)",
+        color: "var(--text-primary)",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    >
       <AppNav />
 
-      <main className="max-w-[680px] mx-auto pt-[60px]">
-        <div className="px-5 py-8 sm:px-12 sm:py-10">
+      <main
+        style={{
+          maxWidth: "680px",
+          margin: "0 auto",
+          paddingTop: "60px",
+        }}
+      >
+        <div
+          style={{
+            padding: "40px 48px", // Defaulting to original desktop padding; we can re-add mobile logic if needed
+          }}
+        >
           <script
             id="user-data"
             type="application/json"

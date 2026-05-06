@@ -108,44 +108,140 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 size={20} className="text-text-secondary animate-spin" />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "80px 0",
+        }}
+      >
+        <Loader2 size={20} style={{ color: "var(--text-secondary)" }} className="animate-spin" />
       </div>
     );
   }
 
   const moods: MoodValue[] = [1, 2, 3, 4, 5];
 
+  const baseTextarea: React.CSSProperties = {
+    width: "100%",
+    backgroundColor: "var(--surface)",
+    border: "1.5px solid var(--border)",
+    borderRadius: "10px",
+    padding: "12px 16px",
+    color: "var(--text-primary)",
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontSize: "15px",
+    resize: "vertical",
+    outline: "none",
+    transition: "border-color 0.15s ease",
+  };
+
   return (
-    <div className="flex flex-col w-full font-sans">
-      <h1 className="font-extrabold text-[32px] text-text-primary tracking-tight mb-1 leading-tight">
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+      <h1
+        style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontWeight: 800,
+          fontSize: "32px",
+          color: "var(--text-primary)",
+          letterSpacing: "-0.5px",
+          marginBottom: "4px",
+          lineHeight: 1.1,
+        }}
+      >
         {getGreeting(userName || "there")}
       </h1>
 
-      <div className="flex flex-row gap-2 mb-7 mt-3 flex-wrap">
-        <span className="bg-surface border border-border rounded-full px-3.5 py-1.5 text-[13px] font-semibold text-text-primary">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: "8px",
+          marginBottom: "28px",
+          marginTop: "12px",
+          flexWrap: "wrap",
+        }}
+      >
+        <span
+          style={{
+            backgroundColor: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: "999px",
+            padding: "6px 14px",
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "13px",
+            fontWeight: 600,
+            color: "var(--text-primary)",
+          }}
+        >
           🔥 {streak ? streak.current : "—"} day streak
         </span>
-        <span className="bg-surface border border-border rounded-full px-3.5 py-1.5 text-[13px] font-normal text-text-secondary">
+        <span
+          style={{
+            backgroundColor: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: "999px",
+            padding: "6px 14px",
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "13px",
+            fontWeight: 400,
+            color: "var(--text-secondary)",
+          }}
+        >
           🏆 Best: {streak ? streak.longest : "—"}
         </span>
       </div>
 
-      <div className="h-[1px] bg-border mb-7" />
+      <div
+        style={{
+          height: "1px",
+          backgroundColor: "var(--border)",
+          marginBottom: "28px",
+        }}
+      />
 
       {todayEntry ? (
-        <div className="flex flex-col">
-          <p className="font-semibold text-[15px] text-accent">
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <p
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 600,
+              fontSize: "15px",
+              color: "var(--accent)",
+            }}
+          >
             ✓ Checked in today
           </p>
 
-          <div className="mt-5 bg-surface border border-border rounded-[14px] p-5 sm:p-6">
-            <p className="text-[13px] font-medium text-text-secondary mb-3">
+          <div
+            style={{
+              marginTop: "20px",
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--border)",
+              borderRadius: "14px",
+              padding: "20px 24px",
+            }}
+          >
+            <p
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: "13px",
+                fontWeight: 500,
+                color: "var(--text-secondary)",
+                marginBottom: "12px",
+              }}
+            >
               {formatDate(todayEntry.date)}
             </p>
 
             <span
-              className="text-[36px] block mb-4 leading-none"
+              style={{
+                fontSize: "36px",
+                display: "block",
+                marginBottom: "16px",
+                lineHeight: 1,
+              }}
               role="img"
               aria-label={MOOD_LABELS[todayEntry.mood as MoodValue]}
             >
@@ -153,11 +249,19 @@ export default function DashboardPage() {
             </span>
 
             {todayEntry.factors && todayEntry.factors.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "16px" }}>
                 {todayEntry.factors.map((f: string) => (
                   <span
                     key={f}
-                    className="px-2.5 py-0.5 bg-bg border border-border rounded-full text-[12px] font-medium text-text-primary"
+                    style={{
+                      padding: "2px 10px",
+                      backgroundColor: "var(--bg)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "999px",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      color: "var(--text-primary)",
+                    }}
                   >
                     {f}
                   </span>
@@ -166,18 +270,41 @@ export default function DashboardPage() {
             )}
 
             {todayEntry.promptResponse && (
-              <div className="mb-3">
-                <p className="italic text-[13px] text-text-secondary mb-1.5">
+              <div style={{ marginBottom: "12px" }}>
+                <p
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontStyle: "italic",
+                    fontSize: "13px",
+                    color: "var(--text-secondary)",
+                    marginBottom: "6px",
+                  }}
+                >
                   {todayEntry.prompt}
                 </p>
-                <p className="text-[15px] text-text-primary leading-relaxed">
+                <p
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontSize: "15px",
+                    color: "var(--text-primary)",
+                    lineHeight: 1.6,
+                  }}
+                >
                   {todayEntry.promptResponse}
                 </p>
               </div>
             )}
 
             {todayEntry.note && (
-              <p className="text-[15px] text-text-primary leading-relaxed whitespace-pre-wrap">
+              <p
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "15px",
+                  color: "var(--text-primary)",
+                  lineHeight: 1.6,
+                  whiteSpace: "pre-wrap",
+                }}
+              >
                 {todayEntry.note}
               </p>
             )}
@@ -185,18 +312,43 @@ export default function DashboardPage() {
 
           <Link
             href="/app/history"
-            className="font-semibold text-[14px] text-accent no-underline inline-block mt-5 hover:opacity-80 transition-opacity"
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 600,
+              fontSize: "14px",
+              color: "var(--accent)",
+              textDecoration: "none",
+              display: "inline-block",
+              marginTop: "20px",
+            }}
           >
             View history →
           </Link>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col">
-          <p className="font-medium text-[13px] text-text-secondary tracking-wider uppercase mb-4">
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column" }}>
+          <p
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 500,
+              fontSize: "13px",
+              color: "var(--text-secondary)",
+              letterSpacing: "0.5px",
+              textTransform: "uppercase",
+              marginBottom: "16px",
+            }}
+          >
             How are you feeling today?
           </p>
 
-          <div className="grid grid-cols-5 gap-2 w-full">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: "8px",
+              width: "100%",
+            }}
+          >
             {moods.map((m) => {
               const selected = mood === m;
               const hovered = hoveredMood === m;
@@ -208,11 +360,27 @@ export default function DashboardPage() {
                   onMouseEnter={() => setHoveredMood(m)}
                   onMouseLeave={() => setHoveredMood(null)}
                   aria-label={MOOD_LABELS[m]}
-                  className={`
-                    aspect-square flex items-center justify-center text-[28px] cursor-pointer transition-all duration-150 p-0 rounded-xl border-[1.5px]
-                    ${selected ? 'bg-accent/10 border-accent' : 'bg-surface border-border'}
-                    ${hovered && !selected ? 'border-text-secondary' : ''}
-                  `}
+                  style={{
+                    backgroundColor: selected
+                      ? "rgba(196, 149, 106, 0.12)"
+                      : "var(--surface)",
+                    border: `1.5px solid ${
+                      selected
+                        ? "var(--accent)"
+                        : hovered
+                          ? "var(--text-secondary)"
+                          : "var(--border)"
+                    }`,
+                    borderRadius: "12px",
+                    aspectRatio: "1 / 1",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "28px",
+                    cursor: "pointer",
+                    transition: "all 0.15s ease",
+                    padding: 0,
+                  }}
                 >
                   <span role="img" aria-label={MOOD_LABELS[m]}>
                     {MOOD_EMOJIS[m]}
@@ -222,11 +390,21 @@ export default function DashboardPage() {
             })}
           </div>
 
-          <div className="mt-8">
-            <p className="font-medium text-[13px] text-text-secondary tracking-wider uppercase mb-4">
+          <div style={{ marginTop: "32px" }}>
+            <p
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 500,
+                fontSize: "13px",
+                color: "var(--text-secondary)",
+                letterSpacing: "0.5px",
+                textTransform: "uppercase",
+                marginBottom: "16px",
+              }}
+            >
               What influenced your mood?
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
               {FACTORS.map((f) => {
                 const selected = selectedFactors.includes(f);
                 return (
@@ -234,14 +412,24 @@ export default function DashboardPage() {
                     key={f}
                     type="button"
                     onClick={() => toggleFactor(f)}
-                    className={`
-                      px-4 py-2 rounded-full text-[13px] font-medium border transition-all duration-150
-                      ${
-                        selected
-                          ? "bg-accent text-white border-accent"
-                          : "bg-surface text-text-secondary border-border hover:border-text-secondary"
-                      }
-                    `}
+                    style={{
+                      padding: "8px 16px",
+                      borderRadius: "999px",
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      border: "1px solid",
+                      cursor: "pointer",
+                      transition: "all 0.15s ease",
+                      backgroundColor: selected ? "var(--accent)" : "var(--surface)",
+                      color: selected ? "white" : "var(--text-secondary)",
+                      borderColor: selected ? "var(--accent)" : "var(--border)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!selected) e.currentTarget.style.borderColor = "var(--text-secondary)";
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!selected) e.currentTarget.style.borderColor = "var(--border)";
+                    }}
                   >
                     {f}
                   </button>
@@ -250,8 +438,17 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-8 flex flex-col">
-            <p className="italic font-normal text-[14px] text-text-secondary mb-2">
+          <div style={{ marginTop: "32px", display: "flex", flexDirection: "column" }}>
+            <p
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontStyle: "italic",
+                fontWeight: 400,
+                fontSize: "14px",
+                color: "var(--text-secondary)",
+                marginBottom: "8px",
+              }}
+            >
               {todaysPrompt}
             </p>
             <textarea
@@ -259,15 +456,23 @@ export default function DashboardPage() {
               onChange={(e) => setPromptResponse(e.target.value)}
               onFocus={() => setPromptFocused(true)}
               onBlur={() => setPromptFocused(false)}
-              className={`
-                w-full bg-surface border-[1.5px] rounded-[10px] px-4 py-3 text-text-primary text-[15px] resize-y outline-none transition-colors min-h-[88px]
-                ${promptFocused ? 'border-accent' : 'border-border'}
-              `}
+              style={{
+                ...baseTextarea,
+                minHeight: "88px",
+                borderColor: promptFocused ? "var(--accent)" : "var(--border)",
+              }}
             />
           </div>
 
-          <div className="mt-6 flex flex-col">
-            <p className="text-[13px] text-text-secondary mb-2">
+          <div style={{ marginTop: "16px", display: "flex", flexDirection: "column" }}>
+            <p
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: "13px",
+                color: "var(--text-secondary)",
+                marginBottom: "8px",
+              }}
+            >
               Anything else?
             </p>
             <textarea
@@ -275,20 +480,42 @@ export default function DashboardPage() {
               onChange={(e) => setNote(e.target.value)}
               onFocus={() => setNoteFocused(true)}
               onBlur={() => setNoteFocused(false)}
-              className={`
-                w-full bg-surface border-[1.5px] rounded-[10px] px-4 py-3 text-text-primary text-[15px] resize-y outline-none transition-colors min-h-[100px]
-                ${noteFocused ? 'border-accent' : 'border-border'}
-              `}
+              style={{
+                ...baseTextarea,
+                minHeight: "100px",
+                borderColor: noteFocused ? "var(--accent)" : "var(--border)",
+              }}
             />
           </div>
 
           <button
             type="submit"
             disabled={submitting}
-            className={`
-              w-full mt-8 bg-accent text-white font-bold text-[15px] py-3.5 rounded-[10px] border-none flex items-center justify-center gap-2 transition-opacity
-              ${submitting ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:opacity-90'}
-            `}
+            onMouseEnter={(e) => {
+              if (!submitting) e.currentTarget.style.opacity = "0.88";
+            }}
+            onMouseLeave={(e) => {
+              if (!submitting) e.currentTarget.style.opacity = "1";
+            }}
+            style={{
+              width: "100%",
+              marginTop: "32px",
+              backgroundColor: "var(--accent)",
+              color: "#FFFFFF",
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 700,
+              fontSize: "15px",
+              padding: "14px",
+              borderRadius: "10px",
+              border: "none",
+              cursor: submitting ? "not-allowed" : "pointer",
+              opacity: submitting ? 0.6 : 1,
+              transition: "opacity 0.15s ease",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+            }}
           >
             {submitting ? (
               <Loader2 size={16} className="animate-spin" />

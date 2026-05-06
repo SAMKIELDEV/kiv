@@ -58,9 +58,16 @@ export default function EntryDetailPage({
 
   if (notFound || !entry) {
     return (
-      <div className="flex flex-col w-full font-sans">
+      <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
         {backLink}
-        <p className="text-[14px] text-text-secondary italic">
+        <p
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "14px",
+            color: "var(--text-secondary)",
+            fontStyle: "italic",
+          }}
+        >
           No entry for this date.
         </p>
       </div>
@@ -68,15 +75,28 @@ export default function EntryDetailPage({
   }
 
   return (
-    <div className="flex flex-col w-full font-sans pb-20">
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
       {backLink}
 
-      <h1 className="font-bold text-[20px] text-text-secondary mb-6">
+      <h1
+        style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontWeight: 700,
+          fontSize: "20px",
+          color: "var(--text-secondary)",
+          marginBottom: "24px",
+        }}
+      >
         {formatDate(entry.date)}
       </h1>
 
       <span
-        className="text-[48px] block mb-6 leading-none"
+        style={{
+          fontSize: "48px",
+          display: "block",
+          marginBottom: "24px",
+          lineHeight: 1,
+        }}
         role="img"
         aria-label={MOOD_LABELS[entry.mood as MoodValue]}
       >
@@ -84,11 +104,19 @@ export default function EntryDetailPage({
       </span>
 
       {entry.factors && entry.factors.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "24px" }}>
           {entry.factors.map((f: string) => (
             <span
               key={f}
-              className="px-3 py-1 bg-surface border border-border rounded-full text-[13px] font-medium text-text-primary"
+              style={{
+                padding: "2px 10px",
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--border)",
+                borderRadius: "999px",
+                fontSize: "13px",
+                fontWeight: 500,
+                color: "var(--text-primary)",
+              }}
             >
               {f}
             </span>
@@ -96,35 +124,73 @@ export default function EntryDetailPage({
         </div>
       )}
 
-      <div className="space-y-8">
-        {entry.promptResponse && (
-          <div>
-            <p className="italic text-[13px] text-text-secondary mb-1.5">
-              {entry.prompt}
-            </p>
-            <p className="text-[16px] text-text-primary leading-relaxed">
-              {entry.promptResponse}
-            </p>
-          </div>
-        )}
-
-        {entry.note && (
-          <div>
-            <p className="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-2">
-              Note
-            </p>
-            <p className="text-[16px] text-text-primary leading-relaxed whitespace-pre-wrap">
-              {entry.note}
-            </p>
-          </div>
-        )}
-
-        {!entry.promptResponse && !entry.note && (
-          <p className="text-[14px] text-text-secondary italic">
-            No additional notes for this day.
+      {entry.promptResponse && (
+        <div style={{ marginBottom: "24px" }}>
+          <p
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: "13px",
+              fontStyle: "italic",
+              color: "var(--text-secondary)",
+              marginBottom: "6px",
+            }}
+          >
+            {entry.prompt}
           </p>
-        )}
-      </div>
+          <p
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: "16px",
+              color: "var(--text-primary)",
+              lineHeight: 1.65,
+            }}
+          >
+            {entry.promptResponse}
+          </p>
+        </div>
+      )}
+
+      {entry.note && (
+        <div>
+          <p
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: "11px",
+              fontWeight: 700,
+              color: "var(--text-secondary)",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              marginBottom: "8px",
+            }}
+          >
+            Note
+          </p>
+          <p
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: "16px",
+              color: "var(--text-primary)",
+              lineHeight: 1.65,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {entry.note}
+          </p>
+        </div>
+      )}
+
+      {!entry.promptResponse && !entry.note && (
+        <p
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "14px",
+            fontStyle: "italic",
+            color: "var(--text-secondary)",
+          }}
+        >
+          No additional notes for this day.
+        </p>
+      )}
     </div>
   );
 }
