@@ -4,15 +4,22 @@ import { connectDB } from "@/lib/db";
 import { SubscriptionModel } from "@/lib/db/models/subscription";
 import { requireAuth, isAuthError } from "@/lib/auth";
 
-webpush.setVapidDetails(
-  process.env.VAPID_EMAIL || "mailto:admin@samkiel.tech",
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
-
 export async function POST(request: NextRequest) {
   const auth = await requireAuth(request);
   if (isAuthError(auth)) return auth;
+
+  const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
+
+  if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
+    return NextResponse.json({ error: "Push notifications are not configured" }, { status: 501 });
+  }
+
+  webpush.setVapidDetails(
+    process.env.VAPID_EMAIL || "mailto:admin@samkiel.tech",
+    VAPID_PUBLIC_KEY,
+    VAPID_PRIVATE_KEY
+  );
 
   try {
     await connectDB();

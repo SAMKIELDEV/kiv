@@ -31,12 +31,6 @@ export const metadata: Metadata = {
     "A simple, private space to log how you're doing each day. Mood tracking and micro-journaling in under 2 minutes.",
   metadataBase: new URL("https://kiv.samkiel.tech"),
   manifest: "/manifest.json",
-  themeColor: "#0F0F0F",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Kiv",
-  },
   keywords: ["journaling", "mood tracker", "daily check-in", "mental health", "self-awareness"],
   authors: [{ name: "SAMKIEL Studio", url: "https://samkiel.tech" }],
   openGraph: {
@@ -47,6 +41,14 @@ export const metadata: Metadata = {
   icons: {
     apple: "/icons/icon-192x192.png",
   },
+};
+
+export const viewport = {
+  themeColor: "#0F0F0F",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
