@@ -45,8 +45,8 @@ export function NotificationToggle() {
   }
 
   async function subscribe() {
-    if (!VAPID_PUBLIC_KEY) {
-      toast.error("Push notifications are not configured on the server.");
+    if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+      toast.error("Push notifications are not configured: Missing Public Key.");
       return;
     }
 
@@ -67,7 +67,7 @@ export function NotificationToggle() {
 
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+        applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
       });
 
       const res = await fetch("/api/notifications/subscribe", {

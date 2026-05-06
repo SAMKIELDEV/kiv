@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { Sun, Moon, Menu, X, Download } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export function Navbar() {
@@ -13,6 +13,7 @@ export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [canInstall, setCanInstall] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -20,7 +21,16 @@ export function Navbar() {
     const update = () => setIsMobile(mq.matches);
     update();
     mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
+
+    const checkInstallable = () => {
+      setCanInstall(!!(window as any).canInstallPWA);
+    };
+    const interval = setInterval(checkInstallable, 1000);
+
+    return () => {
+      mq.removeEventListener("change", update);
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -204,6 +214,31 @@ export function Navbar() {
             >
               Get Started →
             </Link>
+
+            {canInstall && (
+              <button
+                onClick={() => (window as any).triggerPWAInstall?.()}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "12px",
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "24px",
+                  color: "var(--text-primary)",
+                  backgroundColor: "transparent",
+                  border: "none",
+                  borderBottom: "1px solid var(--border)",
+                  padding: "20px 0",
+                  width: "100%",
+                  textAlign: "left",
+                  cursor: "pointer",
+                }}
+              >
+                <Download size={24} style={{ color: "var(--accent)" }} />
+                Download App
+              </button>
+            )}
 
             <div style={{ flex: 1 }} />
 

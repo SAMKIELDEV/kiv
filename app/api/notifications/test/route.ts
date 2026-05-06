@@ -11,8 +11,11 @@ export async function POST(request: NextRequest) {
   const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
   const VAPID_PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
 
-  if (!VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
-    return NextResponse.json({ error: "Push notifications are not configured" }, { status: 501 });
+  if (!VAPID_PUBLIC_KEY) {
+    return NextResponse.json({ error: "Push notifications are not configured: Missing Public Key" }, { status: 501 });
+  }
+  if (!VAPID_PRIVATE_KEY) {
+    return NextResponse.json({ error: "Push notifications are not configured: Missing Private Key" }, { status: 501 });
   }
 
   webpush.setVapidDetails(
