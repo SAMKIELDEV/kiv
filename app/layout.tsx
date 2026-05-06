@@ -7,7 +7,6 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
-import { PWARegistration } from "@/components/PWARegistration";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -30,7 +29,6 @@ export const metadata: Metadata = {
   description:
     "A simple, private space to log how you're doing each day. Mood tracking and micro-journaling in under 2 minutes.",
   metadataBase: new URL("https://kiv.samkiel.tech"),
-  manifest: "/manifest.json",
   keywords: ["journaling", "mood tracker", "daily check-in", "mental health", "self-awareness"],
   authors: [{ name: "SAMKIEL Studio", url: "https://samkiel.tech" }],
   openGraph: {
@@ -66,7 +64,6 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <AuthProvider baseUrl={AUTH_URL}>
-            <PWARegistration />
             <PWAInstall />
             {children}
             <Toaster
