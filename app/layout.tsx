@@ -72,13 +72,12 @@ export default function RootLayout({
               expand={false}
               closeButton={false}
               toastOptions={{
-                style: {
-                  background: "var(--surface)",
-                  border: "1px solid var(--border)",
-                  color: "var(--text-primary)",
-                  fontFamily: "var(--font-jakarta), sans-serif",
-                  borderRadius: "12px",
-                  padding: "12px 16px",
+                classNames: {
+                  toast: "group toast group-[.toaster]:bg-[var(--surface)] group-[.toaster]:text-[var(--text-primary)] group-[.toaster]:border-[var(--border)] group-[.toaster]:shadow-2xl group-[.toaster]:rounded-xl group-[.toaster]:font-jakarta",
+                  description: "group-[.toast]:text-[var(--text-secondary)]",
+                  actionButton: "group-[.toast]:bg-[var(--accent)] group-[.toast]:text-[var(--accent-foreground)]",
+                  cancelButton: "group-[.toast]:bg-[var(--surface)] group-[.toast]:text-[var(--text-secondary)]",
+                  closeButton: "hidden",
                 },
               }}
             />

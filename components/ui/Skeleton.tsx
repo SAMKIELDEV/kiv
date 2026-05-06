@@ -17,9 +17,9 @@ export const Skeleton = ({ className, style, ...props }: SkeletonProps) => {
       {...props}
     >
       <div 
-        className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite]"
+        className="absolute inset-0 -translate-x-full animate-[shimmer_3s_infinite]"
         style={{
-          background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent)',
+          background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08), transparent)',
         }}
       />
     </div>

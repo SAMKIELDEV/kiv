@@ -87,18 +87,22 @@ export default function HistoryPage() {
         <Skeleton className="h-9 w-[180px] mb-8" />
         
         {/* Month Selector Skeleton */}
-        <div style={{ display: "flex", justifyContent: "center", gap: "24px", marginBottom: "32px" }}>
-          <Skeleton className="h-6 w-6 rounded-full" />
-          <Skeleton className="h-6 w-[120px]" />
-          <Skeleton className="h-6 w-6 rounded-full" />
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "24px", marginBottom: "24px" }}>
+          <Skeleton className="h-8 w-8 rounded-full" />
+          <Skeleton className="h-6 w-[140px]" />
+          <Skeleton className="h-8 w-8 rounded-full" />
         </div>
 
         {/* Calendar Grid Skeleton */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px", marginBottom: "8px" }}>
-          {[1,2,3,4,5,6,7].map(i => <Skeleton key={i} className="h-3 w-full" />)}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "2px", marginBottom: "12px" }}>
+          {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => (
+            <div key={d} style={{ display: "flex", justifyContent: "center", paddingBottom: "12px" }}>
+              <Skeleton key={d} className="h-3 w-8" />
+            </div>
+          ))}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px" }}>
-          {Array.from({ length: 31 }).map((_, i) => (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "2px" }}>
+          {Array.from({ length: 35 }).map((_, i) => (
             <Skeleton key={i} className="aspect-square rounded-lg" />
           ))}
         </div>

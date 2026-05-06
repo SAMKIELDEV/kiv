@@ -12,13 +12,13 @@ export function NotificationTest() {
     try {
       const res = await fetch("/api/notifications/test", { method: "POST" });
       if (res.ok) {
-        toast.success("Test notification sent!");
+        toast.success("Test notification sent!", { icon: null });
       } else {
         const data = await res.json();
-        toast.error(data.error || "Failed to send test notification");
+        toast.error(data.error || "Failed to send test notification", { icon: null });
       }
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Something went wrong", { icon: null });
     } finally {
       setLoading(false);
     }
