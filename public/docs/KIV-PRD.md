@@ -292,8 +292,8 @@ All API routes require a valid JWT verified via `@samkielauthsdk` middleware.
 ```
 
 **Typography:**
-- Syne or Cabinet Grotesk
-- **Excluded:** Inter, Roboto, Space Grotesk
+- Jakarta font from Google Fonts
+- 
 
 ---
 
@@ -428,7 +428,7 @@ Two collections:
 ## Design
 - Background: #0A0A0A
 - Accent: #F5E6D3 (warm cream) — sparingly, CTAs and highlights only
-- Font: Syne or Cabinet Grotesk — NO Inter, Roboto, Space Grotesk
+- Font: Jakarta font from Google Fonts
 - Dark by default, no theme toggle
 - Mobile responsive from day one
 

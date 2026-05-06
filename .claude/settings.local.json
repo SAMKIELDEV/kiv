@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\SAMKIEL\\\\CODEX\\\\SAMKIEL\\\\kiv\" -Force)",
-      "Bash(Select-Object Name, PSIsContainer)"
+      "Bash(Select-Object Name, PSIsContainer)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\SAMKIEL\\\\CODEX\\\\SAMKIEL\\\\kiv\" -Force | Select-Object Name, @{Name='Type'; Expression={if\\($_.PSIsContainer\\){'Dir'}else{'File'}}} | Sort-Object Type, Name)",
+      "Bash(node -e \"console.log\\('mongoose:', require\\('./node_modules/mongoose/package.json'\\).version\\); console.log\\('lucide-react:', require\\('./node_modules/lucide-react/package.json'\\).version\\)\")"
     ]
   }
 }
