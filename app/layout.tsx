@@ -50,6 +50,7 @@ export const viewport = {
 };
 
 import { PWAInstall } from "@/components/PWAInstall";
+import { AlertProvider } from "@/lib/context/AlertContext";
 
 export default function RootLayout({
   children,
@@ -64,24 +65,26 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <AuthProvider baseUrl={AUTH_URL}>
-            <PWAInstall />
-            {children}
-            <Toaster
-              position="bottom-right"
-              theme="dark"
-              expand={false}
-              closeButton={false}
-              toastOptions={{
-                classNames: {
-                  toast: "group toast group-[.toaster]:bg-[var(--surface)] group-[.toaster]:text-[var(--text-primary)] group-[.toaster]:border-[var(--border)] group-[.toaster]:shadow-2xl group-[.toaster]:rounded-xl group-[.toaster]:font-jakarta",
-                  description: "group-[.toast]:text-[var(--text-secondary)]",
-                  actionButton: "group-[.toast]:bg-[var(--accent)] group-[.toast]:text-[var(--accent-foreground)]",
-                  closeButton: "hidden",
-                },
-              }}
-            />
-            <Analytics />
-            <SpeedInsights />
+            <AlertProvider>
+              <PWAInstall />
+              {children}
+              <Toaster
+                position="bottom-right"
+                theme="dark"
+                expand={false}
+                closeButton={false}
+                toastOptions={{
+                  classNames: {
+                    toast: "group toast group-[.toaster]:bg-[var(--surface)] group-[.toaster]:text-[var(--text-primary)] group-[.toaster]:border-[var(--border)] group-[.toaster]:shadow-2xl group-[.toaster]:rounded-xl group-[.toaster]:font-jakarta",
+                    description: "group-[.toast]:text-[var(--text-secondary)]",
+                    actionButton: "group-[.toast]:bg-[var(--accent)] group-[.toast]:text-[var(--accent-foreground)]",
+                    closeButton: "hidden",
+                  },
+                }}
+              />
+              <Analytics />
+              <SpeedInsights />
+            </AlertProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
