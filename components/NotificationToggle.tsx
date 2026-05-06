@@ -96,7 +96,8 @@ export function NotificationToggle() {
       }
     } catch (error) {
       console.error("Subscription failed:", error);
-      toast.error("Could not enable notifications. Please try again.");
+      const message = error instanceof Error ? error.message : "Could not enable notifications.";
+      toast.error(`${message}. Please refresh and try again. 🔔`);
     } finally {
       setToggling(false);
     }

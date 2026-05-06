@@ -72,7 +72,6 @@ export default function RootLayout({
             <Toaster
               position="bottom-right"
               richColors
-              closeButton
               expand={false}
               toastOptions={{
                 style: {
@@ -82,6 +81,7 @@ export default function RootLayout({
                   fontFamily: "var(--font-jakarta), sans-serif",
                   borderRadius: "12px",
                 },
+                icon: null,
               }}
             />
             <Analytics />

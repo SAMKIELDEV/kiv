@@ -9,7 +9,12 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      // Use Promise.allSettled or just individual add calls to be resilient
+      return Promise.all(
+        ASSETS_TO_CACHE.map(url => 
+          cache.add(url).catch(err => console.warn(`Failed to cache ${url}:`, err))
+        )
+      );
     })
   );
 });
