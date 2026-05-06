@@ -2,88 +2,99 @@
 
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function NotFound() {
   return (
-    <main className="relative flex min-h-[100dvh] flex-col items-center justify-center bg-bg px-6 text-center overflow-hidden">
-      {/* Background Effects */}
-      <div className="grain" />
-      <div className="premium-gradient" />
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 flex flex-col items-center"
+    <main
+      style={{
+        minHeight: "100dvh",
+        backgroundColor: "var(--bg)",
+        color: "var(--text-primary)",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "32px 24px",
+        textAlign: "center",
+      }}
+    >
+      <span
+        style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontWeight: 700,
+          fontSize: "12px",
+          color: "var(--accent)",
+          textTransform: "uppercase",
+          letterSpacing: "2.5px",
+          marginBottom: "16px",
+        }}
       >
-        <motion.span 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.4 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="font-heading text-sm font-bold uppercase tracking-[0.2em] text-accent mb-4"
-        >
-          Error 404
-        </motion.span>
-        
-        <motion.h1 
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-heading text-8xl font-black tracking-tighter text-text-primary md:text-9xl mb-6"
-        >
-          Lost?
-        </motion.h1>
-        
-        <div className="max-w-md space-y-4 mb-10">
-          <h2 className="font-heading text-2xl font-semibold text-text-primary md:text-3xl">
-            Some thoughts are meant to stay private.
-          </h2>
-          <p className="text-text-secondary text-base md:text-lg leading-relaxed">
-            The page you're looking for doesn't exist or has been moved. 
-            Take a breath, and let's get you back to your journal.
-          </p>
-        </div>
+        Error 404
+      </span>
 
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <Link 
-            href="/" 
-            className="group flex items-center gap-3 bg-accent text-accent-foreground px-16 py-6 rounded-full font-heading font-bold text-lg transition-all duration-300 shadow-xl shadow-accent/10"
-          >
-            <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
-            Back to Home
-          </Link>
-        </motion.div>
-      </motion.div>
+      <h1
+        style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontWeight: 800,
+          fontSize: "72px",
+          color: "var(--text-primary)",
+          letterSpacing: "-2px",
+          lineHeight: 1,
+          marginBottom: "24px",
+        }}
+      >
+        Lost?
+      </h1>
 
-      {/* Decorative Orbs */}
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.1, 1],
-          opacity: [0.05, 0.08, 0.05]
+      <p
+        style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontWeight: 500,
+          fontSize: "18px",
+          color: "var(--text-primary)",
+          marginBottom: "12px",
+          maxWidth: "420px",
         }}
-        transition={{ 
-          duration: 10, 
-          repeat: Infinity,
-          ease: "linear" 
+      >
+        Some thoughts are meant to stay private.
+      </p>
+      <p
+        style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontSize: "14px",
+          color: "var(--text-secondary)",
+          lineHeight: 1.65,
+          marginBottom: "40px",
+          maxWidth: "420px",
         }}
-        className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-accent blur-[100px]" 
-      />
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.2, 1],
-          opacity: [0.05, 0.07, 0.05]
+      >
+        The page you&apos;re looking for doesn&apos;t exist or has been moved.
+        Take a breath, and let&apos;s get you back to your journal.
+      </p>
+
+      <Link
+        href="/"
+        onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
+        onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: "8px",
+          backgroundColor: "var(--accent)",
+          color: "var(--accent-foreground)",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontWeight: 700,
+          fontSize: "15px",
+          padding: "13px 28px",
+          borderRadius: "999px",
+          textDecoration: "none",
+          transition: "opacity 0.15s ease",
         }}
-        transition={{ 
-          duration: 12, 
-          repeat: Infinity,
-          ease: "linear" 
-        }}
-        className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-accent blur-[100px]" 
-      />
+      >
+        <ArrowLeft size={16} />
+        Back to Home
+      </Link>
     </main>
   );
 }

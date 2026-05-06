@@ -1,54 +1,121 @@
 "use client";
-import Link from "next/link";
-import { motion } from "framer-motion";
+
+import { AppNav } from "@/app/components/AppNav";
+
+const sections = [
+  {
+    title: "Our Commitment",
+    body: "At Kiv, we believe your thoughts and feelings should stay between you and your journal. Privacy isn't just a feature — it's our foundation.",
+  },
+  {
+    title: "Data Collection",
+    body: "We only collect the information necessary to provide the service. This includes your account details (email) and the data you explicitly enter (mood logs, notes). We do not track your location or use intrusive analytics.",
+  },
+  {
+    title: "No Data Selling",
+    body: "We will never sell, rent, or trade your personal data or your journal entries to third parties. Period.",
+  },
+  {
+    title: "Security",
+    body: "We use industry-standard encryption to protect your data both in transit and at rest. Your privacy is protected by the same security protocols used by leading financial institutions.",
+  },
+  {
+    title: "Your Rights",
+    body: "You have the right to access, export, or delete your data at any time. Your journal is yours, and you can take it with you whenever you choose.",
+  },
+];
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-bg text-text-primary selection:bg-accent selection:text-bg">
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] flex items-center justify-between px-12 bg-bg/80 backdrop-blur-md border-b border-border/50">
-        <Link href="/" className="font-bold text-xl tracking-tighter">kiv</Link>
-        <Link href="/" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors">Back to Home</Link>
-      </nav>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "var(--bg)",
+        color: "var(--text-primary)",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    >
+      <AppNav variant="auth" />
 
-      <main className="max-w-3xl mx-auto px-6 pt-32 pb-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+      <main
+        style={{
+          maxWidth: "680px",
+          margin: "0 auto",
+          padding: "100px 24px 80px",
+        }}
+      >
+        <h1
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontWeight: 800,
+            fontSize: "34px",
+            color: "var(--text-primary)",
+            letterSpacing: "-0.5px",
+            marginBottom: "8px",
+          }}
         >
-          <h1 className="font-heading font-extrabold text-5xl mb-12 tracking-tight">Privacy Policy</h1>
-          
-          <div className="prose prose-invert max-w-none space-y-12 text-text-secondary leading-relaxed">
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">Our Commitment</h2>
-              <p>At Kiv, we believe your thoughts and feelings should stay between you and your journal. Privacy isn't just a feature; it's our foundation.</p>
-            </section>
+          Privacy Policy
+        </h1>
+        <p
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "13px",
+            color: "var(--text-secondary)",
+            marginBottom: "48px",
+          }}
+        >
+          Last updated: May 2026
+        </p>
 
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">Data Collection</h2>
-              <p>We only collect the information necessary to provide the service. This includes your account details (email) and the data you explicitly enter (mood logs, notes). We do not track your location or use intrusive analytics.</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+          {sections.map((s) => (
+            <section key={s.title}>
+              <h2
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "16px",
+                  color: "var(--text-primary)",
+                  marginBottom: "10px",
+                }}
+              >
+                {s.title}
+              </h2>
+              <p
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "15px",
+                  color: "var(--text-secondary)",
+                  lineHeight: 1.7,
+                }}
+              >
+                {s.body}
+              </p>
             </section>
+          ))}
+        </div>
 
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">No Data Selling</h2>
-              <p>We will never sell, rent, or trade your personal data or your journal entries to third parties. Period.</p>
-            </section>
-
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">Security</h2>
-              <p>We use industry-standard encryption to protect your data both in transit and at rest. Your privacy is protected by the same security protocols used by leading financial institutions.</p>
-            </section>
-
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">Your Rights</h2>
-              <p>You have the right to access, export, or delete your data at any time. Your journal is yours, and you can take it with you whenever you choose.</p>
-            </section>
-          </div>
-
-          <div className="mt-20 pt-12 border-t border-border/30">
-            <p className="text-xs text-text-secondary opacity-50">Last updated: May 2026</p>
-          </div>
-        </motion.div>
+        <div
+          style={{
+            marginTop: "64px",
+            paddingTop: "24px",
+            borderTop: "1px solid var(--border)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "12px",
+            color: "var(--text-secondary)",
+          }}
+        >
+          <a
+            href="/terms"
+            style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}
+          >
+            Terms of Service →
+          </a>
+          <span>© {new Date().getFullYear()} Kiv</span>
+        </div>
       </main>
     </div>
   );

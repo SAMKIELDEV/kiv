@@ -19,6 +19,19 @@ const images = [
   "/assets/hero7.png",
 ];
 
+const darkPalette: React.CSSProperties = {
+  // Override CSS variables for the entire login subtree so AppNav and
+  // children inherit the same warm-dark palette as the illustration.
+  ["--bg" as string]: "#1A1410",
+  ["--bg-rgb" as string]: "26, 20, 16",
+  ["--surface" as string]: "#241B16",
+  ["--border" as string]: "rgba(255, 255, 255, 0.08)",
+  ["--text-primary" as string]: "#F0EDE8",
+  ["--text-secondary" as string]: "#8A8278",
+  backgroundColor: "#1A1410",
+  color: "#F0EDE8",
+};
+
 function LoginContent() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
@@ -62,7 +75,13 @@ function LoginContent() {
   }
 
   return (
-    <>
+    <div
+      style={{
+        ...darkPalette,
+        minHeight: "100vh",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    >
       <AppNav variant="auth" />
 
       <div
@@ -70,14 +89,12 @@ function LoginContent() {
           display: "flex",
           minHeight: "100vh",
           width: "100%",
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
         }}
       >
         {!isMobile && (
           <div
             style={{
               width: "50%",
-              backgroundColor: "#1A1410",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -108,7 +125,6 @@ function LoginContent() {
         <div
           style={{
             width: isMobile ? "100%" : "50%",
-            backgroundColor: "var(--bg)",
             display: "flex",
             flexDirection: "column",
             minHeight: "100vh",
@@ -134,24 +150,37 @@ function LoginContent() {
                 alignItems: "center",
               }}
             >
-              <span
+              <div
                 style={{
-                  fontFamily: "'Plus Jakarta Sans', sans-serif",
-                  fontWeight: 800,
-                  fontSize: "24px",
-                  color: "var(--text-primary)",
-                  letterSpacing: "-0.5px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
                 }}
               >
-                kiv
-              </span>
+                <img
+                  src="/favicon.ico"
+                  alt="Kiv"
+                  style={{ width: 28, height: 28, objectFit: "contain" }}
+                />
+                <span
+                  style={{
+                    fontFamily: "'Plus Jakarta Sans', sans-serif",
+                    fontWeight: 800,
+                    fontSize: "24px",
+                    color: "var(--text-primary)",
+                    letterSpacing: "-0.5px",
+                  }}
+                >
+                  kiv
+                </span>
+              </div>
               <p
                 style={{
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
                   fontWeight: 400,
                   fontSize: "14px",
                   color: "var(--text-secondary)",
-                  marginTop: "6px",
+                  marginTop: "10px",
                 }}
               >
                 Check in with yourself
@@ -237,7 +266,7 @@ function LoginContent() {
           </footer>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -247,11 +276,11 @@ export default function LoginPage() {
       fallback={
         <div
           style={{
+            ...darkPalette,
             minHeight: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            backgroundColor: "var(--bg)",
           }}
         />
       }

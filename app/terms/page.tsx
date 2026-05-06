@@ -1,54 +1,121 @@
 "use client";
-import Link from "next/link";
-import { motion } from "framer-motion";
+
+import { AppNav } from "@/app/components/AppNav";
+
+const sections = [
+  {
+    title: "1. Acceptance of Terms",
+    body: "By accessing or using Kiv, you agree to be bound by these Terms of Service. If you do not agree, please do not use the application.",
+  },
+  {
+    title: "2. Your Data",
+    body: "Kiv is designed with a privacy-first philosophy. Your entries, moods, and reflections belong solely to you. We do not claim ownership over any content you log in the application.",
+  },
+  {
+    title: "3. Use of Service",
+    body: "Kiv is intended for personal, non-commercial use. You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account.",
+  },
+  {
+    title: "4. Limitations",
+    body: "Kiv is a tool for self-reflection and mood tracking. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.",
+  },
+  {
+    title: "5. Modifications",
+    body: "We reserve the right to modify or terminate the service for any reason, without notice at any time. We also reserve the right to update these terms periodically.",
+  },
+];
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-bg text-text-primary selection:bg-accent selection:text-bg">
-      <nav className="fixed top-0 left-0 right-0 z-50 h-[60px] flex items-center justify-between px-12 bg-bg/80 backdrop-blur-md border-b border-border/50">
-        <Link href="/" className="font-bold text-xl tracking-tighter">kiv</Link>
-        <Link href="/" className="text-sm font-medium text-text-secondary hover:text-text-primary transition-colors">Back to Home</Link>
-      </nav>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "var(--bg)",
+        color: "var(--text-primary)",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    >
+      <AppNav variant="auth" />
 
-      <main className="max-w-3xl mx-auto px-6 pt-32 pb-24">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+      <main
+        style={{
+          maxWidth: "680px",
+          margin: "0 auto",
+          padding: "100px 24px 80px",
+        }}
+      >
+        <h1
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontWeight: 800,
+            fontSize: "34px",
+            color: "var(--text-primary)",
+            letterSpacing: "-0.5px",
+            marginBottom: "8px",
+          }}
         >
-          <h1 className="font-heading font-extrabold text-5xl mb-12 tracking-tight">Terms of Service</h1>
-          
-          <div className="prose prose-invert max-w-none space-y-12 text-text-secondary leading-relaxed">
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">1. Acceptance of Terms</h2>
-              <p>By accessing or using Kiv, you agree to be bound by these Terms of Service. If you do not agree, please do not use the application.</p>
-            </section>
+          Terms of Service
+        </h1>
+        <p
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "13px",
+            color: "var(--text-secondary)",
+            marginBottom: "48px",
+          }}
+        >
+          Last updated: May 2026
+        </p>
 
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">2. Your Data</h2>
-              <p>Kiv is designed with a "privacy-first" philosophy. Your entries, moods, and reflections belong solely to you. We do not claim ownership over any content you log in the application.</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+          {sections.map((s) => (
+            <section key={s.title}>
+              <h2
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontWeight: 700,
+                  fontSize: "16px",
+                  color: "var(--text-primary)",
+                  marginBottom: "10px",
+                }}
+              >
+                {s.title}
+              </h2>
+              <p
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "15px",
+                  color: "var(--text-secondary)",
+                  lineHeight: 1.7,
+                }}
+              >
+                {s.body}
+              </p>
             </section>
+          ))}
+        </div>
 
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">3. Use of Service</h2>
-              <p>Kiv is intended for personal, non-commercial use. You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account.</p>
-            </section>
-
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">4. Limitations</h2>
-              <p>Kiv is a tool for self-reflection and mood tracking. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.</p>
-            </section>
-
-            <section>
-              <h2 className="text-text-primary text-xl font-bold mb-4">5. Modifications</h2>
-              <p>We reserve the right to modify or terminate the service for any reason, without notice at any time. We also reserve the right to update these terms periodically.</p>
-            </section>
-          </div>
-
-          <div className="mt-20 pt-12 border-t border-border/30">
-            <p className="text-xs text-text-secondary opacity-50">Last updated: May 2026</p>
-          </div>
-        </motion.div>
+        <div
+          style={{
+            marginTop: "64px",
+            paddingTop: "24px",
+            borderTop: "1px solid var(--border)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "12px",
+            color: "var(--text-secondary)",
+          }}
+        >
+          <a
+            href="/privacy"
+            style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 600 }}
+          >
+            Privacy Policy →
+          </a>
+          <span>© {new Date().getFullYear()} Kiv</span>
+        </div>
       </main>
     </div>
   );
