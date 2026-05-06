@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import type { Entry } from "@/types";
-import { cn } from "@/lib/utils";
 
 export default function HistoryPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -13,6 +11,7 @@ export default function HistoryPage() {
     return { year: now.getFullYear(), month: now.getMonth() };
   });
   const [loading, setLoading] = useState(true);
+  const [hoveredDate, setHoveredDate] = useState<string | null>(null);
 
   const fetchEntries = useCallback(async () => {
     try {
@@ -42,10 +41,10 @@ export default function HistoryPage() {
     const { year, month } = currentMonth;
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
-    
+
     let startPad = firstDay.getDay() - 1;
     if (startPad < 0) startPad = 6;
-    
+
     const totalDays = lastDay.getDate();
 
     const days: (number | null)[] = [];
@@ -83,61 +82,172 @@ export default function HistoryPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-2 h-2 bg-text-secondary rounded-full animate-pulse" />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "80px 0",
+        }}
+      >
+        <Loader2 size={20} style={{ color: "var(--text-secondary)" }} className="animate-spin" />
       </div>
     );
   }
 
+  const todayStr = new Date().toISOString().split("T")[0];
+
   return (
-    <div className="flex flex-col w-full">
-      <h1 className="text-[28px] font-[800] text-text-primary tracking-tight mb-[32px]">
+    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+      <h1
+        style={{
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontWeight: 800,
+          fontSize: "26px",
+          color: "var(--text-primary)",
+          marginBottom: "32px",
+          letterSpacing: "-0.5px",
+        }}
+      >
         History
       </h1>
 
-      {/* Month navigation */}
-      <div className="flex items-center justify-center gap-4 mb-[24px]">
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "24px",
+          marginBottom: "24px",
+        }}
+      >
         <button
           onClick={prevMonth}
-          className="p-2 text-text-secondary hover:opacity-70 transition-opacity cursor-pointer"
           aria-label="Previous month"
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "var(--text-secondary)",
+            padding: "6px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={18} />
         </button>
-        <div className="text-[18px] font-[700] text-text-primary min-w-[140px] text-center">
+        <div
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontWeight: 700,
+            fontSize: "17px",
+            color: "var(--text-primary)",
+            minWidth: "140px",
+            textAlign: "center",
+          }}
+        >
           {formatMonthYear()}
         </div>
         <button
           onClick={nextMonth}
-          className="p-2 text-text-secondary hover:opacity-70 transition-opacity cursor-pointer"
           aria-label="Next month"
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "var(--text-secondary)",
+            padding: "6px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <ChevronRight size={20} />
+          <ChevronRight size={18} />
         </button>
       </div>
 
-      {/* Calendar grid */}
-      <div className="w-full">
-        <div className="grid grid-cols-7 gap-[4px] mb-2">
+      <div style={{ width: "100%" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(7, 1fr)",
+            gap: "2px",
+          }}
+        >
           {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
             <div
               key={d}
-              className="text-center text-[12px] text-text-secondary font-[600] pb-2 uppercase"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 600,
+                fontSize: "11px",
+                color: "var(--text-secondary)",
+                textAlign: "center",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+                paddingBottom: "12px",
+              }}
             >
               {d}
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-7 gap-[4px]">
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(7, 1fr)",
+            gap: "2px",
+          }}
+        >
           {calendarDays.map((day, i) => {
             if (day === null) {
-              return <div key={`pad-${i}`} className="aspect-square" />;
+              return (
+                <div
+                  key={`pad-${i}`}
+                  style={{ aspectRatio: "1 / 1" }}
+                />
+              );
             }
 
             const dateStr = getDateStr(day);
             const entry = entryMap.get(dateStr);
-            const isToday = dateStr === new Date().toISOString().split("T")[0];
+            const isToday = dateStr === todayStr;
+            const hovered = hoveredDate === dateStr;
+
+            const cellStyle: React.CSSProperties = {
+              aspectRatio: "1 / 1",
+              borderRadius: "8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "14px",
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 400,
+              color: "var(--text-secondary)",
+              backgroundColor: "transparent",
+              transition: "opacity 0.15s ease",
+            };
+
+            if (entry && isToday) {
+              cellStyle.backgroundColor = "var(--accent)";
+              cellStyle.border = "2px solid var(--text-primary)";
+              cellStyle.color = "#FFFFFF";
+              cellStyle.fontWeight = 700;
+              cellStyle.cursor = "pointer";
+              cellStyle.opacity = hovered ? 0.85 : 1;
+            } else if (entry) {
+              cellStyle.backgroundColor = "var(--accent)";
+              cellStyle.color = "#FFFFFF";
+              cellStyle.fontWeight = 700;
+              cellStyle.cursor = "pointer";
+              cellStyle.opacity = hovered ? 0.85 : 1;
+            } else if (isToday) {
+              cellStyle.border = "1.5px solid var(--border)";
+              cellStyle.color = "var(--text-primary)";
+              cellStyle.fontWeight = 600;
+            }
 
             return (
               <div
@@ -145,13 +255,9 @@ export default function HistoryPage() {
                 onClick={() => {
                   if (entry) window.location.href = `/app/entry/${dateStr}`;
                 }}
-                className={cn(
-                  "aspect-square flex items-center justify-center rounded-[8px] text-[14px] font-[400] text-text-secondary relative transition-opacity",
-                  entry
-                    ? "bg-accent text-accent-dark font-[700] cursor-pointer hover:opacity-85"
-                    : "",
-                  isToday && !entry ? "border border-border text-text-primary font-[600]" : ""
-                )}
+                onMouseEnter={() => entry && setHoveredDate(dateStr)}
+                onMouseLeave={() => setHoveredDate(null)}
+                style={cellStyle}
               >
                 {day}
               </div>
@@ -161,11 +267,18 @@ export default function HistoryPage() {
       </div>
 
       {entries.length === 0 && (
-        <p className="text-[14px] text-text-secondary text-center py-12">
+        <p
+          style={{
+            fontFamily: "'Plus Jakarta Sans', sans-serif",
+            fontSize: "14px",
+            color: "var(--text-secondary)",
+            textAlign: "center",
+            padding: "48px 0",
+          }}
+        >
           No entries yet.
         </p>
       )}
     </div>
   );
 }
-
