@@ -2,14 +2,25 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ACCOUNTS_URL =
   process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
 
+const images = [
+  "/assets/hero.png",
+  "/assets/hero2.png",
+  "/assets/hero3.png",
+  "/assets/hero4.png",
+  "/assets/hero5.png",
+  "/assets/hero6.png",
+  "/assets/hero7.png",
+];
+
 function LoginContent() {
   const router = useRouter();
   const [isMobile, setIsMobile] = useState(false);
-  const [illustrationFailed, setIllustrationFailed] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     async function checkAuth() {
@@ -31,6 +42,13 @@ function LoginContent() {
     update();
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    }, 5000);
+    return () => clearInterval(id);
   }, []);
 
   function handleLogin() {
@@ -59,28 +77,26 @@ function LoginContent() {
             alignItems: "center",
             justifyContent: "center",
             minHeight: "100vh",
+            position: "relative",
+            overflow: "hidden",
           }}
         >
-          {!illustrationFailed ? (
-            <img
-              src="/illustration.png"
-              alt="Kiv"
-              onError={() => setIllustrationFailed(true)}
-              style={{ maxWidth: "80%", opacity: 0.85 }}
-            />
-          ) : (
-            <span
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={currentImageIndex}
+              src={images[currentImageIndex]}
+              alt={`Kiv illustration ${currentImageIndex + 1}`}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 0.85, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
               style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontWeight: 800,
-                fontSize: "80px",
-                color: "#C4956A",
-                letterSpacing: "-2px",
+                maxWidth: "80%",
+                height: "auto",
+                filter: "invert(1) brightness(1.2)",
               }}
-            >
-              kiv
-            </span>
-          )}
+            />
+          </AnimatePresence>
         </div>
       )}
 
@@ -131,6 +147,7 @@ function LoginContent() {
           <div style={{ height: "48px" }} />
 
           <button
+            type="button"
             onClick={handleLogin}
             onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.88")}
             onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}

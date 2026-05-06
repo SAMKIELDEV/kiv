@@ -129,7 +129,7 @@ export default function Home() {
         }
         .kiv-cta {
           display: inline-flex; align-items: center; gap: 8px;
-          background: var(--accent); color: var(--bg);
+          background: var(--accent); color: var(--accent-foreground);
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-weight: 700; font-size: 15px;
           padding: 13px 28px; border-radius: 999px;
@@ -156,7 +156,7 @@ export default function Home() {
           filter: invert(1) brightness(1.2);
         }
         .kiv-footer {
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
+          border-top: 1px solid var(--border);
           padding: 80px 48px;
           display: flex;
           justify-content: space-between;
@@ -164,8 +164,6 @@ export default function Home() {
           gap: 64px;
           background: var(--bg);
         }
-        .dark .kiv-footer { border-top-color: rgba(255, 255, 255, 0.05); }
-        .light .kiv-footer { border-top-color: rgba(0, 0, 0, 0.05); }
 
         .kiv-footer-left { display: flex; flex-direction: column; gap: 4px; }
         .kiv-footer-brand {
@@ -208,7 +206,7 @@ export default function Home() {
         }
         .kiv-footer-link:hover { color: var(--text-primary); opacity: 0.8; }
         .kiv-footer-bottom {
-          border-top: 1px solid rgba(255, 255, 255, 0.04);
+          border-top: 1px solid var(--border);
           padding: 24px 48px;
           display: flex;
           justify-content: space-between;
