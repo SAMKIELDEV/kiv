@@ -3,12 +3,14 @@
 
 @theme inline {
   --color-background: var(--bg);
+  --color-bg: var(--bg);
   --color-foreground: var(--text-primary);
   --color-surface: var(--surface);
   --color-border: var(--border);
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   --color-accent-dark: var(--accent-dark);
 
   --font-sans: var(--font-jakarta), sans-serif;
