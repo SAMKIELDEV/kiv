@@ -73,12 +73,14 @@ export default function RootLayout({
               position="bottom-right"
               richColors
               closeButton
+              expand={false}
               toastOptions={{
                 style: {
                   background: "var(--surface)",
                   border: "1px solid var(--border)",
                   color: "var(--text-primary)",
                   fontFamily: "var(--font-jakarta), sans-serif",
+                  borderRadius: "12px",
                 },
               }}
             />

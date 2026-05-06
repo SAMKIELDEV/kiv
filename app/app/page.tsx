@@ -10,6 +10,7 @@ import { MOOD_EMOJIS, MOOD_LABELS, FACTORS, type MoodValue, type Entry, type Str
 import { WeeklyReflection } from "@/components/WeeklyReflection";
 import { MoodChart } from "@/components/MoodChart";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Button } from "@/components/ui/button";
 
 export default function DashboardPage() {
   const [todayEntry, setTodayEntry] = useState<Entry | null>(null);
@@ -76,8 +77,10 @@ export default function DashboardPage() {
       toast.error("Select a mood to check in");
       return;
     }
+
     setSubmitting(true);
-    try {
+
+    const checkInPromise = async () => {
       const res = await fetch("/api/entries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -97,16 +100,22 @@ export default function DashboardPage() {
 
       const entry = await res.json();
       setTodayEntry(entry);
-
+      
       fetch("/api/entries/streak")
         .then((r) => r.json())
         .then(setStreak)
         .catch(() => {});
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setSubmitting(false);
-    }
+        
+      return entry;
+    };
+
+    toast.promise(checkInPromise(), {
+      loading: "Saving your check-in...",
+      success: "Successfully logged! 🌿",
+      error: (err) => err.message || "Failed to check in",
+    });
+
+    setSubmitting(false);
   }
 
   if (loading) {
@@ -504,41 +513,17 @@ export default function DashboardPage() {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             disabled={submitting}
-            onMouseEnter={(e) => {
-              if (!submitting) e.currentTarget.style.opacity = "0.88";
-            }}
-            onMouseLeave={(e) => {
-              if (!submitting) e.currentTarget.style.opacity = "1";
-            }}
-            style={{
-              width: "100%",
-              marginTop: "32px",
-              backgroundColor: "var(--accent)",
-              color: "#FFFFFF",
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontWeight: 700,
-              fontSize: "15px",
-              padding: "14px",
-              borderRadius: "10px",
-              border: "none",
-              cursor: submitting ? "not-allowed" : "pointer",
-              opacity: submitting ? 0.6 : 1,
-              transition: "opacity 0.15s ease",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
+            className="w-full mt-8 bg-accent hover:opacity-90 text-white font-bold h-12 rounded-xl"
           >
             {submitting ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
               "Check in →"
             )}
-          </button>
+          </Button>
         </form>
       )}
 

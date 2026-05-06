@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Download, X } from "lucide-react";
+import { toast } from "sonner";
 
 export function PWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -16,8 +17,18 @@ export function PWAInstall() {
       return;
     }
 
-    // Detect iOS
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    // Detect iOS - strictly check for Apple devices
+    const isIOSDevice = [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ].includes(navigator.platform)
+    // iPad on iOS 13 detection
+    || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+    
     setIsIOS(isIOSDevice);
 
     const handler = (e: any) => {
@@ -47,7 +58,9 @@ export function PWAInstall() {
 
   const handleInstall = async () => {
     if (isIOS) {
-      alert("To install Kiv on your iPhone: tap the 'Share' button in Safari and then 'Add to Home Screen' 🌿");
+      toast.info("To install: Tap the 'Share' icon in Safari, scroll down, and select 'Add to Home Screen' 🌿", {
+        duration: 6000,
+      });
       return;
     }
 
