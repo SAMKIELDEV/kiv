@@ -50,9 +50,21 @@ export function NotificationToggle() {
       return;
     }
 
+    if (Notification.permission === "denied") {
+      toast.error("Notifications are blocked. Please enable them in your browser settings.");
+      return;
+    }
+
     setToggling(true);
     try {
       const registration = await navigator.serviceWorker.ready;
+      
+      // Request permission explicitly first for better UX
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        throw new Error("Permission not granted");
+      }
+
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
@@ -72,7 +84,7 @@ export function NotificationToggle() {
       }
     } catch (error) {
       console.error("Subscription failed:", error);
-      toast.error("Could not enable notifications. Please check your browser settings.");
+      toast.error("Could not enable notifications. Please ensure you've allowed permissions.");
     } finally {
       setToggling(false);
     }

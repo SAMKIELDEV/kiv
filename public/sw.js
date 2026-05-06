@@ -62,24 +62,26 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   if (!event.data) return;
 
+  let data = {};
   try {
-    const data = event.data.json();
-    const { title, body, icon, data: customData } = data;
-
-    const options = {
-      body: body || 'Time for your daily check-in.',
-      icon: icon || '/icons/icon-192x192.png',
-      badge: '/icons/icon-192x192.png',
-      data: customData || { url: '/app' },
-      vibrate: [100, 50, 100],
-    };
-
-    event.waitUntil(
-      self.registration.showNotification(title || 'Kiv', options)
-    );
-  } catch (error) {
-    console.error('Push event error:', error);
+    data = event.data.json();
+  } catch (e) {
+    data = { title: 'Kiv', body: event.data.text() };
   }
+
+  const { title, body, icon, data: customData } = data;
+
+  const options = {
+    body: body || 'Time for your daily check-in.',
+    icon: icon || '/icons/icon-192x192.png',
+    badge: '/icons/icon-192x192.png',
+    data: customData || { url: '/app' },
+    vibrate: [100, 50, 100],
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(title || 'Kiv', options)
+  );
 });
 
 self.addEventListener('notificationclick', (event) => {

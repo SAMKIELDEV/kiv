@@ -4,23 +4,17 @@ import { useEffect } from "react";
 
 export function PWARegistration() {
   useEffect(() => {
-    if ("serviceWorker" in navigator && process.env.NODE_ENV === "production") {
+    if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
         navigator.serviceWorker
           .register("/sw.js")
           .then((registration) => {
-            // console.log("SW registered:", registration);
+            // Service worker registered
           })
           .catch((error) => {
-            // console.error("SW registration failed:", error);
+            // Service worker registration failed
           });
       });
-    }
-    
-    // In development, you might want to skip registration or keep it quiet
-    if ("serviceWorker" in navigator && process.env.NODE_ENV !== "production") {
-      // Manual registration for testing if needed
-      // navigator.serviceWorker.register("/sw.js");
     }
   }, []);
 
