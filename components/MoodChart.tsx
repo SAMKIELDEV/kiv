@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Loader2, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 interface MoodPoint {
   date: string;
@@ -38,8 +39,16 @@ export function MoodChart() {
 
   if (loading) {
     return (
-      <div style={{ height: "100px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Loader2 size={16} className="animate-spin text-text-secondary opacity-30" />
+      <div style={{ marginTop: "32px", padding: "24px", backgroundColor: "var(--surface)", border: "1px solid var(--border)", borderRadius: "16px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "20px" }}>
+          <Skeleton className="w-4 h-4 rounded-full" />
+          <Skeleton className="h-3 w-24" />
+        </div>
+        <Skeleton className="h-[100px] w-full rounded-lg" />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "12px" }}>
+          <Skeleton className="h-2 w-12" />
+          <Skeleton className="h-2 w-8" />
+        </div>
       </div>
     );
   }
@@ -58,9 +67,6 @@ export function MoodChart() {
   const getY = (mood: number) => padding + chartHeight - ((mood - 1) / 4) * chartHeight;
 
   const points = data.map((p, i) => `${getX(i)},${getY(p.mood)}`).join(" ");
-  
-  // Create a smooth path using Catmull-Rom or simple Bezier
-  // For simplicity and minimalist look, a clean polyline with round joins is very "Kiv"
   
   return (
     <div

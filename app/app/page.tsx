@@ -9,6 +9,7 @@ import { getTodaysPrompt } from "@/lib/prompts";
 import { MOOD_EMOJIS, MOOD_LABELS, FACTORS, type MoodValue, type Entry, type StreakData } from "@/types";
 import { WeeklyReflection } from "@/components/WeeklyReflection";
 import { MoodChart } from "@/components/MoodChart";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function DashboardPage() {
   const [todayEntry, setTodayEntry] = useState<Entry | null>(null);
@@ -110,15 +111,28 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "80px 0",
-        }}
-      >
-        <Loader2 size={20} style={{ color: "var(--text-secondary)" }} className="animate-spin" />
+      <div style={{ display: "flex", flexDirection: "column", width: "100%", paddingBottom: "80px" }}>
+        <Skeleton className="h-9 w-[220px] mb-4" />
+        <div style={{ display: "flex", gap: "8px", marginBottom: "32px" }}>
+          <Skeleton className="h-7 w-[120px] rounded-full" />
+          <Skeleton className="h-7 w-[90px] rounded-full" />
+        </div>
+        <div style={{ height: "1px", backgroundColor: "var(--border)", marginBottom: "32px" }} />
+        <Skeleton className="h-4 w-[180px] mb-6" />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px", marginBottom: "40px" }}>
+          {[1, 2, 3, 4, 5].map(i => (
+            <Skeleton key={i} className="aspect-square rounded-xl" />
+          ))}
+        </div>
+        <Skeleton className="h-4 w-[200px] mb-6" />
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "40px" }}>
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <Skeleton key={i} className="h-8 w-[80px] rounded-full" />
+          ))}
+        </div>
+        <Skeleton className="h-4 w-full mb-3" />
+        <Skeleton className="h-24 w-full rounded-xl mb-8" />
+        <Skeleton className="h-12 w-full rounded-xl" />
       </div>
     );
   }

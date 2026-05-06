@@ -3,6 +3,7 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import type { Entry } from "@/types";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function HistoryPage() {
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -82,15 +83,25 @@ export default function HistoryPage() {
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "80px 0",
-        }}
-      >
-        <Loader2 size={20} style={{ color: "var(--text-secondary)" }} className="animate-spin" />
+      <div style={{ display: "flex", flexDirection: "column", width: "100%", paddingBottom: "80px" }}>
+        <Skeleton className="h-9 w-[180px] mb-8" />
+        
+        {/* Month Selector Skeleton */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "24px", marginBottom: "32px" }}>
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-6 w-[120px]" />
+          <Skeleton className="h-6 w-6 rounded-full" />
+        </div>
+
+        {/* Calendar Grid Skeleton */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px", marginBottom: "8px" }}>
+          {[1,2,3,4,5,6,7].map(i => <Skeleton key={i} className="h-3 w-full" />)}
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "4px" }}>
+          {Array.from({ length: 31 }).map((_, i) => (
+            <Skeleton key={i} className="aspect-square rounded-lg" />
+          ))}
+        </div>
       </div>
     );
   }
