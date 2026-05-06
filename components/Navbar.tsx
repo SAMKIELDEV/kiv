@@ -15,7 +15,7 @@ const navLinks = [
 
 export function Navbar() {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -36,9 +36,9 @@ export function Navbar() {
           <div className="kiv-nav-right">
             <button
               className="kiv-theme-btn"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
             >
-              {mounted ? (theme === "dark" ? <Sun size={16} /> : <Moon size={16} />) : <div style={{ width: 16, height: 16 }} />}
+              {mounted ? (resolvedTheme === "dark" ? <Sun size={16} /> : <Moon size={16} />) : <div style={{ width: 16, height: 16 }} />}
             </button>
             <Link href="/login" className="kiv-signin">Sign in</Link>
             
@@ -70,12 +70,12 @@ export function Navbar() {
               <button
                 className="mt-auto flex items-center gap-2 text-text-primary font-bold"
                 onClick={() => {
-                  setTheme(theme === "dark" ? "light" : "dark");
+                  setTheme(resolvedTheme === "dark" ? "light" : "dark");
                   setIsMenuOpen(false);
                 }}
               >
-                {mounted ? (theme === "dark" ? <Sun size={20} /> : <Moon size={20} />) : <div style={{ width: 20, height: 20 }} />}
-                {mounted ? (theme === "dark" ? "Light Mode" : "Dark Mode") : "Loading..."}
+                {mounted ? (resolvedTheme === "dark" ? <Sun size={20} /> : <Moon size={20} />) : <div style={{ width: 20, height: 20 }} />}
+                {mounted ? (resolvedTheme === "dark" ? "Light Mode" : "Dark Mode") : "Loading..."}
               </button>
             </motion.div>
           )}

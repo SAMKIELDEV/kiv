@@ -14,7 +14,7 @@ interface AppNavProps {
 
 export function AppNav({ variant = "app" }: AppNavProps) {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const auth = useAuth();
   const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -61,7 +61,7 @@ export function AppNav({ variant = "app" }: AppNavProps) {
   }
 
   function toggleTheme() {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }
 
   const linkStyle = (active: boolean): React.CSSProperties => ({
@@ -189,7 +189,7 @@ export function AppNav({ variant = "app" }: AppNavProps) {
               style={iconBtnStyle}
             >
               {mounted ? (
-                theme === "dark" ? <Sun size={16} /> : <Moon size={16} />
+                resolvedTheme === "dark" ? <Sun size={16} /> : <Moon size={16} />
               ) : (
                 <span style={{ width: 16, height: 16, display: "inline-block" }} />
               )}
@@ -283,7 +283,7 @@ export function AppNav({ variant = "app" }: AppNavProps) {
               }}
             >
               {mounted ? (
-                theme === "dark" ? (
+                resolvedTheme === "dark" ? (
                   <>
                     <Sun size={18} />
                     Light mode
