@@ -1,7 +1,7 @@
-// worker/index.ts
-declare let self: ServiceWorkerGlobalScope;
+export {};
+const sw = self as unknown as ServiceWorkerGlobalScope;
 
-self.addEventListener('push', (event) => {
+sw.addEventListener('push', (event) => {
   if (!event.data) return;
 
   let data = {};
@@ -22,24 +22,24 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(title || 'Kiv', options)
+    sw.registration.showNotification(title || 'Kiv', options)
   );
 });
 
-self.addEventListener('notificationclick', (event) => {
+sw.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const urlToOpen = (event.notification.data as any)?.url || '/app';
 
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+    sw.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
         if (client.url === urlToOpen && 'focus' in client) {
           return client.focus();
         }
       }
-      if (self.clients.openWindow) {
-        return self.clients.openWindow(urlToOpen);
+      if (sw.clients.openWindow) {
+        return sw.clients.openWindow(urlToOpen);
       }
     })
   );
