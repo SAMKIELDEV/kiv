@@ -4,7 +4,6 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "next-themes";
 import { AppNav } from "@/app/components/AppNav";
 
 const ACCOUNTS_URL =
@@ -22,14 +21,8 @@ const images = [
 
 function LoginContent() {
   const router = useRouter();
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     async function checkAuth() {
@@ -68,9 +61,6 @@ function LoginContent() {
     )}`;
   }
 
-  const isDark = mounted && resolvedTheme === "dark";
-  const imageFilter = isDark ? "invert(1) brightness(1.2)" : "none";
-
   return (
     <div
       style={{
@@ -106,6 +96,7 @@ function LoginContent() {
                 key={currentImageIndex}
                 src={images[currentImageIndex]}
                 alt={`Kiv illustration ${currentImageIndex + 1}`}
+                className="kiv-login-img"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 0.9, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.05 }}
@@ -113,8 +104,6 @@ function LoginContent() {
                 style={{
                   maxWidth: "80%",
                   height: "auto",
-                  filter: imageFilter,
-                  transition: "filter 0.3s ease",
                 }}
               />
             </AnimatePresence>
