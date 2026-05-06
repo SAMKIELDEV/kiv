@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Download, FileJson, Trash2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { NotificationToggle } from "@/components/NotificationToggle";
+import { NotificationTest } from "@/components/NotificationTest";
 
 interface UserInfo {
   name: string;
@@ -56,6 +58,56 @@ export default function SettingsPage() {
     }
   }
 
+  async function handleExportJSON() {
+    try {
+      const res = await fetch("/api/entries");
+      if (res.ok) {
+        const data = await res.json();
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `kiv-export-${new Date().toISOString().split("T")[0]}.json`;
+        a.click();
+        toast.success("Data exported as JSON");
+      }
+    } catch {
+      toast.error("Failed to export data");
+    }
+  }
+
+  async function handleExportCSV() {
+    try {
+      const res = await fetch("/api/entries");
+      if (res.ok) {
+        const data = await res.json();
+        const headers = ["date", "mood", "prompt", "promptResponse", "factors", "note"];
+        const csvContent = [
+          headers.join(","),
+          ...data.map((e: any) =>
+            headers
+              .map((header) => {
+                let val = e[header] || "";
+                if (Array.isArray(val)) val = val.join(";");
+                return `"${String(val).replace(/"/g, '""')}"`;
+              })
+              .join(",")
+          ),
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `kiv-export-${new Date().toISOString().split("T")[0]}.csv`;
+        a.click();
+        toast.success("Data exported as CSV");
+      }
+    } catch {
+      toast.error("Failed to export data");
+    }
+  }
+
   if (loading) {
     return (
       <div
@@ -104,7 +156,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+    <div style={{ display: "flex", flexDirection: "column", width: "100%", paddingBottom: "80px" }}>
       <h1
         style={{
           fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -118,164 +170,223 @@ export default function SettingsPage() {
         Settings
       </h1>
 
-      <p style={sectionLabel}>Account</p>
-
-      <div style={rowBase}>
-        <span style={labelStyle}>Name</span>
-        <span style={valueStyle}>{user?.name || "—"}</span>
-      </div>
-
-      <div style={rowBase}>
-        <span style={labelStyle}>Email</span>
-        <span style={valueStyle}>{user?.email || "—"}</span>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "16px 0",
-        }}
-      >
-        <span style={labelStyle}>Manage account</span>
+      {/* ACCOUNT SECTION */}
+      <div style={{ marginBottom: "48px" }}>
+        <p style={sectionLabel}>Account</p>
+        <div style={rowBase}>
+          <span style={labelStyle}>Name</span>
+          <span style={valueStyle}>{user?.name || "—"}</span>
+        </div>
+        <div style={rowBase}>
+          <span style={labelStyle}>Email</span>
+          <span style={valueStyle}>{user?.email || "—"}</span>
+        </div>
         <a
           href={ACCOUNTS_URL}
           target="_blank"
           rel="noopener noreferrer"
           style={{
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-            fontWeight: 600,
-            fontSize: "13px",
-            color: "var(--accent)",
-            textDecoration: "none",
-          }}
-        >
-          account.samkiel.tech →
-        </a>
-      </div>
-
-      <div style={{ height: "40px" }} />
-
-      <p style={sectionLabel}>Data</p>
-
-      {!confirmDelete ? (
-        <div
-          style={{
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             padding: "16px 0",
-            gap: "16px",
+            textDecoration: "none",
+            color: "var(--accent)",
           }}
         >
+          <span style={{ ...labelStyle, color: "var(--accent)" }}>SAMKIEL Account Settings</span>
+          <ArrowRight size={14} />
+        </a>
+      </div>
+
+      {/* NOTIFICATIONS SECTION */}
+      <div style={{ marginBottom: "48px" }}>
+        <p style={sectionLabel}>Reminders</p>
+        <NotificationToggle />
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <NotificationTest />
+        </div>
+      </div>
+
+      {/* DATA MANAGEMENT SECTION */}
+      <div style={{ marginBottom: "48px" }}>
+        <p style={sectionLabel}>Data Management</p>
+        
+        <div style={rowBase}>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <span
-              style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontWeight: 600,
-                fontSize: "14px",
-                color: "var(--destructive)",
-              }}
-            >
-              Delete all Kiv data
-            </span>
-            <span
-              style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontSize: "12px",
-                color: "var(--text-secondary)",
-                marginTop: "2px",
-              }}
-            >
-              This permanently removes all your check-ins and cannot be undone.
+            <span style={valueStyle}>Export Data</span>
+            <span style={{ ...labelStyle, fontSize: "12px", marginTop: "2px" }}>
+              Download your entire journaling history.
             </span>
           </div>
-          <button
-            type="button"
-            onClick={() => setConfirmDelete(true)}
-            onMouseEnter={() => setHoverDelete(true)}
-            onMouseLeave={() => setHoverDelete(false)}
-            style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontWeight: 600,
-              fontSize: "13px",
-              color: hoverDelete ? "#FFFFFF" : "var(--destructive)",
-              backgroundColor: hoverDelete ? "var(--destructive)" : "transparent",
-              border: "1px solid var(--destructive)",
-              borderRadius: "8px",
-              padding: "6px 14px",
-              cursor: "pointer",
-              transition: "all 0.15s ease",
-              flexShrink: 0,
-            }}
-          >
-            Delete
-          </button>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              onClick={handleExportCSV}
+              style={{
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                color: "var(--text-primary)",
+                padding: "8px 12px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "12px",
+                fontWeight: 600,
+              }}
+            >
+              <Download size={14} />
+              CSV
+            </button>
+            <button
+              onClick={handleExportJSON}
+              style={{
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                color: "var(--text-primary)",
+                padding: "8px 12px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "12px",
+                fontWeight: 600,
+              }}
+            >
+              <FileJson size={14} />
+              JSON
+            </button>
+          </div>
         </div>
-      ) : (
-        <div style={{ padding: "16px 0" }}>
-          <p
-            style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: "14px",
-              color: "var(--text-primary)",
-            }}
-          >
-            Are you sure? This cannot be undone.
-          </p>
+
+        {!confirmDelete ? (
           <div
             style={{
               display: "flex",
-              gap: "8px",
-              marginTop: "12px",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "24px 0",
+              gap: "16px",
             }}
           >
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <span
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  color: "var(--destructive)",
+                }}
+              >
+                Delete all data
+              </span>
+              <span
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontSize: "12px",
+                  color: "var(--text-secondary)",
+                  marginTop: "2px",
+                }}
+              >
+                Permanently removes all your Kiv check-ins.
+              </span>
+            </div>
             <button
               type="button"
-              onClick={() => setConfirmDelete(false)}
-              disabled={deleting}
+              onClick={() => setConfirmDelete(true)}
               style={{
                 fontFamily: "'Plus Jakarta Sans', sans-serif",
                 fontWeight: 600,
-                fontSize: "13px",
-                border: "1px solid var(--border)",
+                fontSize: "12px",
+                color: "var(--destructive)",
                 backgroundColor: "transparent",
-                color: "var(--text-primary)",
+                border: "1px solid var(--destructive)",
                 borderRadius: "8px",
-                padding: "8px 16px",
-                cursor: deleting ? "not-allowed" : "pointer",
-                opacity: deleting ? 0.5 : 1,
+                padding: "6px 14px",
+                cursor: "pointer",
+                transition: "all 0.15s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "var(--destructive)";
+                e.currentTarget.style.color = "white";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "var(--destructive)";
               }}
             >
-              Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleDeleteData}
-              disabled={deleting}
-              style={{
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontWeight: 600,
-                fontSize: "13px",
-                backgroundColor: "var(--destructive)",
-                color: "#FFFFFF",
-                border: "none",
-                borderRadius: "8px",
-                padding: "8px 16px",
-                cursor: deleting ? "not-allowed" : "pointer",
-                opacity: deleting ? 0.6 : 1,
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              {deleting && <Loader2 size={14} className="animate-spin" />}
-              Delete everything
+              Delete
             </button>
           </div>
-        </div>
-      )}
+        ) : (
+          <div style={{ padding: "24px 16px", backgroundColor: "rgba(239, 68, 68, 0.05)", borderRadius: "12px", border: "1px solid rgba(239, 68, 68, 0.2)", marginTop: "16px" }}>
+            <p
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontSize: "14px",
+                color: "var(--text-primary)",
+                fontWeight: 600,
+              }}
+            >
+              Delete everything?
+            </p>
+            <p style={{ ...labelStyle, fontSize: "12px", marginTop: "4px" }}>
+              This action is irreversible. All your logs will be lost forever.
+            </p>
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                marginTop: "16px",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(false)}
+                disabled={deleting}
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "13px",
+                  border: "1px solid var(--border)",
+                  backgroundColor: "var(--surface)",
+                  color: "var(--text-primary)",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  cursor: deleting ? "not-allowed" : "pointer",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteData}
+                disabled={deleting}
+                style={{
+                  fontFamily: "'Plus Jakarta Sans', sans-serif",
+                  fontWeight: 600,
+                  fontSize: "13px",
+                  backgroundColor: "var(--destructive)",
+                  color: "#FFFFFF",
+                  border: "none",
+                  borderRadius: "8px",
+                  padding: "8px 16px",
+                  cursor: deleting ? "not-allowed" : "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                {deleting && <Loader2 size={14} className="animate-spin" />}
+                <Trash2 size={14} />
+                Delete forever
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
