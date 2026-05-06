@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ducanh2912/next-pwa": "^10.2.9",
-    "@samkiel/authsdk": "^1.0.1",
+    "@samkiel/authsdk": "file:../authsdk",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
     "framer-motion": "^12.38.0",
