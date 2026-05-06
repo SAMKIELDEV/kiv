@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Loader2, Trash2, ArrowRight } from "lucide-react";
+import { Loader2, Trash2, ArrowRight, Smartphone, Download } from "lucide-react";
 import { toast } from "sonner";
 import { NotificationToggle } from "@/components/NotificationToggle";
 import { NotificationTest } from "@/components/NotificationTest";
@@ -20,6 +20,18 @@ export default function SettingsPage() {
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [hoverDelete, setHoverDelete] = useState(false);
+  const [canInstall, setCanInstall] = useState(false);
+
+  useEffect(() => {
+    // Check if PWA installation is possible
+    const checkInstallable = () => {
+      setCanInstall(!!(window as any).canInstallPWA);
+    };
+
+    checkInstallable();
+    const interval = setInterval(checkInstallable, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const fetchUser = useCallback(async () => {
     try {
@@ -150,6 +162,65 @@ export default function SettingsPage() {
           <ArrowRight size={14} />
         </a>
       </div>
+
+      {/* APP SECTION */}
+      {canInstall && (
+        <div style={{ marginBottom: "48px" }}>
+          <p style={sectionLabel}>App</p>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "16px 0",
+              borderBottom: "1px solid var(--border)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "8px",
+                  backgroundColor: "rgba(196, 149, 106, 0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--accent)",
+                }}
+              >
+                <Smartphone size={18} />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <span style={valueStyle}>Install Kiv</span>
+                <span style={{ ...labelStyle, fontSize: "12px", marginTop: "2px" }}>
+                  Add to your home screen for a native experience.
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => (window as any).triggerPWAInstall?.()}
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 600,
+                fontSize: "12px",
+                color: "var(--text-primary)",
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                padding: "8px 16px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              <Download size={14} />
+              Install
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* NOTIFICATIONS SECTION */}
       <div style={{ marginBottom: "48px" }}>

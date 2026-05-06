@@ -51,6 +51,8 @@ export const viewport = {
   userScalable: false,
 };
 
+import { PWAInstall } from "@/components/PWAInstall";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -65,6 +67,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <AuthProvider baseUrl={AUTH_URL}>
             <PWARegistration />
+            <PWAInstall />
             {children}
             <Toaster
               position="bottom-right"
