@@ -151,7 +151,7 @@ export default function SettingsPage() {
             textDecoration: "none",
           }}
         >
-          id.samkiel.tech →
+          account.samkiel.tech →
         </a>
       </div>
 
