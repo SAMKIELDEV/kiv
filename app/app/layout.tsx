@@ -3,8 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import { Loader2 } from "lucide-react";
-import { Navbar } from "@/components/Navbar";
-import { motion } from "framer-motion";
+import { AppNav } from "@/app/components/AppNav";
 
 interface AuthUser {
   userId: string;
@@ -20,6 +19,7 @@ const APP_URL =
 export default function AppLayout({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   const fetchUser = useCallback(async () => {
     try {
@@ -41,36 +41,67 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     fetchUser();
   }, [fetchUser]);
 
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   if (loading) {
     return (
-      <div className="flex-1 flex items-center justify-center min-h-screen bg-bg">
-        <Loader2 className="w-6 h-6 text-text-secondary animate-spin" />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          backgroundColor: "var(--bg)",
+        }}
+      >
+        <Loader2
+          size={24}
+          style={{ color: "var(--text-secondary)" }}
+          className="animate-spin"
+        />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-screen bg-bg relative">
-      <Navbar />
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "var(--bg)",
+        color: "var(--text-primary)",
+        fontFamily: "'Plus Jakarta Sans', sans-serif",
+      }}
+    >
+      <AppNav />
 
-      {/* Content */}
-      <main className="flex-1 w-full max-w-[660px] mx-auto px-6 md:px-[48px] pt-[60px] pb-12">
-        {user && (
-          <script
-            id="user-data"
-            type="application/json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(user) }}
-          />
-        )}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+      <main
+        style={{
+          maxWidth: "680px",
+          margin: "0 auto",
+          paddingTop: "60px",
+        }}
+      >
+        <div
+          style={{
+            padding: isMobile ? "32px 20px" : "40px 48px",
+          }}
         >
+          {user && (
+            <script
+              id="user-data"
+              type="application/json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(user) }}
+            />
+          )}
           {children}
-        </motion.div>
+        </div>
       </main>
     </div>
   );
 }
-

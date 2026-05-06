@@ -45,7 +45,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${jakarta.variable} ${syne.variable} h-full`} suppressHydrationWarning>
-      <body className="min-h-full bg-bg text-text-primary font-body antialiased">
+      <body
+        className="min-h-full bg-bg text-text-primary font-body antialiased"
+        style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
+      >
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <AuthProvider baseUrl={AUTH_URL}>
             {children}
