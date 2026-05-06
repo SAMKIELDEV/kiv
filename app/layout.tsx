@@ -68,8 +68,9 @@ export default function RootLayout({
             {children}
             <Toaster
               position="bottom-right"
-              richColors
+              theme="dark"
               expand={false}
+              closeButton={false}
               toastOptions={{
                 style: {
                   background: "var(--surface)",
@@ -77,8 +78,8 @@ export default function RootLayout({
                   color: "var(--text-primary)",
                   fontFamily: "var(--font-jakarta), sans-serif",
                   borderRadius: "12px",
+                  padding: "12px 16px",
                 },
-                icon: null,
               }}
             />
             <Analytics />
