@@ -88,3 +88,12 @@ body {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+.kiv-login-img {
+  filter: none;
+  transition: filter 0.3s ease;
+}
+
+.dark .kiv-login-img {
+  filter: invert(1) brightness(1.2);
+}

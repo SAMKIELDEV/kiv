@@ -4,6 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTheme } from "next-themes";
 import { AppNav } from "@/app/components/AppNav";
 
 const ACCOUNTS_URL =
@@ -19,23 +20,16 @@ const images = [
   "/assets/hero7.png",
 ];
 
-const darkPalette: React.CSSProperties = {
-  // Override CSS variables for the entire login subtree so AppNav and
-  // children inherit the same warm-dark palette as the illustration.
-  ["--bg" as string]: "#1A1410",
-  ["--bg-rgb" as string]: "26, 20, 16",
-  ["--surface" as string]: "#241B16",
-  ["--border" as string]: "rgba(255, 255, 255, 0.08)",
-  ["--text-primary" as string]: "#F0EDE8",
-  ["--text-secondary" as string]: "#8A8278",
-  backgroundColor: "#1A1410",
-  color: "#F0EDE8",
-};
-
 function LoginContent() {
   const router = useRouter();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     async function checkAuth() {
@@ -74,11 +68,15 @@ function LoginContent() {
     )}`;
   }
 
+  const isDark = mounted && resolvedTheme === "dark";
+  const imageFilter = isDark ? "invert(1) brightness(1.2)" : "none";
+
   return (
     <div
       style={{
-        ...darkPalette,
         minHeight: "100vh",
+        backgroundColor: "var(--bg)",
+        color: "var(--text-primary)",
         fontFamily: "'Plus Jakarta Sans', sans-serif",
       }}
     >
@@ -109,13 +107,14 @@ function LoginContent() {
                 src={images[currentImageIndex]}
                 alt={`Kiv illustration ${currentImageIndex + 1}`}
                 initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 0.85, scale: 1 }}
+                animate={{ opacity: 0.9, scale: 1 }}
                 exit={{ opacity: 0, scale: 1.05 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
                 style={{
                   maxWidth: "80%",
                   height: "auto",
-                  filter: "invert(1) brightness(1.2)",
+                  filter: imageFilter,
+                  transition: "filter 0.3s ease",
                 }}
               />
             </AnimatePresence>
@@ -195,8 +194,8 @@ function LoginContent() {
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                 style={{
                   width: "100%",
-                  backgroundColor: "#C4956A",
-                  color: "#FFFFFF",
+                  backgroundColor: "var(--accent)",
+                  color: "var(--accent-foreground)",
                   fontFamily: "'Plus Jakarta Sans', sans-serif",
                   fontWeight: 700,
                   fontSize: "15px",
@@ -223,7 +222,7 @@ function LoginContent() {
                 <a
                   href="https://account.samkiel.tech/register"
                   style={{
-                    color: "#C4956A",
+                    color: "var(--accent)",
                     fontWeight: 600,
                     textDecoration: "none",
                   }}
@@ -276,11 +275,11 @@ export default function LoginPage() {
       fallback={
         <div
           style={{
-            ...darkPalette,
             minHeight: "100vh",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            backgroundColor: "var(--bg)",
           }}
         />
       }
