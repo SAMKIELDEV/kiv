@@ -7,13 +7,18 @@ export function PWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
     // Check if already in standalone mode
-    if (window.matchMedia("(display-mode: standalone)").matches) {
+    if (window.matchMedia("(display-mode: standalone)").matches || (window.navigator as any).standalone) {
       setIsStandalone(true);
       return;
     }
+
+    // Detect iOS
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsIOS(isIOSDevice);
 
     const handler = (e: any) => {
       // Prevent the mini-infobar from appearing on mobile
@@ -41,6 +46,11 @@ export function PWAInstall() {
   }, []);
 
   const handleInstall = async () => {
+    if (isIOS) {
+      alert("To install Kiv on your iPhone: tap the 'Share' button in Safari and then 'Add to Home Screen' 🌿");
+      return;
+    }
+
     if (!deferredPrompt) return;
 
     // Show the install prompt
@@ -64,11 +74,11 @@ export function PWAInstall() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       (window as any).triggerPWAInstall = handleInstall;
-      (window as any).canInstallPWA = !!deferredPrompt && !isStandalone;
+      (window as any).canInstallPWA = (!!deferredPrompt || isIOS) && !isStandalone;
     }
-  }, [deferredPrompt, isStandalone]);
+  }, [deferredPrompt, isStandalone, isIOS]);
 
-  if (!isVisible || !deferredPrompt || isStandalone) return null;
+  if (!isVisible || (!deferredPrompt && !isIOS) || isStandalone) return null;
 
   return (
     <div
@@ -145,7 +155,7 @@ export function PWAInstall() {
             cursor: "pointer",
           }}
         >
-          Install
+          {isIOS ? "How to" : "Install"}
         </button>
         <button
           onClick={dismiss}
