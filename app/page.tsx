@@ -274,7 +274,7 @@ export default function Home() {
               <Link href="/login" className="kiv-cta">
                 Get started →
               </Link>
-              <p className="kiv-fine-print">Free forever · No credit card</p>
+              <p className="kiv-fine-print">Start Free · No credit card</p>
             </div>
             <div 
               className="kiv-hero-image"
@@ -323,8 +323,8 @@ export default function Home() {
             </div>
             <div className="kiv-footer-col">
               <span className="kiv-footer-col-label">Company</span>
-              <a href="https://samkiel.tech" target="_blank" rel="noopener noreferrer" className="kiv-footer-link">About</a>
-              <a href="mailto:hello@samkiel.tech" className="kiv-footer-link">Contact</a>
+              <a href="https://samkiel.tech/#about" target="_blank" rel="noopener noreferrer" className="kiv-footer-link">About</a>
+              <a href="mailto:kiv@samkiel.tech" className="kiv-footer-link">Contact</a>
             </div>
           </div>
         </footer>
@@ -335,7 +335,7 @@ export default function Home() {
             © {new Date().getFullYear()} Kiv. All rights reserved.
           </span>
           <div className="kiv-footer-bottom-links">
-            <a href="https://samkiel.tech" target="_blank" rel="noopener noreferrer">SAMKIEL</a>
+            <a href="https://samkiel.tech" target="_blank" rel="noopener noreferrer">SAMKIEL TECHNOLOGIES LTD</a>
           </div>
         </div>
       </div>
