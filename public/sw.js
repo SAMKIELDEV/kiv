@@ -58,3 +58,45 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+
+  try {
+    const data = event.data.json();
+    const { title, body, icon, data: customData } = data;
+
+    const options = {
+      body: body || 'Time for your daily check-in.',
+      icon: icon || '/icons/icon-192x192.png',
+      badge: '/icons/icon-192x192.png',
+      data: customData || { url: '/app' },
+      vibrate: [100, 50, 100],
+    };
+
+    event.waitUntil(
+      self.registration.showNotification(title || 'Kiv', options)
+    );
+  } catch (error) {
+    console.error('Push event error:', error);
+  }
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const urlToOpen = event.notification.data?.url || '/app';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      for (let i = 0; i < windowClients.length; i++) {
+        const client = windowClients[i];
+        if (client.url === urlToOpen && 'focus' in client) {
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(urlToOpen);
+      }
+    })
+  );
+});

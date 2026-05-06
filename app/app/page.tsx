@@ -7,6 +7,8 @@ import { Loader2 } from "lucide-react";
 import { getGreeting, getTodayDateString, formatDate } from "@/lib/utils";
 import { getTodaysPrompt } from "@/lib/prompts";
 import { MOOD_EMOJIS, MOOD_LABELS, FACTORS, type MoodValue, type Entry, type StreakData } from "@/types";
+import { NotificationToggle } from "@/components/NotificationToggle";
+import { NotificationTest } from "@/components/NotificationTest";
 
 export default function DashboardPage() {
   const [todayEntry, setTodayEntry] = useState<Entry | null>(null);
@@ -525,6 +527,9 @@ export default function DashboardPage() {
           </button>
         </form>
       )}
+
+      <NotificationToggle />
+      <NotificationTest />
     </div>
   );
 }
