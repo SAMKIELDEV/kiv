@@ -17,6 +17,7 @@ export default function DashboardPage() {
   const [streak, setStreak] = useState<StreakData | null>(null);
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
+  const [guessedCheckedIn, setGuessedCheckedIn] = useState(false);
 
   const [mood, setMood] = useState<MoodValue | null>(null);
   const [hoveredMood, setHoveredMood] = useState<MoodValue | null>(null);
@@ -29,6 +30,14 @@ export default function DashboardPage() {
 
   const todaysPrompt = getTodaysPrompt();
 
+  useEffect(() => {
+    const today = getTodayDateString();
+    const lastCheckin = localStorage.getItem("kiv-last-checkin");
+    if (lastCheckin === today) {
+      setGuessedCheckedIn(true);
+    }
+  }, []);
+
   const fetchData = useCallback(async () => {
     try {
       const today = getTodayDateString();
@@ -40,6 +49,9 @@ export default function DashboardPage() {
       if (entryRes.ok) {
         const entry = await entryRes.json();
         setTodayEntry(entry);
+        localStorage.setItem("kiv-last-checkin", today);
+      } else {
+        localStorage.removeItem("kiv-last-checkin");
       }
 
       if (streakRes.ok) {
@@ -53,7 +65,7 @@ export default function DashboardPage() {
         setUserName(user.name || "");
       }
     } catch {
-      // Error handling without console.log
+      // Quiet fail
     } finally {
       setLoading(false);
     }
@@ -100,6 +112,8 @@ export default function DashboardPage() {
 
       const entry = await res.json();
       setTodayEntry(entry);
+      const today = getTodayDateString();
+      localStorage.setItem("kiv-last-checkin", today);
       
       fetch("/api/entries/streak")
         .then((r) => r.json())
@@ -127,21 +141,41 @@ export default function DashboardPage() {
           <Skeleton className="h-7 w-[90px] rounded-full" />
         </div>
         <div style={{ height: "1px", backgroundColor: "var(--border)", marginBottom: "32px" }} />
-        <Skeleton className="h-4 w-[180px] mb-6" />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px", marginBottom: "40px" }}>
-          {[1, 2, 3, 4, 5].map(i => (
-            <Skeleton key={i} className="aspect-square rounded-xl" />
-          ))}
-        </div>
-        <Skeleton className="h-4 w-[200px] mb-6" />
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "40px" }}>
-          {[1, 2, 3, 4, 5, 6].map(i => (
-            <Skeleton key={i} className="h-8 w-[80px] rounded-full" />
-          ))}
-        </div>
-        <Skeleton className="h-4 w-full mb-3" />
-        <Skeleton className="h-24 w-full rounded-xl mb-8" />
-        <Skeleton className="h-12 w-full rounded-xl" />
+
+        {guessedCheckedIn ? (
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <Skeleton className="h-5 w-40 mb-5" />
+            <div style={{ 
+              backgroundColor: "var(--surface)", 
+              border: "1px solid var(--border)", 
+              borderRadius: "14px", 
+              padding: "24px" 
+            }}>
+              <Skeleton className="h-4 w-32 mb-4" />
+              <Skeleton className="h-10 w-10 mb-6" />
+              <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+                <Skeleton className="h-6 w-16 rounded-full" />
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-2/3" />
+            </div>
+          </div>
+        ) : (
+          <>
+            <Skeleton className="h-4 w-[180px] mb-6" />
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px", marginBottom: "40px" }}>
+              {[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="aspect-square rounded-xl" />)}
+            </div>
+            <Skeleton className="h-4 w-[200px] mb-6" />
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "40px" }}>
+              {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="h-8 w-[80px] rounded-full" />)}
+            </div>
+            <Skeleton className="h-4 w-full mb-3" />
+            <Skeleton className="h-24 w-full rounded-xl mb-8" />
+            <Skeleton className="h-12 w-full rounded-xl" />
+          </>
+        )}
       </div>
     );
   }

@@ -51,13 +51,20 @@ export function NotificationToggle() {
   }
 
   async function subscribe() {
-    if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
-      toast.error("Push notifications are not configured: Missing Public Key.");
+    // 1. Request permission IMMEDIATELY to satisfy Chrome's user gesture requirement
+    const permission = await Notification.requestPermission();
+    
+    if (permission === "denied") {
+      toast.error("Notifications are blocked. Please click the lock icon in your browser address bar to allow them. 🔔");
       return;
     }
 
-    if (Notification.permission === "denied") {
-      toast.error("Notifications are blocked. Please enable them in your browser settings.");
+    if (permission !== "granted") {
+      return;
+    }
+
+    if (!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+      toast.error("Push notifications are not configured: Missing Public Key.");
       return;
     }
 
@@ -70,12 +77,6 @@ export function NotificationToggle() {
 
       const registration = await Promise.race([swReady, timeout]) as ServiceWorkerRegistration;
       
-      // Request permission explicitly first for better UX
-      const permission = await Notification.requestPermission();
-      if (permission !== "granted") {
-        throw new Error("Permission not granted");
-      }
-
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
@@ -95,7 +96,7 @@ export function NotificationToggle() {
       }
     } catch (error) {
       console.error("Subscription failed:", error);
-      toast.error("Could not enable notifications. Please ensure you've allowed permissions.");
+      toast.error("Could not enable notifications. Please try again.");
     } finally {
       setToggling(false);
     }
