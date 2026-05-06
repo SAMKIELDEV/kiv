@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { Loader2, Download, FileJson, Trash2, ArrowRight } from "lucide-react";
+import { Loader2, Trash2, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 import { NotificationToggle } from "@/components/NotificationToggle";
 import { NotificationTest } from "@/components/NotificationTest";
@@ -58,55 +58,7 @@ export default function SettingsPage() {
     }
   }
 
-  async function handleExportJSON() {
-    try {
-      const res = await fetch("/api/entries");
-      if (res.ok) {
-        const data = await res.json();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `kiv-export-${new Date().toISOString().split("T")[0]}.json`;
-        a.click();
-        toast.success("Data exported as JSON");
-      }
-    } catch {
-      toast.error("Failed to export data");
-    }
-  }
 
-  async function handleExportCSV() {
-    try {
-      const res = await fetch("/api/entries");
-      if (res.ok) {
-        const data = await res.json();
-        const headers = ["date", "mood", "prompt", "promptResponse", "factors", "note"];
-        const csvContent = [
-          headers.join(","),
-          ...data.map((e: any) =>
-            headers
-              .map((header) => {
-                let val = e[header] || "";
-                if (Array.isArray(val)) val = val.join(";");
-                return `"${String(val).replace(/"/g, '""')}"`;
-              })
-              .join(",")
-          ),
-        ].join("\n");
-
-        const blob = new Blob([csvContent], { type: "text/csv" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `kiv-export-${new Date().toISOString().split("T")[0]}.csv`;
-        a.click();
-        toast.success("Data exported as CSV");
-      }
-    } catch {
-      toast.error("Failed to export data");
-    }
-  }
 
   if (loading) {
     return (
@@ -194,7 +146,7 @@ export default function SettingsPage() {
             color: "var(--accent)",
           }}
         >
-          <span style={{ ...labelStyle, color: "var(--accent)" }}>SAMKIEL Account Settings</span>
+          <span style={{ ...labelStyle, color: "var(--accent)" }}>SAMKIEL ID Settings</span>
           <ArrowRight size={14} />
         </a>
       </div>
@@ -212,54 +164,7 @@ export default function SettingsPage() {
       <div style={{ marginBottom: "48px" }}>
         <p style={sectionLabel}>Data Management</p>
         
-        <div style={rowBase}>
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <span style={valueStyle}>Export Data</span>
-            <span style={{ ...labelStyle, fontSize: "12px", marginTop: "2px" }}>
-              Download your entire journaling history.
-            </span>
-          </div>
-          <div style={{ display: "flex", gap: "8px" }}>
-            <button
-              onClick={handleExportCSV}
-              style={{
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                color: "var(--text-primary)",
-                padding: "8px 12px",
-                borderRadius: "8px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                fontSize: "12px",
-                fontWeight: 600,
-              }}
-            >
-              <Download size={14} />
-              CSV
-            </button>
-            <button
-              onClick={handleExportJSON}
-              style={{
-                background: "var(--surface)",
-                border: "1px solid var(--border)",
-                color: "var(--text-primary)",
-                padding: "8px 12px",
-                borderRadius: "8px",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                fontSize: "12px",
-                fontWeight: 600,
-              }}
-            >
-              <FileJson size={14} />
-              JSON
-            </button>
-          </div>
-        </div>
+
 
         {!confirmDelete ? (
           <div
