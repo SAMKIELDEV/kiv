@@ -4,6 +4,12 @@ import { jwtVerify } from "jose";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function proxy(request: NextRequest) {
+  // Fail loudly if JWT_SECRET is missing in production
+  if (!JWT_SECRET && process.env.NODE_ENV === "production") {
+    console.error("[CRITICAL] JWT_SECRET is not defined");
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+
   const { pathname } = request.nextUrl;
 
   const isAuthRoute = pathname === "/" || pathname === "/login";
@@ -24,7 +30,10 @@ export async function proxy(request: NextRequest) {
       payload = verified.payload;
       isValid = true;
     } catch (error) {
-      console.error("[PROXY] JWT verification failed:", error);
+      // Don't log full error in prod to avoid noise, but keep for debugging
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[PROXY] JWT verification failed:", error);
+      }
       isValid = false;
     }
   }
@@ -32,26 +41,23 @@ export async function proxy(request: NextRequest) {
   if (isAuthRoute) {
     if (isValid) {
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
-      return NextResponse.redirect(`${appUrl}/app`);
+      return NextResponse.redirect(new URL("/app", appUrl));
     }
     return NextResponse.next();
   }
 
   if (isProtectedRoute) {
     if (!isValid) {
-      console.log("[PROXY] Missing or invalid token for protected route");
       const accountsUrl = process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
       const appUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
       const redirectUrl = `${accountsUrl}/login?redirect=${encodeURIComponent(`${appUrl}/app`)}`;
       return NextResponse.redirect(redirectUrl);
     }
 
-    console.log("[PROXY] JWT verification succeeded for user:", payload?.userId);
-
     const requestHeaders = new Headers(request.headers);
-    requestHeaders.set("x-user-id", payload?.userId as string);
-    requestHeaders.set("x-user-email", payload?.email as string);
-    requestHeaders.set("x-user-name", payload?.name as string);
+    if (payload?.userId) requestHeaders.set("x-user-id", payload.userId as string);
+    if (payload?.email) requestHeaders.set("x-user-email", payload.email as string);
+    if (payload?.name) requestHeaders.set("x-user-name", payload.name as string);
 
     return NextResponse.next({
       request: {
@@ -64,16 +70,10 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Match all request paths except for the ones starting with:
-  // - api (API routes)
-  // - _next/static (static files)
-  // - _next/image (image optimization files)
-  // - favicon.ico, sitemap.xml, robots.txt (metadata files)
-  // - assets (public assets folder)
-  // - docs (public docs folder)
   matcher: [
     '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|assets|docs).*)',
   ],
 };
 
 export default proxy;
+

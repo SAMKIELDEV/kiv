@@ -7,12 +7,12 @@ import { getTodayDateString } from "@/lib/utils";
 
 // POST /api/entries — create today's entry
 export async function POST(request: NextRequest) {
-  const auth = requireAuth(request);
+  const auth = await requireAuth(request);
   if (isAuthError(auth)) return auth;
 
   try {
     const body = await request.json();
-    const { mood, promptResponse, note } = body;
+    const { mood, promptResponse, note, factors } = body;
 
     if (!mood || mood < 1 || mood > 5) {
       return NextResponse.json(
@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
       prompt,
       promptResponse: promptResponse || null,
       note: note || null,
+      factors: Array.isArray(factors) ? factors : [],
     });
 
     return NextResponse.json(entry, { status: 201 });
@@ -60,7 +61,7 @@ export async function POST(request: NextRequest) {
 
 // GET /api/entries — get all entries for authenticated user
 export async function GET(request: NextRequest) {
-  const auth = requireAuth(request);
+  const auth = await requireAuth(request);
   if (isAuthError(auth)) return auth;
 
   try {

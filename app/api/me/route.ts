@@ -6,7 +6,7 @@ import { requireAuth, isAuthError } from "@/lib/auth";
 
 // GET /api/me — get cached user info
 export async function GET(request: NextRequest) {
-  const auth = requireAuth(request);
+  const auth = await requireAuth(request);
   if (isAuthError(auth)) return auth;
 
   try {
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
 // DELETE /api/me — delete all user data from Kiv DB
 export async function DELETE(request: NextRequest) {
-  const auth = requireAuth(request);
+  const auth = await requireAuth(request);
   if (isAuthError(auth)) return auth;
 
   try {

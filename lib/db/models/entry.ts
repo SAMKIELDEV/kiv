@@ -9,6 +9,7 @@ const EntrySchema = new Schema<Entry>(
     prompt: { type: String, required: true },
     promptResponse: { type: String, default: null },
     note: { type: String, default: null },
+    factors: { type: [String], default: [] },
   },
   {
     timestamps: { createdAt: "createdAt", updatedAt: false },

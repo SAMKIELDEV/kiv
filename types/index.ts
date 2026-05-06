@@ -22,6 +22,7 @@ export interface Entry {
   prompt: string;
   promptResponse: string | null;
   note: string | null;
+  factors?: string[];
   createdAt: Date;
 }
 
@@ -47,3 +48,18 @@ export const MOOD_LABELS: Record<MoodValue, string> = {
   4: "Good",
   5: "Great",
 };
+
+export const FACTORS = [
+  "Work",
+  "Family",
+  "Friends",
+  "Health",
+  "Sleep",
+  "Food",
+  "Exercise",
+  "Partner",
+  "Finance",
+  "Hobby",
+  "Weather",
+  "Travel",
+];

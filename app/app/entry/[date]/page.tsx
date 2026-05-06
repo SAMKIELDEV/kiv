@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, use } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronLeft } from "lucide-react";
 import { MOOD_EMOJIS, MOOD_LABELS, type Entry, type MoodValue } from "@/types";
 import { formatDate } from "@/lib/utils";
 
@@ -15,7 +15,6 @@ export default function EntryDetailPage({
   const [entry, setEntry] = useState<Entry | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [backHovered, setBackHovered] = useState(false);
 
   const fetchEntry = useCallback(async () => {
     try {
@@ -41,15 +40,8 @@ export default function EntryDetailPage({
 
   if (loading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "80px 0",
-        }}
-      >
-        <Loader2 size={20} style={{ color: "var(--text-secondary)" }} className="animate-spin" />
+      <div className="flex items-center justify-center py-20">
+        <Loader2 size={20} className="text-text-secondary animate-spin" />
       </div>
     );
   }
@@ -57,35 +49,18 @@ export default function EntryDetailPage({
   const backLink = (
     <Link
       href="/app/history"
-      onMouseEnter={() => setBackHovered(true)}
-      onMouseLeave={() => setBackHovered(false)}
-      style={{
-        fontFamily: "'Plus Jakarta Sans', sans-serif",
-        fontWeight: 500,
-        fontSize: "14px",
-        color: backHovered ? "var(--text-primary)" : "var(--text-secondary)",
-        textDecoration: "none",
-        marginBottom: "32px",
-        display: "inline-block",
-        transition: "color 0.15s ease",
-      }}
+      className="flex items-center gap-1.5 font-medium text-[14px] text-text-secondary hover:text-text-primary transition-colors mb-8 no-underline group"
     >
-      ← History
+      <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+      History
     </Link>
   );
 
   if (notFound || !entry) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+      <div className="flex flex-col w-full font-sans">
         {backLink}
-        <p
-          style={{
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-            fontSize: "14px",
-            color: "var(--text-secondary)",
-            fontStyle: "italic",
-          }}
-        >
+        <p className="text-[14px] text-text-secondary italic">
           No entry for this date.
         </p>
       </div>
@@ -93,101 +68,63 @@ export default function EntryDetailPage({
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+    <div className="flex flex-col w-full font-sans pb-20">
       {backLink}
 
-      <h1
-        style={{
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
-          fontWeight: 700,
-          fontSize: "20px",
-          color: "var(--text-secondary)",
-          marginBottom: "24px",
-        }}
-      >
+      <h1 className="font-bold text-[20px] text-text-secondary mb-6">
         {formatDate(entry.date)}
       </h1>
 
       <span
-        style={{
-          fontSize: "48px",
-          display: "block",
-          marginBottom: "24px",
-          lineHeight: 1,
-        }}
+        className="text-[48px] block mb-6 leading-none"
         role="img"
         aria-label={MOOD_LABELS[entry.mood as MoodValue]}
       >
         {MOOD_EMOJIS[entry.mood as MoodValue]}
       </span>
 
-      {entry.promptResponse && (
-        <div style={{ marginBottom: "24px" }}>
-          <p
-            style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: "13px",
-              fontStyle: "italic",
-              color: "var(--text-secondary)",
-              marginBottom: "6px",
-            }}
-          >
-            {entry.prompt}
-          </p>
-          <p
-            style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: "16px",
-              color: "var(--text-primary)",
-              lineHeight: 1.65,
-            }}
-          >
-            {entry.promptResponse}
-          </p>
+      {entry.factors && entry.factors.length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-8">
+          {entry.factors.map((f: string) => (
+            <span
+              key={f}
+              className="px-3 py-1 bg-surface border border-border rounded-full text-[13px] font-medium text-text-primary"
+            >
+              {f}
+            </span>
+          ))}
         </div>
       )}
 
-      {entry.note && (
-        <div>
-          <p
-            style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: "11px",
-              fontWeight: 700,
-              color: "var(--text-secondary)",
-              textTransform: "uppercase",
-              letterSpacing: "1px",
-              marginBottom: "8px",
-            }}
-          >
-            Note
-          </p>
-          <p
-            style={{
-              fontFamily: "'Plus Jakarta Sans', sans-serif",
-              fontSize: "16px",
-              color: "var(--text-primary)",
-              lineHeight: 1.65,
-              whiteSpace: "pre-wrap",
-            }}
-          >
-            {entry.note}
-          </p>
-        </div>
-      )}
+      <div className="space-y-8">
+        {entry.promptResponse && (
+          <div>
+            <p className="italic text-[13px] text-text-secondary mb-1.5">
+              {entry.prompt}
+            </p>
+            <p className="text-[16px] text-text-primary leading-relaxed">
+              {entry.promptResponse}
+            </p>
+          </div>
+        )}
 
-      {!entry.promptResponse && !entry.note && (
-        <p
-          style={{
-            fontFamily: "'Plus Jakarta Sans', sans-serif",
-            fontSize: "14px",
-            fontStyle: "italic",
-            color: "var(--text-secondary)",
-          }}
-        >
-          No additional notes for this day.
-        </p>
-      )}
+        {entry.note && (
+          <div>
+            <p className="text-[11px] font-bold text-text-secondary uppercase tracking-widest mb-2">
+              Note
+            </p>
+            <p className="text-[16px] text-text-primary leading-relaxed whitespace-pre-wrap">
+              {entry.note}
+            </p>
+          </div>
+        )}
+
+        {!entry.promptResponse && !entry.note && (
+          <p className="text-[14px] text-text-secondary italic">
+            No additional notes for this day.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

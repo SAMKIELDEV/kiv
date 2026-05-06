@@ -6,7 +6,7 @@ import type { StreakData } from "@/types";
 
 // GET /api/entries/streak — compute current + longest streak
 export async function GET(request: NextRequest) {
-  const auth = requireAuth(request);
+  const auth = await requireAuth(request);
   if (isAuthError(auth)) return auth;
 
   try {
