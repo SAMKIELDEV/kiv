@@ -5,6 +5,7 @@ import { Loader2, Trash2, ArrowRight, Smartphone, Download } from "lucide-react"
 import { toast } from "sonner";
 import { NotificationToggle } from "@/components/NotificationToggle";
 import { NotificationTest } from "@/components/NotificationTest";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 interface UserInfo {
   name: string;
@@ -19,7 +20,6 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const [hoverDelete, setHoverDelete] = useState(false);
   const [canInstall, setCanInstall] = useState(false);
 
   useEffect(() => {
@@ -70,19 +70,28 @@ export default function SettingsPage() {
     }
   }
 
-
-
   if (loading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "80px 0",
-        }}
-      >
-        <Loader2 size={20} style={{ color: "var(--text-secondary)" }} className="animate-spin" />
+      <div style={{ display: "flex", flexDirection: "column", width: "100%", paddingBottom: "80px" }}>
+        <Skeleton className="h-9 w-[150px] mb-8" />
+        
+        {[1, 2, 3].map((i) => (
+          <div key={i} style={{ marginBottom: "48px" }}>
+            <Skeleton className="h-3 w-[80px] mb-4" />
+            <div style={{ borderBottom: "1px solid var(--border)", padding: "16px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Skeleton className="h-4 w-[100px]" />
+                <Skeleton className="h-4 w-[150px]" />
+              </div>
+            </div>
+            <div style={{ borderBottom: "1px solid var(--border)", padding: "16px 0" }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <Skeleton className="h-4 w-[100px]" />
+                <Skeleton className="h-4 w-[150px]" />
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -235,7 +244,6 @@ export default function SettingsPage() {
       <div style={{ marginBottom: "48px" }}>
         <p style={sectionLabel}>Data Management</p>
         
-
 
         {!confirmDelete ? (
           <div

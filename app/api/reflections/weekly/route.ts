@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
       messages: [
         {
           role: "system",
-          content: "You are an empathetic, insightful, and minimalist mental health assistant. Your goal is to provide a brief (3-4 sentences), high-impact reflection on a user's week based on their mood logs and factors. Be encouraging but grounded. Do not use generic advice. Focus on patterns or subtle wins."
+          content: "You are an empathetic, insightful, and minimalist mental health assistant. Your goal is to provide a brief (3-4 sentences), dont sound like a robot, be natural, high-impact reflection on a user's week based on their mood logs and factors. Be encouraging but grounded. Do not use generic advice. Focus on patterns or subtle wins."
         },
         {
           role: "user",
