@@ -8,11 +8,24 @@ export function PWARegistration() {
       window.addEventListener("load", () => {
         navigator.serviceWorker
           .register("/sw.js")
-          .then((registration) => {
-            // Service worker registered
+          .then((reg) => {
+            // console.log("SW registered:", reg);
+            // Ensure any updates are applied immediately
+            reg.onupdatefound = () => {
+              const installingWorker = reg.installing;
+              if (installingWorker) {
+                installingWorker.onstatechange = () => {
+                  if (installingWorker.state === "installed") {
+                    if (navigator.serviceWorker.controller) {
+                      // New content is available, but wait for user to refresh or do it automatically
+                    }
+                  }
+                };
+              }
+            };
           })
-          .catch((error) => {
-            // Service worker registration failed
+          .catch((err) => {
+            console.error("SW registration failed:", err);
           });
       });
     }

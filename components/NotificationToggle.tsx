@@ -23,11 +23,17 @@ export function NotificationToggle() {
 
   async function checkSubscription() {
     try {
-      const registration = await navigator.serviceWorker.ready;
+      // Add a timeout to avoid hanging if SW is broken
+      const swReady = navigator.serviceWorker.ready;
+      const timeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Timeout waiting for Service Worker")), 5000)
+      );
+
+      const registration = await Promise.race([swReady, timeout]) as ServiceWorkerRegistration;
       const subscription = await registration.pushManager.getSubscription();
       setIsSubscribed(!!subscription);
     } catch (error) {
-      // Quiet fail
+      console.error("Subscription check failed:", error);
     } finally {
       setLoading(false);
     }
@@ -57,7 +63,12 @@ export function NotificationToggle() {
 
     setToggling(true);
     try {
-      const registration = await navigator.serviceWorker.ready;
+      const swReady = navigator.serviceWorker.ready;
+      const timeout = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Service Worker timeout")), 5000)
+      );
+
+      const registration = await Promise.race([swReady, timeout]) as ServiceWorkerRegistration;
       
       // Request permission explicitly first for better UX
       const permission = await Notification.requestPermission();
