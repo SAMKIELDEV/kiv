@@ -4,11 +4,12 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { getGreeting, getTodayDateString, formatDate } from "@/lib/utils";
+import { getGreeting, getTodayDateString, formatDate, formatTime } from "@/lib/utils";
 import { getTodaysPrompt } from "@/lib/prompts";
 import { MOOD_EMOJIS, MOOD_LABELS, FACTORS, type MoodValue, type Entry, type StreakData } from "@/types";
 import { NotificationToggle } from "@/components/NotificationToggle";
 import { NotificationTest } from "@/components/NotificationTest";
+import { WeeklyReflection } from "@/components/WeeklyReflection";
 
 export default function DashboardPage() {
   const [todayEntry, setTodayEntry] = useState<Entry | null>(null);
@@ -234,7 +235,7 @@ export default function DashboardPage() {
                 marginBottom: "12px",
               }}
             >
-              {formatDate(todayEntry.date)}
+              {formatDate(todayEntry.date)} at {formatTime(todayEntry.createdAt)}
             </p>
 
             <span
@@ -528,6 +529,7 @@ export default function DashboardPage() {
         </form>
       )}
 
+      <WeeklyReflection />
       <NotificationToggle />
       <NotificationTest />
     </div>

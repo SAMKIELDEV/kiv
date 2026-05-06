@@ -1,85 +1,219 @@
 "use client";
 
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/journal", label: "Journal" },
-  { href: "/insights", label: "Insights" },
-];
+import { Sun, Moon, Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
 
 export function Navbar() {
   const pathname = usePathname();
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    const mq = window.matchMedia("(max-width: 768px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "unset";
+      };
+    }
+  }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  };
+
+  const navStyle: React.CSSProperties = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: "60px",
+    zIndex: 100,
+    backgroundColor: "rgba(var(--bg-rgb), 0.92)",
+    backdropFilter: "blur(12px)",
+    WebkitBackdropFilter: "blur(12px)",
+    borderBottom: "1px solid var(--border)",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: isMobile ? "0 20px" : "0 48px",
+  };
+
+  const linkStyle = (active: boolean): React.CSSProperties => ({
+    fontFamily: "'Plus Jakarta Sans', sans-serif",
+    fontWeight: 600,
+    fontSize: "14px",
+    color: active ? "var(--text-primary)" : "var(--text-secondary)",
+    textDecoration: "none",
+    transition: "color 0.15s ease",
+  });
 
   return (
     <>
-      {/* NAVBAR */}
-      <nav className="kiv-nav">
-          <Link href="/" className="kiv-nav-logo gap-2">
-            <div className="w-8 h-8 flex items-center justify-center">
-              <img src="/favicon.ico" alt="Kiv Logo" className="w-full h-full object-contain" />
-            </div>
+      <nav style={navStyle}>
+        <Link
+          href="/"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "8px",
+            textDecoration: "none",
+          }}
+        >
+          <img
+            src="/favicon.ico"
+            alt="Kiv"
+            style={{ width: 24, height: 24, objectFit: "contain" }}
+          />
+          <span
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 800,
+              fontSize: "18px",
+              color: "var(--text-primary)",
+              letterSpacing: "-0.5px",
+            }}
+          >
             kiv
-          </Link>
-          <div className="kiv-nav-right">
-            <button
-              className="kiv-theme-btn"
-              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
-            >
-              {mounted ? (resolvedTheme === "dark" ? <Sun size={16} /> : <Moon size={16} />) : <div style={{ width: 16, height: 16 }} />}
-            </button>
-            <Link href="/login" className="kiv-signin">Sign in</Link>
-            
-            <button 
-              className="kiv-menu-trigger"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </nav>
+          </span>
+        </Link>
 
-        {/* MOBILE MENU */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div 
-              className="kiv-mobile-menu"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            >
-              <Link href="/login" className="kiv-mobile-link" onClick={() => setIsMenuOpen(false)}>Get Started</Link>
-              <Link href="/login" className="kiv-mobile-link" onClick={() => setIsMenuOpen(false)}>Sign In</Link>
-              <div className="mt-8 flex flex-col gap-6">
-                <Link href="/terms" className="kiv-mobile-link-sub" onClick={() => setIsMenuOpen(false)}>Terms of Service</Link>
-                <Link href="/privacy" className="kiv-mobile-link-sub" onClick={() => setIsMenuOpen(false)}>Privacy Policy</Link>
-              </div>
-              <button
-                className="mt-auto flex items-center gap-2 text-text-primary font-bold"
-                onClick={() => {
-                  setTheme(resolvedTheme === "dark" ? "light" : "dark");
-                  setIsMenuOpen(false);
+        <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+          {!isMobile && (
+            <>
+              <Link href="/login" style={linkStyle(false)}>
+                Sign in
+              </Link>
+              <Link
+                href="/login"
+                style={{
+                  ...linkStyle(true),
+                  backgroundColor: "var(--text-primary)",
+                  color: "var(--bg)",
+                  padding: "8px 16px",
+                  borderRadius: "999px",
+                  fontSize: "13px",
                 }}
               >
-                {mounted ? (resolvedTheme === "dark" ? <Sun size={20} /> : <Moon size={20} />) : <div style={{ width: 20, height: 20 }} />}
-                {mounted ? (resolvedTheme === "dark" ? "Light Mode" : "Dark Mode") : "Loading..."}
-              </button>
-            </motion.div>
+                Get Started
+              </Link>
+            </>
           )}
-        </AnimatePresence>
+
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "var(--text-secondary)",
+              display: "flex",
+              alignItems: "center",
+              padding: 0,
+            }}
+          >
+            {mounted ? (
+              resolvedTheme === "dark" ? <Sun size={18} /> : <Moon size={18} />
+            ) : (
+              <div style={{ width: 18, height: 18 }} />
+            )}
+          </button>
+
+          {isMobile && (
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "var(--text-primary)",
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          )}
+        </div>
+      </nav>
+
+      <AnimatePresence>
+        {isMobile && menuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            style={{
+              position: "fixed",
+              top: "60px",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 90,
+              backgroundColor: "var(--bg)",
+              display: "flex",
+              flexDirection: "column",
+              padding: "32px 20px",
+            }}
+          >
+            <Link
+              href="/login"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 700,
+                fontSize: "24px",
+                color: "var(--text-primary)",
+                textDecoration: "none",
+                padding: "20px 0",
+                borderBottom: "1px solid var(--border)",
+              }}
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/login"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 700,
+                fontSize: "24px",
+                color: "var(--accent)",
+                textDecoration: "none",
+                padding: "20px 0",
+                borderBottom: "1px solid var(--border)",
+              }}
+            >
+              Get Started →
+            </Link>
+
+            <div style={{ flex: 1 }} />
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", opacity: 0.6 }}>
+              <Link href="/terms" style={linkStyle(false)}>Terms of Service</Link>
+              <Link href="/privacy" style={linkStyle(false)}>Privacy Policy</Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

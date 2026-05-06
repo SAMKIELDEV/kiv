@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, use } from "react";
 import Link from "next/link";
 import { Loader2, ChevronLeft } from "lucide-react";
 import { MOOD_EMOJIS, MOOD_LABELS, type Entry, type MoodValue } from "@/types";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatTime } from "@/lib/utils";
 
 export default function EntryDetailPage({
   params,
@@ -87,7 +87,7 @@ export default function EntryDetailPage({
           marginBottom: "24px",
         }}
       >
-        {formatDate(entry.date)}
+        {formatDate(entry.date)} at {formatTime(entry.createdAt)}
       </h1>
 
       <span

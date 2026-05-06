@@ -19,6 +19,15 @@ export function formatDate(dateStr: string): string {
   });
 }
 
+export function formatTime(date: string | Date): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  return d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+}
+
 export function getTodayDateString(): string {
   const now = new Date();
   return now.toISOString().split("T")[0];
