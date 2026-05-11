@@ -6,11 +6,20 @@ import { Loader2, Clock } from "lucide-react";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { ReminderChannels } from "@/types";
 
-const TIME_OPTIONS: string[] = (() => {
-  const out: string[] = [];
+function formatTime12(hhmm: string): string {
+  const [hStr, mStr] = hhmm.split(":");
+  const h = parseInt(hStr, 10);
+  const period = h >= 12 ? "PM" : "AM";
+  const h12 = h % 12 === 0 ? 12 : h % 12;
+  return `${h12}:${mStr} ${period}`;
+}
+
+const TIME_OPTIONS: { value: string; label: string }[] = (() => {
+  const out: { value: string; label: string }[] = [];
   for (let h = 0; h < 24; h++) {
     for (let m = 0; m < 60; m += 15) {
-      out.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
+      const value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      out.push({ value, label: formatTime12(value) });
     }
   }
   return out;
@@ -59,7 +68,6 @@ export function ReminderSettings() {
   const [saving, setSaving] = useState(false);
   const [time, setTime] = useState<string>(DEFAULT_TIME);
   const [timezone, setTimezone] = useState<string>("");
-  const [pushOn, setPushOn] = useState(false);
   const [emailOn, setEmailOn] = useState(false);
 
   useEffect(() => {
@@ -74,7 +82,6 @@ export function ReminderSettings() {
         const data = (await res.json()) as UserReminders;
         if (data.reminderTime) setTime(data.reminderTime);
         if (data.reminderChannels) {
-          setPushOn(!!data.reminderChannels.push);
           setEmailOn(!!data.reminderChannels.email);
         }
       }
@@ -89,11 +96,7 @@ export function ReminderSettings() {
     fetchReminders();
   }, [fetchReminders]);
 
-  async function save(next: {
-    time: string;
-    push: boolean;
-    email: boolean;
-  }) {
+  async function save(next: { time: string; email: boolean }) {
     if (!timezone) return;
     setSaving(true);
     try {
@@ -103,7 +106,7 @@ export function ReminderSettings() {
         body: JSON.stringify({
           reminderTime: next.time,
           reminderTimezone: timezone,
-          reminderChannels: { push: next.push, email: next.email },
+          reminderChannels: { email: next.email },
         }),
       });
       if (!res.ok) throw new Error("Save failed");
@@ -118,19 +121,13 @@ export function ReminderSettings() {
   function handleTimeChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const v = e.target.value;
     setTime(v);
-    save({ time: v, push: pushOn, email: emailOn });
-  }
-
-  function handlePushToggle() {
-    const v = !pushOn;
-    setPushOn(v);
-    save({ time, push: v, email: emailOn });
+    save({ time: v, email: emailOn });
   }
 
   function handleEmailToggle() {
     const v = !emailOn;
     setEmailOn(v);
-    save({ time, push: pushOn, email: v });
+    save({ time, email: v });
   }
 
   if (loading) {
@@ -143,10 +140,6 @@ export function ReminderSettings() {
         <div style={rowStyle}>
           <Skeleton className="h-4 w-[120px]" />
           <Skeleton className="h-4 w-[140px]" />
-        </div>
-        <div style={rowStyle}>
-          <Skeleton className="h-4 w-[140px]" />
-          <Skeleton className="h-6 w-[40px]" />
         </div>
         <div style={rowStyle}>
           <Skeleton className="h-4 w-[80px]" />
@@ -169,6 +162,7 @@ export function ReminderSettings() {
             value={time}
             onChange={handleTimeChange}
             disabled={saving}
+            aria-label="Reminder time"
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
               fontWeight: 600,
@@ -181,9 +175,9 @@ export function ReminderSettings() {
               cursor: saving ? "not-allowed" : "pointer",
             }}
           >
-            {TIME_OPTIONS.map((t) => (
-              <option key={t} value={t}>
-                {t}
+            {TIME_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
               </option>
             ))}
           </select>
@@ -198,74 +192,42 @@ export function ReminderSettings() {
         <span style={valueStyle}>{timezone || "—"}</span>
       </div>
 
-      <ToggleRow
-        title="Push notification"
-        subtitle="Send a browser push at your reminder time."
-        on={pushOn}
-        onToggle={handlePushToggle}
-        disabled={saving}
-      />
-
-      <ToggleRow
-        title="Email"
-        subtitle="Send an email at your reminder time."
-        on={emailOn}
-        onToggle={handleEmailToggle}
-        disabled={saving}
-      />
-    </>
-  );
-}
-
-function ToggleRow({
-  title,
-  subtitle,
-  on,
-  onToggle,
-  disabled,
-}: {
-  title: string;
-  subtitle: string;
-  on: boolean;
-  onToggle: () => void;
-  disabled: boolean;
-}) {
-  return (
-    <div style={rowStyle}>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <span style={valueStyle}>{title}</span>
-        <span style={subLabelStyle}>{subtitle}</span>
-      </div>
-      <button
-        type="button"
-        onClick={onToggle}
-        disabled={disabled}
-        aria-pressed={on}
-        style={{
-          position: "relative",
-          width: "40px",
-          height: "24px",
-          borderRadius: "999px",
-          border: "1px solid var(--border)",
-          backgroundColor: on ? "var(--accent)" : "var(--surface)",
-          cursor: disabled ? "not-allowed" : "pointer",
-          padding: 0,
-          transition: "background-color 0.15s ease",
-        }}
-      >
-        <span
+      <div style={rowStyle}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span style={valueStyle}>Email reminder</span>
+          <span style={subLabelStyle}>Also send an email at your reminder time.</span>
+        </div>
+        <button
+          type="button"
+          onClick={handleEmailToggle}
+          disabled={saving}
+          aria-label={`Email reminder: ${emailOn ? "on" : "off"}`}
           style={{
-            position: "absolute",
-            top: "2px",
-            left: on ? "18px" : "2px",
-            width: "18px",
-            height: "18px",
-            borderRadius: "50%",
-            backgroundColor: on ? "#0F0E0D" : "var(--text-secondary)",
-            transition: "left 0.15s ease",
+            position: "relative",
+            width: "40px",
+            height: "24px",
+            borderRadius: "999px",
+            border: "1px solid var(--border)",
+            backgroundColor: emailOn ? "var(--accent)" : "var(--surface)",
+            cursor: saving ? "not-allowed" : "pointer",
+            padding: 0,
+            transition: "background-color 0.15s ease",
           }}
-        />
-      </button>
-    </div>
+        >
+          <span
+            style={{
+              position: "absolute",
+              top: "2px",
+              left: emailOn ? "18px" : "2px",
+              width: "18px",
+              height: "18px",
+              borderRadius: "50%",
+              backgroundColor: emailOn ? "#0F0E0D" : "var(--text-secondary)",
+              transition: "left 0.15s ease",
+            }}
+          />
+        </button>
+      </div>
+    </>
   );
 }

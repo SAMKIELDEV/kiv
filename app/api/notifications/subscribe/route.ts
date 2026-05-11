@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { SubscriptionModel } from "@/lib/db/models/subscription";
+import { User } from "@/lib/db/models/user";
 import { requireAuth, isAuthError } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
@@ -19,11 +20,23 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
 
-    // Upsert the subscription
     await SubscriptionModel.findOneAndUpdate(
       { userId: auth.userId, "subscription.endpoint": subscription.endpoint },
       { userId: auth.userId, subscription },
       { upsert: true, new: true }
+    );
+
+    await User.findOneAndUpdate(
+      { userId: auth.userId },
+      {
+        $set: { "reminderChannels.push": true },
+        $setOnInsert: {
+          userId: auth.userId,
+          name: auth.name,
+          email: auth.email,
+        },
+      },
+      { upsert: true }
     );
 
     return NextResponse.json({ success: true });
@@ -49,6 +62,14 @@ export async function DELETE(request: NextRequest) {
       userId: auth.userId,
       "subscription.endpoint": endpoint,
     });
+
+    const remaining = await SubscriptionModel.countDocuments({ userId: auth.userId });
+    if (remaining === 0) {
+      await User.updateOne(
+        { userId: auth.userId },
+        { $set: { "reminderChannels.push": false } }
+      );
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

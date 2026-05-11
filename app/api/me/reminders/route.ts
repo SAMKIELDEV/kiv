@@ -3,9 +3,13 @@ import { connectDB } from "@/lib/db";
 import { User } from "@/lib/db/models/user";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { isValidTimezone } from "@/lib/utils/time";
-import type { ReminderChannels } from "@/types";
 
 const TIME_REGEX = /^\d{2}:\d{2}$/;
+
+interface PartialChannels {
+  push?: boolean;
+  email?: boolean;
+}
 
 interface PatchBody {
   reminderTime?: unknown;
@@ -13,10 +17,19 @@ interface PatchBody {
   reminderChannels?: unknown;
 }
 
-function isChannels(value: unknown): value is ReminderChannels {
-  if (typeof value !== "object" || value === null) return false;
+function parseChannels(value: unknown): PartialChannels | null {
+  if (typeof value !== "object" || value === null) return null;
   const v = value as Record<string, unknown>;
-  return typeof v.push === "boolean" && typeof v.email === "boolean";
+  const out: PartialChannels = {};
+  if ("push" in v) {
+    if (typeof v.push !== "boolean") return null;
+    out.push = v.push;
+  }
+  if ("email" in v) {
+    if (typeof v.email !== "boolean") return null;
+    out.email = v.email;
+  }
+  return out;
 }
 
 export async function PATCH(request: NextRequest) {
@@ -55,9 +68,10 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Invalid IANA timezone" }, { status: 400 });
   }
 
-  if (!isChannels(reminderChannels)) {
+  const channels = parseChannels(reminderChannels);
+  if (channels === null) {
     return NextResponse.json(
-      { error: "reminderChannels must be { push: boolean, email: boolean }" },
+      { error: "reminderChannels keys must be booleans when present" },
       { status: 400 }
     );
   }
@@ -65,14 +79,17 @@ export async function PATCH(request: NextRequest) {
   try {
     await connectDB();
 
+    const set: Record<string, unknown> = {
+      reminderTime,
+      reminderTimezone,
+    };
+    if (channels.push !== undefined) set["reminderChannels.push"] = channels.push;
+    if (channels.email !== undefined) set["reminderChannels.email"] = channels.email;
+
     await User.findOneAndUpdate(
       { userId: auth.userId },
       {
-        $set: {
-          reminderTime,
-          reminderTimezone,
-          reminderChannels,
-        },
+        $set: set,
         $setOnInsert: {
           userId: auth.userId,
           name: auth.name,
