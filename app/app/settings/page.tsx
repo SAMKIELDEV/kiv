@@ -5,6 +5,7 @@ import { Loader2, Trash2, ArrowRight, Smartphone, Download } from "lucide-react"
 import { toast } from "sonner";
 import { NotificationToggle } from "@/components/NotificationToggle";
 import { NotificationTest } from "@/components/NotificationTest";
+import { ReminderSettings } from "@/components/ReminderSettings";
 import { Skeleton } from "@/components/ui/Skeleton";
 
 interface UserInfo {
@@ -237,6 +238,9 @@ export default function SettingsPage() {
         <NotificationToggle />
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <NotificationTest />
+        </div>
+        <div style={{ marginTop: "24px" }}>
+          <ReminderSettings />
         </div>
       </div>
 
