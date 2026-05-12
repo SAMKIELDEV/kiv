@@ -244,6 +244,42 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* SUPPORT SECTION */}
+      <div style={{ marginBottom: "48px" }}>
+        <p style={sectionLabel}>Support</p>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "16px 0",
+            gap: "16px",
+          }}
+        >
+          <span style={labelStyle}>
+            Having trouble or found a bug? We&apos;d love to hear from you.
+          </span>
+          <a
+            href="mailto:kiv@samkiel.tech?subject=Kiv Support Request"
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontWeight: 600,
+              fontSize: "12px",
+              color: "var(--text-primary)",
+              backgroundColor: "var(--surface)",
+              border: "1px solid var(--border)",
+              borderRadius: "8px",
+              padding: "8px 16px",
+              cursor: "pointer",
+              textDecoration: "none",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Contact Support
+          </a>
+        </div>
+      </div>
+
       {/* DATA MANAGEMENT SECTION */}
       <div style={{ marginBottom: "48px" }}>
         <p style={sectionLabel}>Data Management</p>
