@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useAuth } from "@samkiel/authsdk/react";
-import { Sun, Moon, Menu, X, LogOut, Loader2, BarChart2 } from "lucide-react";
+import { Sun, Moon, Menu, X, LogOut, Loader2, BarChart2, Clock, Settings as SettingsIcon } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface AppNavProps {
@@ -147,7 +147,16 @@ export function AppNav({ variant = "app" }: AppNavProps) {
           <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
             {isApp && (
               <>
-                <Link href="/app/history" style={linkStyle(isActive("/app/history"))}>
+                <Link
+                  href="/app/history"
+                  style={{
+                    ...linkStyle(isActive("/app/history")),
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <Clock size={14} />
                   History
                 </Link>
                 <Link
@@ -162,7 +171,16 @@ export function AppNav({ variant = "app" }: AppNavProps) {
                   <BarChart2 size={14} />
                   Insights
                 </Link>
-                <Link href="/app/settings" style={linkStyle(isActive("/app/settings"))}>
+                <Link
+                  href="/app/settings"
+                  style={{
+                    ...linkStyle(isActive("/app/settings")),
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <SettingsIcon size={14} />
                   Settings
                 </Link>
                 <button
@@ -255,8 +273,12 @@ export function AppNav({ variant = "app" }: AppNavProps) {
                 textDecoration: "none",
                 padding: "16px 0",
                 borderBottom: "1px solid var(--border)",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
               }}
             >
+              <Clock size={18} />
               History
             </Link>
             <Link
@@ -287,8 +309,12 @@ export function AppNav({ variant = "app" }: AppNavProps) {
                 textDecoration: "none",
                 padding: "16px 0",
                 borderBottom: "1px solid var(--border)",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
               }}
             >
+              <SettingsIcon size={18} />
               Settings
             </Link>
 
