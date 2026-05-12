@@ -35,8 +35,8 @@ export interface Entry {
   userId: string;
   date: string; // YYYY-MM-DD
   mood: 1 | 2 | 3 | 4 | 5;
-  prompt: string;
-  promptResponse: string | null;
+  prompt?: string;
+  promptResponse?: string;
   note: string | null;
   factors?: string[];
   createdAt: Date;

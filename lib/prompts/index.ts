@@ -1,34 +1,32 @@
-const prompts = [
-  "What's one thing on your mind?",
+export const PROMPTS: readonly string[] = [
   "What made you smile today?",
-  "What's one thing you're looking forward to?",
-  "What's one thing you want to let go of today?",
-  "What are you grateful for right now?",
+  "What are you avoiding right now?",
+  "What's one thing you're grateful for?",
   "What drained your energy today?",
-  "What did you do just for yourself today?",
-  "What's something you learned today?",
-  "How did you treat yourself today?",
-  "What's one word to describe your day?",
-  "What's something you're proud of this week?",
-  "What would have made today better?",
-  "Who made a positive impact on your day?",
-  "What's something you've been avoiding?",
-  "What does your body need right now?",
+  "What do you wish you'd done differently?",
+  "What are you looking forward to tomorrow?",
+  "What's something small that went well?",
+  "Who did you think about today and why?",
+  "What emotion showed up most today?",
+  "What would make tomorrow better?",
+  "What did you do today that felt like you?",
+  "What's a thought you can't shake?",
+  "What's something you needed to hear today?",
+  "Where did your attention keep going?",
+  "What's a small win worth naming?",
+  "What was harder than it should have been?",
+  "What did you say yes to that you wanted to say no to?",
+  "When did you feel most yourself today?",
+  "What part of today are you carrying into tonight?",
+  "What's one honest sentence about how you're doing?",
+  "What did your body try to tell you today?",
+  "What's a question you're sitting with right now?",
+  "What surprised you today, even a little?",
+  "What are you ready to put down?",
+  "What's something you noticed that no one else might have?",
+  "What did you do today that your future self will thank you for?",
+  "What did you learn the hard way recently?",
+  "What's one thing you could let be unfinished?",
+  "Who or what felt easy to be around today?",
+  "What's a feeling you almost talked yourself out of?",
 ];
-
-function getDayOfYear(date: Date = new Date()): number {
-  const start = new Date(date.getFullYear(), 0, 0);
-  const diff = date.getTime() - start.getTime();
-  const oneDay = 1000 * 60 * 60 * 24;
-  return Math.floor(diff / oneDay);
-}
-
-export function getTodaysPrompt(): string {
-  const dayOfYear = getDayOfYear();
-  return prompts[dayOfYear % prompts.length];
-}
-
-export function getPromptForDate(date: Date): string {
-  const dayOfYear = getDayOfYear(date);
-  return prompts[dayOfYear % prompts.length];
-}

@@ -124,8 +124,21 @@ export default function EntryDetailPage({
         </div>
       )}
 
-      {entry.promptResponse && (
+      {entry.prompt && entry.prompt.length > 0 && (
         <div style={{ marginBottom: "24px" }}>
+          <p
+            style={{
+              fontFamily: "'Plus Jakarta Sans', sans-serif",
+              fontSize: "11px",
+              fontWeight: 700,
+              color: "var(--text-secondary)",
+              textTransform: "uppercase",
+              letterSpacing: "1px",
+              marginBottom: "8px",
+            }}
+          >
+            Prompt
+          </p>
           <p
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
@@ -141,11 +154,18 @@ export default function EntryDetailPage({
             style={{
               fontFamily: "'Plus Jakarta Sans', sans-serif",
               fontSize: "16px",
-              color: "var(--text-primary)",
+              color: entry.promptResponse && entry.promptResponse.length > 0
+                ? "var(--text-primary)"
+                : "var(--text-secondary)",
+              fontStyle: entry.promptResponse && entry.promptResponse.length > 0
+                ? "normal"
+                : "italic",
               lineHeight: 1.65,
             }}
           >
-            {entry.promptResponse}
+            {entry.promptResponse && entry.promptResponse.length > 0
+              ? entry.promptResponse
+              : "No response written"}
           </p>
         </div>
       )}
@@ -179,7 +199,7 @@ export default function EntryDetailPage({
         </div>
       )}
 
-      {!entry.promptResponse && !entry.note && (
+      {!entry.prompt && !entry.promptResponse && !entry.note && (
         <p
           style={{
             fontFamily: "'Plus Jakarta Sans', sans-serif",

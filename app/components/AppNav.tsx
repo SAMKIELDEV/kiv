@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useAuth } from "@samkiel/authsdk/react";
-import { Sun, Moon, Menu, X, LogOut, Loader2 } from "lucide-react";
+import { Sun, Moon, Menu, X, LogOut, Loader2, BarChart2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 
 interface AppNavProps {
@@ -150,6 +150,18 @@ export function AppNav({ variant = "app" }: AppNavProps) {
                 <Link href="/app/history" style={linkStyle(isActive("/app/history"))}>
                   History
                 </Link>
+                <Link
+                  href="/app/insights"
+                  style={{
+                    ...linkStyle(isActive("/app/insights")),
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <BarChart2 size={14} />
+                  Insights
+                </Link>
                 <Link href="/app/settings" style={linkStyle(isActive("/app/settings"))}>
                   Settings
                 </Link>
@@ -246,6 +258,24 @@ export function AppNav({ variant = "app" }: AppNavProps) {
               }}
             >
               History
+            </Link>
+            <Link
+              href="/app/insights"
+              style={{
+                fontFamily: "'Plus Jakarta Sans', sans-serif",
+                fontWeight: 700,
+                fontSize: "20px",
+                color: isActive("/app/insights") ? "var(--text-primary)" : "var(--text-secondary)",
+                textDecoration: "none",
+                padding: "16px 0",
+                borderBottom: "1px solid var(--border)",
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <BarChart2 size={18} />
+              Insights
             </Link>
             <Link
               href="/app/settings"

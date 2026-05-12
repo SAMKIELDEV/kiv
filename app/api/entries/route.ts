@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
 import { EntryModel } from "@/lib/db/models/entry";
 import { requireAuth, isAuthError } from "@/lib/auth";
-import { getTodaysPrompt } from "@/lib/prompts";
 import { getTodayDateString } from "@/lib/utils";
 
 // POST /api/entries — create today's entry
@@ -12,7 +11,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { mood, promptResponse, note, factors } = body;
+    const { mood, prompt, promptResponse, note, factors } = body;
 
     if (!mood || mood < 1 || mood > 5) {
       return NextResponse.json(
@@ -24,9 +23,7 @@ export async function POST(request: NextRequest) {
     await connectDB();
 
     const today = getTodayDateString();
-    const prompt = getTodaysPrompt();
 
-    // Check if already checked in today
     const existing = await EntryModel.findOne({
       userId: auth.userId,
       date: today,
@@ -43,9 +40,9 @@ export async function POST(request: NextRequest) {
       userId: auth.userId,
       date: today,
       mood,
-      prompt,
-      promptResponse: promptResponse || null,
-      note: note || null,
+      prompt: typeof prompt === "string" ? prompt : "",
+      promptResponse: typeof promptResponse === "string" ? promptResponse : "",
+      note: typeof note === "string" && note.length > 0 ? note : null,
       factors: Array.isArray(factors) ? factors : [],
     });
 

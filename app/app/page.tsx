@@ -5,17 +5,19 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { getGreeting, getTodayDateString, formatDate, formatTime } from "@/lib/utils";
-import { getTodaysPrompt } from "@/lib/prompts";
+import { getDailyPrompt } from "@/lib/getPrompt";
 import { MOOD_EMOJIS, MOOD_LABELS, FACTORS, type MoodValue, type Entry, type StreakData } from "@/types";
 import { WeeklyReflection } from "@/components/WeeklyReflection";
 import { MoodChart } from "@/components/MoodChart";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Button } from "@/components/ui/button";
+import { BarChart2 } from "lucide-react";
 
 export default function DashboardPage() {
   const [todayEntry, setTodayEntry] = useState<Entry | null>(null);
   const [streak, setStreak] = useState<StreakData | null>(null);
   const [userName, setUserName] = useState("");
+  const [userId, setUserId] = useState("");
   const [loading, setLoading] = useState(true);
   const [guessedCheckedIn, setGuessedCheckedIn] = useState(false);
 
@@ -28,7 +30,8 @@ export default function DashboardPage() {
   const [promptFocused, setPromptFocused] = useState(false);
   const [noteFocused, setNoteFocused] = useState(false);
 
-  const todaysPrompt = getTodaysPrompt();
+  const today = getTodayDateString();
+  const todaysPrompt = userId ? getDailyPrompt(userId, today) : "";
 
   useEffect(() => {
     const today = getTodayDateString();
@@ -63,6 +66,7 @@ export default function DashboardPage() {
       if (userScript) {
         const user = JSON.parse(userScript.textContent || "{}");
         setUserName(user.name || "");
+        setUserId(user.userId || "");
       }
     } catch {
       // Quiet fail
@@ -100,7 +104,7 @@ export default function DashboardPage() {
           mood,
           factors: selectedFactors,
           prompt: todaysPrompt,
-          promptResponse: promptResponse.trim() || null,
+          promptResponse: promptResponse.trim(),
           note: note.trim() || null,
         }),
       });
@@ -112,7 +116,6 @@ export default function DashboardPage() {
 
       const entry = await res.json();
       setTodayEntry(entry);
-      const today = getTodayDateString();
       localStorage.setItem("kiv-last-checkin", today);
       
       fetch("/api/entries/streak")
@@ -560,6 +563,49 @@ export default function DashboardPage() {
           </Button>
         </form>
       )}
+
+      <Link
+        href="/app/insights"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "12px",
+          marginTop: "32px",
+          padding: "16px 20px",
+          backgroundColor: "var(--surface)",
+          border: "1px solid var(--border)",
+          borderRadius: "14px",
+          textDecoration: "none",
+          color: "var(--text-primary)",
+          fontFamily: "'Plus Jakarta Sans', sans-serif",
+        }}
+      >
+        <span style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <span
+            style={{
+              width: "36px",
+              height: "36px",
+              borderRadius: "10px",
+              backgroundColor: "rgba(196, 149, 106, 0.12)",
+              color: "var(--accent)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <BarChart2 size={18} />
+          </span>
+          <span style={{ display: "flex", flexDirection: "column" }}>
+            <span style={{ fontSize: "15px", fontWeight: 700 }}>Insights</span>
+            <span style={{ fontSize: "13px", color: "var(--text-secondary)", fontWeight: 400 }}>
+              Patterns from your check-ins
+            </span>
+          </span>
+        </span>
+        <span style={{ color: "var(--accent)", fontSize: "14px", fontWeight: 600 }}>→</span>
+      </Link>
 
       <MoodChart />
       <WeeklyReflection />
