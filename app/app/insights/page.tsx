@@ -108,23 +108,69 @@ export default function InsightsPage() {
     return (
       <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
         {backLink}
-        <Skeleton className="h-9 w-[180px] mb-6" />
+
+        {/* h1: "Insights" — fontSize 32, mb 8 */}
+        <Skeleton
+          className="rounded-md"
+          style={{ height: "30px", width: "140px", marginBottom: "10px" }}
+        />
+        {/* subtitle p — fontSize 14, mb 28 */}
+        <Skeleton
+          className="rounded-md"
+          style={{ height: "14px", width: "280px", marginBottom: "28px" }}
+        />
+
+        {/* 4 stat cards — 2x2 grid, gap 12, mb 36 */}
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
             gap: "12px",
-            marginBottom: "32px",
+            marginBottom: "36px",
           }}
         >
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-[88px] rounded-[14px]" />
+            <Skeleton
+              key={i}
+              style={{ height: "88px", borderRadius: "14px" }}
+            />
           ))}
         </div>
-        <Skeleton className="h-5 w-[200px] mb-4" />
-        <Skeleton className="h-[180px] w-full rounded-[14px] mb-8" />
-        <Skeleton className="h-5 w-[180px] mb-4" />
-        <Skeleton className="h-[180px] w-full rounded-[14px]" />
+
+        {/* Top mood callout — emoji + 2-line text, ~76px tall, mb 36 */}
+        <Skeleton
+          style={{
+            height: "84px",
+            borderRadius: "14px",
+            marginBottom: "36px",
+          }}
+        />
+
+        {/* Section: Mood trend — title (16) + subtitle (13) + chart card (200) */}
+        <div style={{ marginBottom: "36px" }}>
+          <Skeleton
+            className="rounded-md"
+            style={{ height: "16px", width: "140px", marginBottom: "6px" }}
+          />
+          <Skeleton
+            className="rounded-md"
+            style={{ height: "13px", width: "100px", marginBottom: "14px" }}
+          />
+          <Skeleton style={{ height: "200px", borderRadius: "14px" }} />
+        </div>
+
+        {/* Section: Mood by day of week */}
+        <div>
+          <Skeleton
+            className="rounded-md"
+            style={{ height: "16px", width: "180px", marginBottom: "6px" }}
+          />
+          <Skeleton
+            className="rounded-md"
+            style={{ height: "13px", width: "160px", marginBottom: "14px" }}
+          />
+          <Skeleton style={{ height: "220px", borderRadius: "14px" }} />
+        </div>
       </div>
     );
   }

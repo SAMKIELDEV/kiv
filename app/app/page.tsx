@@ -137,48 +137,124 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", width: "100%", paddingBottom: "80px" }}>
-        <Skeleton className="h-9 w-[220px] mb-4" />
-        <div style={{ display: "flex", gap: "8px", marginBottom: "32px" }}>
-          <Skeleton className="h-7 w-[120px] rounded-full" />
-          <Skeleton className="h-7 w-[90px] rounded-full" />
+      <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+        {/* h1 greeting — fontSize 32, lineHeight 1.1, mb 4 */}
+        <Skeleton
+          className="rounded-md"
+          style={{ height: "36px", width: "260px", marginBottom: "4px" }}
+        />
+
+        {/* Streak pills — mt 12, mb 28, h ~30 */}
+        <div style={{ display: "flex", gap: "8px", marginTop: "12px", marginBottom: "28px" }}>
+          <Skeleton style={{ height: "30px", width: "118px", borderRadius: "999px" }} />
+          <Skeleton style={{ height: "30px", width: "92px", borderRadius: "999px" }} />
         </div>
-        <div style={{ height: "1px", backgroundColor: "var(--border)", marginBottom: "32px" }} />
+
+        {/* Divider */}
+        <div style={{ height: "1px", backgroundColor: "var(--border)", marginBottom: "28px" }} />
 
         {guessedCheckedIn ? (
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <Skeleton className="h-5 w-40 mb-5" />
-            <div style={{ 
-              backgroundColor: "var(--surface)", 
-              border: "1px solid var(--border)", 
-              borderRadius: "14px", 
-              padding: "24px" 
-            }}>
-              <Skeleton className="h-4 w-32 mb-4" />
-              <Skeleton className="h-10 w-10 mb-6" />
-              <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-                <Skeleton className="h-6 w-16 rounded-full" />
-                <Skeleton className="h-6 w-20 rounded-full" />
+            {/* "✓ Checked in today" — 15px, weight 600 */}
+            <Skeleton
+              className="rounded-md"
+              style={{ height: "16px", width: "150px", marginBottom: "20px" }}
+            />
+            {/* Card */}
+            <div
+              style={{
+                backgroundColor: "var(--surface)",
+                border: "1px solid var(--border)",
+                borderRadius: "14px",
+                padding: "20px 24px",
+              }}
+            >
+              {/* date + time line — 13px, mb 12 */}
+              <Skeleton
+                className="rounded-md"
+                style={{ height: "13px", width: "220px", marginBottom: "16px" }}
+              />
+              {/* emoji 36px, mb 16 */}
+              <Skeleton
+                style={{ height: "36px", width: "36px", borderRadius: "10px", marginBottom: "16px" }}
+              />
+              {/* factor pills */}
+              <div style={{ display: "flex", gap: "6px", marginBottom: "16px" }}>
+                <Skeleton style={{ height: "22px", width: "62px", borderRadius: "999px" }} />
+                <Skeleton style={{ height: "22px", width: "78px", borderRadius: "999px" }} />
               </div>
-              <Skeleton className="h-4 w-full mb-2" />
-              <Skeleton className="h-4 w-2/3" />
+              {/* prompt label + response */}
+              <Skeleton
+                className="rounded-md"
+                style={{ height: "13px", width: "70%", marginBottom: "8px" }}
+              />
+              <Skeleton
+                className="rounded-md"
+                style={{ height: "15px", width: "100%", marginBottom: "6px" }}
+              />
+              <Skeleton
+                className="rounded-md"
+                style={{ height: "15px", width: "60%" }}
+              />
             </div>
+            {/* "View history →" — mt 20, h 14 */}
+            <Skeleton
+              className="rounded-md"
+              style={{ height: "14px", width: "110px", marginTop: "20px" }}
+            />
           </div>
         ) : (
           <>
-            <Skeleton className="h-4 w-[180px] mb-6" />
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px", marginBottom: "40px" }}>
-              {[1, 2, 3, 4, 5].map(i => <Skeleton key={i} className="aspect-square rounded-xl" />)}
+            {/* "HOW ARE YOU FEELING TODAY?" — 13px, mb 16 */}
+            <Skeleton
+              className="rounded-md"
+              style={{ height: "13px", width: "200px", marginBottom: "16px" }}
+            />
+            {/* 5 mood squares — gap 8, aspect 1:1 */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "8px" }}>
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Skeleton key={i} style={{ aspectRatio: "1 / 1", borderRadius: "12px" }} />
+              ))}
             </div>
-            <Skeleton className="h-4 w-[200px] mb-6" />
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "40px" }}>
-              {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="h-8 w-[80px] rounded-full" />)}
+
+            {/* "WHAT INFLUENCED YOUR MOOD?" — mt 32, 13px, mb 16 */}
+            <Skeleton
+              className="rounded-md"
+              style={{ height: "13px", width: "220px", marginTop: "32px", marginBottom: "16px" }}
+            />
+            {/* factor pills row */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {[64, 76, 70, 60, 84, 68, 72, 58].map((w, i) => (
+                <Skeleton
+                  key={i}
+                  style={{ height: "32px", width: `${w}px`, borderRadius: "999px" }}
+                />
+              ))}
             </div>
-            <Skeleton className="h-4 w-full mb-3" />
-            <Skeleton className="h-24 w-full rounded-xl mb-8" />
-            <Skeleton className="h-12 w-full rounded-xl" />
+
+            {/* Prompt italic label — mt 32, 14px, mb 8 */}
+            <Skeleton
+              className="rounded-md"
+              style={{ height: "14px", width: "75%", marginTop: "32px", marginBottom: "8px" }}
+            />
+            {/* Prompt textarea — minHeight 88 */}
+            <Skeleton style={{ height: "88px", borderRadius: "10px" }} />
+
+            {/* "Anything else?" — mt 16, 13px, mb 8 */}
+            <Skeleton
+              className="rounded-md"
+              style={{ height: "13px", width: "100px", marginTop: "16px", marginBottom: "8px" }}
+            />
+            {/* Note textarea — minHeight 100 */}
+            <Skeleton style={{ height: "100px", borderRadius: "10px" }} />
+
+            {/* Submit button — mt 32, h 48 */}
+            <Skeleton style={{ height: "48px", borderRadius: "12px", marginTop: "32px" }} />
           </>
         )}
+
+        {/* Insights card — mt 32, ~70px tall */}
+        <Skeleton style={{ height: "70px", borderRadius: "14px", marginTop: "32px" }} />
       </div>
     );
   }
