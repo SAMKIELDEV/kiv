@@ -14,11 +14,10 @@ function formatTime12(hhmm: string): string {
   return `${h12}:${mStr} ${period}`;
 }
 
-// TEMP: 1-minute granularity for testing. Revert m += 1 -> m += 15 before prod.
 const TIME_OPTIONS: { value: string; label: string }[] = (() => {
   const out: { value: string; label: string }[] = [];
   for (let h = 0; h < 24; h++) {
-    for (let m = 0; m < 60; m += 1) {
+    for (let m = 0; m < 60; m += 15) {
       const value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
       out.push({ value, label: formatTime12(value) });
     }
@@ -69,12 +68,31 @@ export function ReminderSettings() {
   const [saving, setSaving] = useState(false);
   const [time, setTime] = useState<string>(DEFAULT_TIME);
   const [timezone, setTimezone] = useState<string>("");
-  const [emailOn, setEmailOn] = useState(false);
+  const [emailOn, setEmailOn] = useState(true);
 
   useEffect(() => {
     const detected = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
     setTimezone(detected);
   }, []);
+
+  const persistDefaults = useCallback(
+    async (timeValue: string, tz: string) => {
+      try {
+        await fetch("/api/me/reminders", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            reminderTime: timeValue,
+            reminderTimezone: tz,
+            reminderChannels: { email: true },
+          }),
+        });
+      } catch {
+        // silent
+      }
+    },
+    []
+  );
 
   const fetchReminders = useCallback(async () => {
     try {
@@ -82,8 +100,15 @@ export function ReminderSettings() {
       if (res.ok) {
         const data = (await res.json()) as UserReminders;
         if (data.reminderTime) setTime(data.reminderTime);
-        if (data.reminderChannels) {
-          setEmailOn(!!data.reminderChannels.email);
+        const explicitEmail = data.reminderChannels?.email;
+        if (typeof explicitEmail === "boolean") {
+          setEmailOn(explicitEmail);
+        } else {
+          const tz =
+            data.reminderTimezone ||
+            Intl.DateTimeFormat().resolvedOptions().timeZone ||
+            "UTC";
+          persistDefaults(data.reminderTime || DEFAULT_TIME, tz);
         }
       }
     } catch {
@@ -91,7 +116,7 @@ export function ReminderSettings() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [persistDefaults]);
 
   useEffect(() => {
     fetchReminders();

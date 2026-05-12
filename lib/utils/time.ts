@@ -26,8 +26,9 @@ export function getLocalNowInTZ(timezone: string, now: Date = new Date()): Local
   if (hour === "24") hour = "00";
   const minute = partValue(parts, "minute");
 
-  // TEMP: 1-minute granularity for testing. Revert to 15-min floor before prod.
-  const minuteStr = minute;
+  const minuteNum = parseInt(minute, 10);
+  const flooredMinute = Math.floor(minuteNum / 15) * 15;
+  const minuteStr = String(flooredMinute).padStart(2, "0");
 
   return {
     time: `${hour}:${minuteStr}`,
