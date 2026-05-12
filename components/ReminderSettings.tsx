@@ -14,10 +14,11 @@ function formatTime12(hhmm: string): string {
   return `${h12}:${mStr} ${period}`;
 }
 
+// TEMP: 1-minute granularity for testing. Revert m += 1 -> m += 15 before prod.
 const TIME_OPTIONS: { value: string; label: string }[] = (() => {
   const out: { value: string; label: string }[] = [];
   for (let h = 0; h < 24; h++) {
-    for (let m = 0; m < 60; m += 15) {
+    for (let m = 0; m < 60; m += 1) {
       const value = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
       out.push({ value, label: formatTime12(value) });
     }
