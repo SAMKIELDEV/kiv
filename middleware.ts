@@ -10,11 +10,27 @@ const ACCOUNTS_URL =
   process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL ||
   "https://account.samkiel.tech";
 
-// Mirrors the SAMKIEL ID server's setCookie options so the cookies we write
-// here are interchangeable with the ones the auth server sets on login.
-const COOKIE_DOMAIN = process.env.SK_COOKIE_DOMAIN || ".samkiel.tech";
 const ACCESS_COOKIE = "sk_access_token";
 const REFRESH_COOKIE = "sk_refresh_token";
+
+// Cookie attributes mirror the SAMKIEL ID server in production
+// (Secure, SameSite=None, Domain=.samkiel.tech) so the cookies we write here
+// are interchangeable with the ones the auth server sets on login. In dev
+// (http://localhost) Secure+SameSite=None is rejected by browsers and a
+// cross-subdomain Domain is meaningless, so flip to host-only Lax cookies.
+//
+// Auto-detect from NODE_ENV. Override with SK_DEV_COOKIES=1 / =0 if you need
+// to force one mode regardless of NODE_ENV (e.g. testing prod build locally).
+const DEV_COOKIES = (() => {
+  const flag = process.env.SK_DEV_COOKIES;
+  if (flag === "1" || flag === "true") return true;
+  if (flag === "0" || flag === "false") return false;
+  return process.env.NODE_ENV !== "production";
+})();
+
+// Empty string is meaningful: "" → no Domain attribute (host-only cookie).
+const COOKIE_DOMAIN =
+  process.env.SK_COOKIE_DOMAIN ?? (DEV_COOKIES ? "" : ".samkiel.tech");
 
 type RefreshResult = {
   accessToken: string;
@@ -50,13 +66,20 @@ async function refreshTokens(refreshToken: string): Promise<RefreshResult | null
 }
 
 function applyRefreshedCookies(response: NextResponse, tokens: RefreshResult) {
-  const base = {
+  const base: {
+    httpOnly: boolean;
+    secure: boolean;
+    sameSite: "none" | "lax";
+    path: string;
+    domain?: string;
+  } = {
     httpOnly: true,
-    secure: true,
-    sameSite: "none" as const,
+    secure: !DEV_COOKIES,
+    sameSite: DEV_COOKIES ? "lax" : "none",
     path: "/",
-    domain: COOKIE_DOMAIN,
   };
+  if (COOKIE_DOMAIN) base.domain = COOKIE_DOMAIN;
+
   response.cookies.set({
     ...base,
     name: ACCESS_COOKIE,
