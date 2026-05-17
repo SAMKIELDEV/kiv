@@ -32,13 +32,17 @@ export async function getServerUser(): Promise<TokenPayload | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get("sk_access_token")?.value;
 
-  if (!token || !JWT_SECRET) return null;
+  if (!token || !JWT_SECRET) {
+    console.log(`[getServerUser] no token (token=${!!token} secret=${!!JWT_SECRET})`);
+    return null;
+  }
 
   try {
     const secret = new TextEncoder().encode(JWT_SECRET);
     const { payload } = await jwtVerify(token, secret);
     return payload as unknown as TokenPayload;
-  } catch {
+  } catch (err) {
+    console.log(`[getServerUser] verify failed: ${err instanceof Error ? err.message : String(err)}`);
     return null;
   }
 }

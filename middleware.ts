@@ -50,17 +50,26 @@ async function verifyAccess(token: string | undefined): Promise<JWTPayload | nul
 }
 
 async function refreshTokens(refreshToken: string): Promise<RefreshResult | null> {
+  const url = `${AUTH_URL}/auth/refresh`;
   try {
-    const res = await fetch(`${AUTH_URL}/auth/refresh`, {
+    const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
     });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      const body = await res.text().catch(() => "");
+      console.warn(`[MW] refresh failed: ${res.status} ${url} body=${body.slice(0, 200)}`);
+      return null;
+    }
     const data = (await res.json()) as Partial<RefreshResult>;
-    if (!data.accessToken || !data.refreshToken || !data.expiresIn) return null;
+    if (!data.accessToken || !data.refreshToken || !data.expiresIn) {
+      console.warn(`[MW] refresh returned malformed payload from ${url}`);
+      return null;
+    }
     return data as RefreshResult;
-  } catch {
+  } catch (err) {
+    console.warn(`[MW] refresh threw: ${err instanceof Error ? err.message : String(err)} url=${url}`);
     return null;
   }
 }
@@ -111,8 +120,13 @@ export async function middleware(request: NextRequest) {
   }
 
   const accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
+  const refreshTokenPresent = !!request.cookies.get(REFRESH_COOKIE)?.value;
   let payload = await verifyAccess(accessToken);
   let refreshed: RefreshResult | null = null;
+
+  console.log(
+    `[MW] ${pathname} access=${accessToken ? (payload ? "valid" : "invalid/expired") : "missing"} refresh=${refreshTokenPresent ? "present" : "missing"}`,
+  );
 
   // Access token missing or expired — try the refresh cookie before giving up.
   // We attempt this on both auth and protected routes: an authenticated user
@@ -129,6 +143,9 @@ export async function middleware(request: NextRequest) {
         if (payload) {
           request.cookies.set(ACCESS_COOKIE, refreshed.accessToken);
           request.cookies.set(REFRESH_COOKIE, refreshed.refreshToken);
+          console.log(`[MW] ${pathname} refreshed successfully`);
+        } else {
+          console.warn(`[MW] ${pathname} refresh returned tokens but JWT verify failed (JWT_SECRET mismatch?)`);
         }
       }
     }
@@ -139,6 +156,7 @@ export async function middleware(request: NextRequest) {
       const appOrigin = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
       const redirect = NextResponse.redirect(new URL("/app", appOrigin));
       if (refreshed) applyRefreshedCookies(redirect, refreshed);
+      console.log(`[MW] ${pathname} → /app (already authenticated)`);
       return redirect;
     }
     return NextResponse.next();
@@ -148,6 +166,7 @@ export async function middleware(request: NextRequest) {
   if (!payload) {
     const appOrigin = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin;
     const loginUrl = `${ACCOUNTS_URL}/login?redirect=${encodeURIComponent(`${appOrigin}/app`)}`;
+    console.log(`[MW] ${pathname} → login (no valid session)`);
     return NextResponse.redirect(loginUrl);
   }
 
