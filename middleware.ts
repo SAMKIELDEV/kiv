@@ -138,11 +138,7 @@ export async function middleware(request: NextRequest) {
       refreshed = await refreshTokens(refreshToken);
       if (refreshed) {
         payload = await verifyAccess(refreshed.accessToken);
-        // Rewrite the request's cookie jar so downstream Server Components
-        // (e.g. getServerUser in app/app/layout.tsx) read the fresh token.
         if (payload) {
-          request.cookies.set(ACCESS_COOKIE, refreshed.accessToken);
-          request.cookies.set(REFRESH_COOKIE, refreshed.refreshToken);
           console.log(`[MW] ${pathname} refreshed successfully`);
         } else {
           console.warn(`[MW] ${pathname} refresh returned tokens but JWT verify failed (JWT_SECRET mismatch?)`);
@@ -170,14 +166,49 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  // Build the forwarded request headers. When we refreshed, rewrite the
+  // Cookie header directly so the layout's cookies() reads the new access
+  // token — request.cookies.set alone isn't reliable across Next versions.
   const requestHeaders = new Headers(request.headers);
   if (payload.userId) requestHeaders.set("x-user-id", String(payload.userId));
   if (payload.email) requestHeaders.set("x-user-email", String(payload.email));
   if (payload.name) requestHeaders.set("x-user-name", String(payload.name));
+  if (refreshed) {
+    requestHeaders.set(
+      "cookie",
+      rewriteCookieHeader(
+        request.headers.get("cookie") ?? "",
+        refreshed.accessToken,
+        refreshed.refreshToken,
+      ),
+    );
+  }
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
   if (refreshed) applyRefreshedCookies(response, refreshed);
   return response;
+}
+
+// Replace sk_access_token and sk_refresh_token in a Cookie header string,
+// preserving any unrelated cookies. Used so downstream Server Components see
+// the freshly-refreshed tokens within the same request.
+function rewriteCookieHeader(
+  existing: string,
+  newAccess: string,
+  newRefresh: string,
+): string {
+  const parts = existing
+    .split(";")
+    .map((p) => p.trim())
+    .filter(
+      (p) =>
+        p &&
+        !p.startsWith(`${ACCESS_COOKIE}=`) &&
+        !p.startsWith(`${REFRESH_COOKIE}=`),
+    );
+  parts.push(`${ACCESS_COOKIE}=${newAccess}`);
+  parts.push(`${REFRESH_COOKIE}=${newRefresh}`);
+  return parts.join("; ");
 }
 
 export const config = {
