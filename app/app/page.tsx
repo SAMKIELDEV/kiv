@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@samkiel/authsdk/react";
 import { getGreeting, getTodayDateString, formatDate, formatTime } from "@/lib/utils";
 import { getDailyPrompt } from "@/lib/getPrompt";
 import { MOOD_EMOJIS, MOOD_LABELS, FACTORS, type MoodValue, type Entry, type StreakData } from "@/types";
@@ -14,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { BarChart2 } from "lucide-react";
 
 export default function DashboardPage() {
+  const { user: authUser } = useAuth();
   const [todayEntry, setTodayEntry] = useState<Entry | null>(null);
   const [streak, setStreak] = useState<StreakData | null>(null);
   const [userName, setUserName] = useState("");
@@ -288,7 +290,7 @@ export default function DashboardPage() {
           lineHeight: 1.1,
         }}
       >
-        {getGreeting(userName || "there")}
+        {getGreeting(authUser?.username || userName || "there")}
       </h1>
 
       <div
