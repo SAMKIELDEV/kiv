@@ -30,7 +30,9 @@ export function AuthProvider({
   baseUrl: string;
 }) {
   return (
-    <BaseAuthProvider baseUrl={baseUrl}>
+    // productSlug records a "Kiv" product session on the user's SAMKIEL ID so it
+    // shows on the account products page with real activity.
+    <BaseAuthProvider baseUrl={baseUrl} productSlug="kiv">
       <AuthLogoutRedirect />
       {children}
     </BaseAuthProvider>
