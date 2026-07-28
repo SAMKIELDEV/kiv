@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import { User } from "@/lib/db/models/user";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { isValidTimezone } from "@/lib/utils/time";
 
@@ -77,27 +78,32 @@ export async function PATCH(request: NextRequest) {
   }
 
   try {
-    await connectDB();
+    const [existing] = await db.select({ reminderChannels: users.reminderChannels })
+      .from(users)
+      .where(eq(users.userId, auth.userId))
+      .limit(1);
 
-    const set: Record<string, unknown> = {
-      reminderTime,
-      reminderTimezone,
-    };
-    if (channels.push !== undefined) set["reminderChannels.push"] = channels.push;
-    if (channels.email !== undefined) set["reminderChannels.email"] = channels.email;
+    const mergedChannels = existing?.reminderChannels || {};
+    if (channels.push !== undefined) mergedChannels.push = channels.push;
+    if (channels.email !== undefined) mergedChannels.email = channels.email;
 
-    await User.findOneAndUpdate(
-      { userId: auth.userId },
-      {
-        $set: set,
-        $setOnInsert: {
-          userId: auth.userId,
-          name: auth.name,
-          email: auth.email,
+    await db.insert(users)
+      .values({
+        userId: auth.userId,
+        name: auth.name,
+        email: auth.email,
+        reminderTime,
+        reminderTimezone,
+        reminderChannels: mergedChannels,
+      })
+      .onConflictDoUpdate({
+        target: users.userId,
+        set: {
+          reminderTime,
+          reminderTimezone,
+          reminderChannels: mergedChannels,
         },
-      },
-      { upsert: true, new: true }
-    );
+      });
 
     return NextResponse.json({ ok: true });
   } catch (error) {
