@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import { EntryModel } from "@/lib/db/models/entry";
+import { db } from "@/lib/db";
+import { entries } from "@/lib/db/schema";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { computeStreak } from "@/lib/utils/streak";
+import { eq, desc } from "drizzle-orm";
 
 // GET /api/entries/streak — compute current + longest streak
 export async function GET(request: NextRequest) {
@@ -10,14 +11,13 @@ export async function GET(request: NextRequest) {
   if (isAuthError(auth)) return auth;
 
   try {
-    await connectDB();
+    const entryDates = await db
+      .select({ date: entries.date })
+      .from(entries)
+      .where(eq(entries.userId, auth.userId))
+      .orderBy(desc(entries.date));
 
-    const entries = await EntryModel.find({ userId: auth.userId })
-      .select("date")
-      .sort({ date: -1 })
-      .lean();
-
-    const streak = computeStreak(entries.map((e) => e.date));
+    const streak = computeStreak(entryDates.map((e) => e.date));
     return NextResponse.json(streak);
   } catch (error) {
     console.error("GET /api/entries/streak error:", error);
