@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import { EntryModel } from "@/lib/db/models/entry";
+import { db } from "@/lib/db";
+import { entries } from "@/lib/db/schema";
 import { requireAuth, isAuthError } from "@/lib/auth";
+import { eq, and } from "drizzle-orm";
 
 // GET /api/entries/[date] — get a single entry by date
 export async function GET(
@@ -22,12 +23,11 @@ export async function GET(
   }
 
   try {
-    await connectDB();
-
-    const entry = await EntryModel.findOne({
-      userId: auth.userId,
-      date,
-    }).lean();
+    const [entry] = await db
+      .select()
+      .from(entries)
+      .where(and(eq(entries.userId, auth.userId), eq(entries.date, date)))
+      .limit(1);
 
     if (!entry) {
       return NextResponse.json(
