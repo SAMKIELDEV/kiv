@@ -13,9 +13,8 @@
  * NOT wired into vercel.json on purpose — Vercel Hobby cron is daily-only.
  */
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import { User } from "@/lib/db/models/user";
-import { EntryModel } from "@/lib/db/models/entry";
+import { db } from "@/lib/db";
+import { users, entries } from "@/lib/db/schema";
 import { sendPushToUser } from "@/lib/notifications/push";
 import { sendReminderEmail } from "@/lib/notifications/email";
 import { getLocalNowInTZ } from "@/lib/utils/time";
@@ -23,6 +22,7 @@ import {
   DEFAULT_REMINDER_TIME,
   DEFAULT_REMINDER_TZ,
 } from "@/types";
+import { eq, and, sql } from "drizzle-orm";
 
 export async function POST(request: NextRequest) {
   const cronSecret = process.env.CRON_SECRET;
@@ -37,14 +37,12 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    await connectDB();
-
-    const candidates = await User.find({
-      $or: [
-        { "reminderChannels.push": true },
-        { "reminderChannels.email": true },
-      ],
-    });
+    const candidates = await db
+      .select()
+      .from(users)
+      .where(
+        sql`(${users.reminderChannels}->>'push')::boolean = true OR (${users.reminderChannels}->>'email')::boolean = true`
+      );
 
     let notified = 0;
 
@@ -64,12 +62,12 @@ export async function POST(request: NextRequest) {
       if (localNow.time !== time) continue;
       if (user.lastNotifiedDate === localNow.date) continue;
 
-      const existingEntry = await EntryModel.findOne({
-        userId: user.userId,
-        date: localNow.date,
-      })
-        .select("_id")
-        .lean();
+      const [existingEntry] = await db
+        .select({ id: entries.id })
+        .from(entries)
+        .where(and(eq(entries.userId, user.userId), eq(entries.date, localNow.date)))
+        .limit(1);
+
       if (existingEntry) continue;
 
       let didSend = false;
@@ -96,8 +94,10 @@ export async function POST(request: NextRequest) {
       }
 
       if (didSend) {
-        user.lastNotifiedDate = localNow.date;
-        await user.save();
+        await db
+          .update(users)
+          .set({ lastNotifiedDate: localNow.date })
+          .where(eq(users.userId, user.userId));
         notified += 1;
       }
     }
