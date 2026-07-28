@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import { EntryModel } from "@/lib/db/models/entry";
+import { db } from "@/lib/db";
+import { entries as entriesTable } from "@/lib/db/schema";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { getTodayDateString } from "@/lib/utils";
+import { eq, and, desc } from "drizzle-orm";
 
 // POST /api/entries — create today's entry
 export async function POST(request: NextRequest) {
@@ -20,14 +21,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await connectDB();
-
     const today = getTodayDateString();
 
-    const existing = await EntryModel.findOne({
-      userId: auth.userId,
-      date: today,
-    });
+    const [existing] = await db
+      .select()
+      .from(entriesTable)
+      .where(and(eq(entriesTable.userId, auth.userId), eq(entriesTable.date, today)))
+      .limit(1);
 
     if (existing) {
       return NextResponse.json(
@@ -36,15 +36,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const entry = await EntryModel.create({
-      userId: auth.userId,
-      date: today,
-      mood,
-      prompt: typeof prompt === "string" ? prompt : "",
-      promptResponse: typeof promptResponse === "string" ? promptResponse : "",
-      note: typeof note === "string" && note.length > 0 ? note : null,
-      factors: Array.isArray(factors) ? factors : [],
-    });
+    const [entry] = await db
+      .insert(entriesTable)
+      .values({
+        userId: auth.userId,
+        date: today,
+        mood,
+        prompt: typeof prompt === "string" ? prompt : "",
+        promptResponse: typeof promptResponse === "string" ? promptResponse : "",
+        note: typeof note === "string" && note.length > 0 ? note : null,
+        factors: Array.isArray(factors) ? factors : [],
+      })
+      .returning();
 
     return NextResponse.json(entry, { status: 201 });
   } catch (error) {
@@ -62,13 +65,13 @@ export async function GET(request: NextRequest) {
   if (isAuthError(auth)) return auth;
 
   try {
-    await connectDB();
+    const entriesList = await db
+      .select()
+      .from(entriesTable)
+      .where(eq(entriesTable.userId, auth.userId))
+      .orderBy(desc(entriesTable.date));
 
-    const entries = await EntryModel.find({ userId: auth.userId })
-      .sort({ date: -1 })
-      .lean();
-
-    return NextResponse.json(entries);
+    return NextResponse.json(entriesList);
   } catch (error) {
     console.error("GET /api/entries error:", error);
     return NextResponse.json(
