@@ -1,43 +1,9 @@
-import mongoose from "mongoose";
+import { neon } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-http";
 
-interface MongooseCache {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL environment variable is not defined");
 }
 
-declare global {
-  // eslint-disable-next-line no-var
-  var mongooseCache: MongooseCache | undefined;
-}
-
-const cached: MongooseCache = global.mongooseCache ?? {
-  conn: null,
-  promise: null,
-};
-
-if (!global.mongooseCache) {
-  global.mongooseCache = cached;
-}
-
-export async function connectDB(): Promise<typeof mongoose> {
-  if (cached.conn) return cached.conn;
-
-  const uri = process.env.MONGODB_URI;
-
-  if (!uri) {
-    throw new Error("MONGODB_URI environment variable is not defined");
-  }
-
-  if (!cached.promise) {
-    cached.promise = mongoose.connect(uri, {
-      bufferCommands: false,
-    }).catch((error) => {
-      console.error("MongoDB Connection Error: ", error);
-      cached.promise = null;
-      throw error;
-    });
-  }
-
-  cached.conn = await cached.promise;
-  return cached.conn;
-}
+const sql = neon(process.env.DATABASE_URL);
+export const db = drizzle(sql);
