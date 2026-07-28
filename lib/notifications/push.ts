@@ -1,5 +1,7 @@
 import webpush from "web-push";
-import { SubscriptionModel } from "@/lib/db/models/subscription";
+import { db } from "@/lib/db";
+import { subscriptions as subscriptionsTable } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export interface PushPayload {
   title: string;
@@ -38,15 +40,19 @@ export async function sendPushToUser(
 ): Promise<PushResult> {
   ensureVapidConfigured();
 
-  const subscriptions = await SubscriptionModel.find({ userId });
-  if (subscriptions.length === 0) {
+  const userSubs = await db
+    .select()
+    .from(subscriptionsTable)
+    .where(eq(subscriptionsTable.userId, userId));
+
+  if (userSubs.length === 0) {
     return { attempted: 0, succeeded: 0, failed: 0 };
   }
 
   const body = JSON.stringify(payload);
 
   const results = await Promise.allSettled(
-    subscriptions.map((sub) =>
+    userSubs.map((sub) =>
       webpush.sendNotification(sub.subscription, body)
     )
   );
