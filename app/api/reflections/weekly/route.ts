@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk";
-import { connectDB } from "@/lib/db";
-import { EntryModel } from "@/lib/db/models/entry";
+import { db } from "@/lib/db";
+import { entries as entriesTable } from "@/lib/db/schema";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { MOOD_LABELS } from "@/types";
+import { eq, gte, and, asc } from "drizzle-orm";
 
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
@@ -18,17 +19,16 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    await connectDB();
-
     // Get entries from last 7 days
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const dateStr = sevenDaysAgo.toISOString().split("T")[0];
 
-    const entries = await EntryModel.find({
-      userId: auth.userId,
-      date: { $gte: dateStr },
-    }).sort({ date: 1 });
+    const entries = await db
+      .select()
+      .from(entriesTable)
+      .where(and(eq(entriesTable.userId, auth.userId), gte(entriesTable.date, dateStr)))
+      .orderBy(asc(entriesTable.date));
 
     if (entries.length < 3) {
       return NextResponse.json({
