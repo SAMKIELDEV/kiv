@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import { User } from "@/lib/db/models/user";
-import { EntryModel } from "@/lib/db/models/entry";
+import { db } from "@/lib/db";
+import { users, entries } from "@/lib/db/schema";
 import { requireAuth, isAuthError } from "@/lib/auth";
+import { eq } from "drizzle-orm";
 
 // GET /api/me — get cached user info
 export async function GET(request: NextRequest) {
@@ -10,17 +10,19 @@ export async function GET(request: NextRequest) {
   if (isAuthError(auth)) return auth;
 
   try {
-    await connectDB();
-
     // Upsert user cache from JWT data
-    const user = await User.findOneAndUpdate(
-      { userId: auth.userId },
-      {
-        $set: { name: auth.name, email: auth.email },
-        $setOnInsert: { userId: auth.userId },
-      },
-      { upsert: true, new: true, lean: true }
-    );
+    const [user] = await db
+      .insert(users)
+      .values({
+        userId: auth.userId,
+        name: auth.name,
+        email: auth.email,
+      })
+      .onConflictDoUpdate({
+        target: users.userId,
+        set: { name: auth.name, email: auth.email },
+      })
+      .returning();
 
     return NextResponse.json(user);
   } catch (error) {
@@ -38,12 +40,10 @@ export async function DELETE(request: NextRequest) {
   if (isAuthError(auth)) return auth;
 
   try {
-    await connectDB();
-
-    await Promise.all([
-      EntryModel.deleteMany({ userId: auth.userId }),
-      User.deleteOne({ userId: auth.userId }),
-    ]);
+    await db.transaction(async (tx) => {
+      await tx.delete(entries).where(eq(entries.userId, auth.userId));
+      await tx.delete(users).where(eq(users.userId, auth.userId));
+    });
 
     return NextResponse.json({ message: "All Kiv data deleted" });
   } catch (error) {
