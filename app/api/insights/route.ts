@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import { EntryModel } from "@/lib/db/models/entry";
+import { db } from "@/lib/db";
+import { entries as entriesTable } from "@/lib/db/schema";
 import { requireAuth, isAuthError } from "@/lib/auth";
 import { computeStreak } from "@/lib/utils/streak";
 import type { MoodValue } from "@/types";
+import { eq, asc } from "drizzle-orm";
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -42,21 +43,20 @@ export async function GET(request: NextRequest) {
   if (isAuthError(auth)) return auth;
 
   try {
-    await connectDB();
+    const userEntries = await db
+      .select({ date: entriesTable.date, mood: entriesTable.mood })
+      .from(entriesTable)
+      .where(eq(entriesTable.userId, auth.userId))
+      .orderBy(asc(entriesTable.date));
 
-    const entries = await EntryModel.find({ userId: auth.userId })
-      .select("date mood")
-      .sort({ date: 1 })
-      .lean();
+    const totalEntries = userEntries.length;
 
-    const totalEntries = entries.length;
-
-    const streak = computeStreak(entries.map((e) => e.date));
+    const streak = computeStreak(userEntries.map((e) => e.date));
 
     const averageMood =
       totalEntries === 0
         ? 0
-        : round1(entries.reduce((sum, e) => sum + e.mood, 0) / totalEntries);
+        : round1(userEntries.reduce((sum, e) => sum + e.mood, 0) / totalEntries);
 
     // Mood trend — last 30 days, one entry per day that exists
     const today = new Date();
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     cutoff.setUTCDate(cutoff.getUTCDate() - 29);
     const cutoffStr = cutoff.toISOString().split("T")[0];
 
-    const moodTrend: MoodTrendPoint[] = entries
+    const moodTrend: MoodTrendPoint[] = userEntries
       .filter((e) => e.date >= cutoffStr)
       .map((e) => ({ date: e.date, mood: e.mood }));
 
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
       { length: 7 },
       () => ({ sum: 0, count: 0 })
     );
-    for (const e of entries) {
+    for (const e of userEntries) {
       const dow = dayOfWeekFromDateStr(e.date);
       buckets[dow].sum += e.mood;
       buckets[dow].count += 1;
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
 
     // Top mood — most frequent value, ties broken by higher value
     const counts: Record<MoodValue, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    for (const e of entries) {
+    for (const e of userEntries) {
       counts[e.mood as MoodValue] += 1;
     }
     let topMood = 0;
