@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectDB } from "@/lib/db";
-import { SubscriptionModel } from "@/lib/db/models/subscription";
-import { User } from "@/lib/db/models/user";
+import { db } from "@/lib/db";
+import { subscriptions, users } from "@/lib/db/schema";
 import { requireAuth, isAuthError } from "@/lib/auth";
+import { eq, and, count } from "drizzle-orm";
 
 export async function POST(request: NextRequest) {
   const auth = await requireAuth(request);
@@ -18,26 +18,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await connectDB();
+    // Upsert subscription
+    await db
+      .insert(subscriptions)
+      .values({
+        userId: auth.userId,
+        subscription,
+      })
+      .onConflictDoUpdate({
+        target: subscriptions.userId,
+        set: { subscription },
+      });
 
-    await SubscriptionModel.findOneAndUpdate(
-      { userId: auth.userId, "subscription.endpoint": subscription.endpoint },
-      { userId: auth.userId, subscription },
-      { upsert: true, new: true }
-    );
+    // Update user reminderChannels.push to true
+    const [existing] = await db
+      .select({ reminderChannels: users.reminderChannels })
+      .from(users)
+      .where(eq(users.userId, auth.userId))
+      .limit(1);
 
-    await User.findOneAndUpdate(
-      { userId: auth.userId },
-      {
-        $set: { "reminderChannels.push": true },
-        $setOnInsert: {
-          userId: auth.userId,
-          name: auth.name,
-          email: auth.email,
-        },
-      },
-      { upsert: true }
-    );
+    const mergedChannels = existing?.reminderChannels || {};
+    mergedChannels.push = true;
+
+    await db
+      .insert(users)
+      .values({
+        userId: auth.userId,
+        name: auth.name,
+        email: auth.email,
+        reminderChannels: mergedChannels,
+      })
+      .onConflictDoUpdate({
+        target: users.userId,
+        set: { reminderChannels: mergedChannels },
+      });
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -56,19 +70,31 @@ export async function DELETE(request: NextRequest) {
   try {
     const { endpoint } = await request.json();
 
-    await connectDB();
+    await db
+      .delete(subscriptions)
+      .where(and(eq(subscriptions.userId, auth.userId)));
 
-    await SubscriptionModel.deleteOne({
-      userId: auth.userId,
-      "subscription.endpoint": endpoint,
-    });
+    const [{ value }] = await db
+      .select({ value: count() })
+      .from(subscriptions)
+      .where(eq(subscriptions.userId, auth.userId));
 
-    const remaining = await SubscriptionModel.countDocuments({ userId: auth.userId });
-    if (remaining === 0) {
-      await User.updateOne(
-        { userId: auth.userId },
-        { $set: { "reminderChannels.push": false } }
-      );
+    if (value === 0) {
+      const [existing] = await db
+        .select({ reminderChannels: users.reminderChannels })
+        .from(users)
+        .where(eq(users.userId, auth.userId))
+        .limit(1);
+
+      if (existing) {
+        const mergedChannels = existing.reminderChannels || {};
+        mergedChannels.push = false;
+
+        await db
+          .update(users)
+          .set({ reminderChannels: mergedChannels })
+          .where(eq(users.userId, auth.userId));
+      }
     }
 
     return NextResponse.json({ success: true });
