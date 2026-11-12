@@ -8,7 +8,7 @@ const AUTH_URL =
   "https://id.samkiel.tech";
 const ACCOUNTS_URL =
   process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL ||
-  "https://account.samkiel.tech";
+  "https://accounts.samkiel.tech";
 
 const ACCESS_COOKIE = "sk_access_token";
 const REFRESH_COOKIE = "sk_refresh_token";

@@ -14,7 +14,7 @@ interface UserInfo {
 }
 
 const ACCOUNTS_URL =
-  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
+  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://accounts.samkiel.tech";
 
 export default function SettingsPage() {
   const [user, setUser] = useState<UserInfo | null>(null);

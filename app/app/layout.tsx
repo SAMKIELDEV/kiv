@@ -4,7 +4,7 @@ import { AppNav } from "@/app/components/AppNav";
 import { getServerUser } from "@/lib/auth";
 
 const ACCOUNTS_URL =
-  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
+  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://accounts.samkiel.tech";
 const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 

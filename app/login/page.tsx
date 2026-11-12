@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { AppNav } from "@/app/components/AppNav";
 
 const ACCOUNTS_URL =
-  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
+  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://accounts.samkiel.tech";
 
 const images = [
   "/assets/hero.png",
@@ -209,7 +209,7 @@ function LoginContent() {
               >
                 Don&apos;t have an account?{" "}
                 <a
-                  href="https://account.samkiel.tech/register"
+                  href="https://accounts.samkiel.tech/register"
                   style={{
                     color: "var(--accent)",
                     fontWeight: 600,

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { AuthProvider as BaseAuthProvider, useAuthContext } from "@samkiel/authsdk/react";
 
 const ACCOUNTS_URL =
-  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://account.samkiel.tech";
+  process.env.NEXT_PUBLIC_SAMKIEL_ACCOUNTS_URL || "https://accounts.samkiel.tech";
 
 function AuthLogoutRedirect() {
   const { auth } = useAuthContext();
